@@ -1,0 +1,38 @@
+<resources>
+    <string name="app_name">kioskApp</string>
+    <string name="title_activity_settings">Настройки</string>
+    <string name="title_activity_products">Продукты</string>
+
+    <string name="ProductsItemList">Товары</string>
+    <string name="AlcoholItemList">Алкоголь</string>
+    <string name="ServicesList">Услуги</string>
+    <string name="FavoritesList">Избранное</string>
+    <string name="Taxi">Такси</string>
+    <string name="ForAnimalsItemList">Для животных</string>
+
+    <!-- products Fragment -->
+    <!-- <string name="addtocart">Добавлено &#10003;</string> -->
+    <string name="addtocart">Добавлено &#10004;</string>
+    <!--<string name="addtocart">Добавлено &#128504;</string> -->
+
+    <!-- products Fragment -->
+    <string name="order">Оформить</string>
+
+
+    <!-- Preference Titles -->
+    <string name="messages_header">Messages</string>
+    <string name="sync_header">Sync</string>
+
+    <!-- Messages Preferences -->
+    <string name="signature_title">Your signature</string>
+    <string name="reply_title">Default reply action</string>
+
+    <!-- Sync Preferences -->
+    <string name="sync_title">Sync email periodically</string>
+    <string name="attachment_title">Download incoming attachments</string>
+    <string name="attachment_summary_on">Automatically download attachments for incoming emails
+    </string>
+    <string name="attachment_summary_off">Only download attachments when manually requested</string>
+
+
+</resources>

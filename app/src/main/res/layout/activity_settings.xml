@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/settingsactivity_mainlayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF"
+    android:orientation="horizontal"
+    tools:context=".settings.SettingsActivity">
+
+    <ImageButton
+        android:id="@+id/MainMenuButton"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="1dp"
+        android:backgroundTint="#6495ED"
+        android:contentDescription="@string/app_name"
+        android:onClick="onClick"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@android:drawable/ic_menu_sort_by_size" />
+
+    <ImageButton
+        android:id="@+id/SaveButton"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="80dp"
+        android:layout_marginTop="1dp"
+        android:backgroundTint="#6495ED"
+        android:onClick="onClick"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@android:drawable/ic_menu_save" />
+
+    <TextView
+        android:id="@+id/theme_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="100dp"
+        android:text="Цвет оболочки:"
+        android:textColor="#C6000000"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Switch
+        android:id="@+id/greentheme_sw"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="Зелёный:  "
+        android:textColor="#8BC34A"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="@+id/theme_tv"
+        app:layout_constraintTop_toBottomOf="@+id/theme_tv" />
+
+    <Switch
+        android:id="@+id/bluetheme_sw"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="Голубой:   "
+        android:textColor="#2196F3"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="@+id/theme_tv"
+        app:layout_constraintTop_toBottomOf="@+id/greentheme_sw" />
+
+    <TextView
+        android:id="@+id/contract_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="100dp"
+        android:layout_marginTop="100dp"
+        android:text="Договор:"
+        android:textColor="#C6000000"
+        android:textSize="24sp"
+        app:layout_constraintStart_toEndOf="@+id/theme_tv"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/contractid_et"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="number"
+        android:text="Номер договора"
+        app:layout_constraintStart_toStartOf="@+id/contract_tv"
+        app:layout_constraintTop_toBottomOf="@+id/contract_tv" />
+
+    <TextView
+        android:id="@+id/address_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="150dp"
+        android:layout_marginTop="100dp"
+        android:text="Адрес:"
+        android:textColor="#C6000000"
+        android:textSize="24sp"
+        app:layout_constraintStart_toEndOf="@+id/contract_tv"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/city_et"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Город"
+        app:layout_constraintStart_toStartOf="@+id/address_tv"
+        app:layout_constraintTop_toBottomOf="@+id/address_tv" />
+
+    <EditText
+        android:id="@+id/street_et"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Улица"
+        app:layout_constraintStart_toStartOf="@+id/address_tv"
+        app:layout_constraintTop_toBottomOf="@+id/city_et" />
+
+    <EditText
+        android:id="@+id/house_et"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Дом"
+        app:layout_constraintStart_toStartOf="@+id/address_tv"
+        app:layout_constraintTop_toBottomOf="@+id/street_et" />
+
+    <EditText
+        android:id="@+id/apartment_et"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Квартира"
+        app:layout_constraintStart_toStartOf="@+id/address_tv"
+        app:layout_constraintTop_toBottomOf="@+id/house_et" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
