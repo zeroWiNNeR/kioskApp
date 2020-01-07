@@ -118,9 +118,9 @@ public class ServerPollingTask extends AsyncTask<String, Integer, Void> {
                 publishProgress(1);
             }
 
-//            try {
-//                TimeUnit.SECONDS.sleep(0);
-//            } catch (InterruptedException e) { e.printStackTrace();Log.e(TAG,"InteruptExc"+e);}
+            try {
+                TimeUnit.SECONDS.sleep(20);
+            } catch (InterruptedException e) { e.printStackTrace();Log.e(TAG,"InteruptExc"+e);}
         }
 
         return null;

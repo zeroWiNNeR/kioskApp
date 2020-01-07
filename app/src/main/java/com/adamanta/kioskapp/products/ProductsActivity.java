@@ -262,6 +262,7 @@ public class ProductsActivity extends AppCompatActivity implements Postman, Prod
         final RecyclerView.ItemAnimator itemAnimator = new DefaultItemAnimator();
         categoriesRecyclerView.setItemAnimator(itemAnimator);
     }
+
     public void createProductsRVAdapter(List<ProductsList> products){
         final RecyclerView productsRecyclerView = findViewById(R.id.products_rv);
         productsRecyclerView.setHasFixedSize(false);
