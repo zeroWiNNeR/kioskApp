@@ -8,6 +8,7 @@ import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,26 +16,30 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.preference.PreferenceManager;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-
 import com.adamanta.kioskapp.favorites.FavoritesFragment;
 import com.adamanta.kioskapp.favorites.FavoritesSet;
 import com.adamanta.kioskapp.productImagesFragment.ProductImagesSet;
 import com.adamanta.kioskapp.products.ProductsActivity;
 import com.adamanta.kioskapp.products.fragments.ProductsCartFragment;
 import com.adamanta.kioskapp.products.interfaces.Postman;
+import com.adamanta.kioskapp.products.interfaces.UIController;
 import com.adamanta.kioskapp.products.utils.Utils;
 import com.adamanta.kioskapp.settings.SettingsActivity;
 import com.adamanta.kioskapp.threads.CheckVersionTask;
 import com.adamanta.kioskapp.threads.CheckVersionTask2;
-import com.adamanta.kioskapp.threads.ServerPollingTask;
+import com.adamanta.kioskapp.threads.TimeRunner;
 
-public class MainActivity extends AppCompatActivity implements Postman, FavoritesSet, ProductImagesSet {
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.util.Date;
+
+public class MainActivity extends AppCompatActivity implements Postman, FavoritesSet, ProductImagesSet, UIController {
     private final String TAG = this.getClass().getSimpleName();
     Context context;
     Intent intent;
+
+    private TextView currentTimeTV;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,11 +47,11 @@ public class MainActivity extends AppCompatActivity implements Postman, Favorite
         //checkTheme();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        //serverSocketThread = new ServerSocketThread();
-        //serverSocketThread.start();
-
         Log.e(TAG, "MainActivity");
+
+        Runnable runnable = new TimeRunner(this);
+        Thread connectionTestThread= new Thread(runnable);
+        connectionTestThread.start();
     }
 
 
@@ -102,7 +107,6 @@ public class MainActivity extends AppCompatActivity implements Postman, Favorite
                     checkVersionTask2.execute();
                 }
                 break;
-
 
             default:
                 break;
@@ -184,13 +188,32 @@ public class MainActivity extends AppCompatActivity implements Postman, Favorite
             fragment.ftr(path, productName);
         }
     }
+
     @Override
-    public void productImagesFragmentClose(){
+    public void productImagesFragmentClose() {
         FavoritesFragment fragment = (FavoritesFragment)getSupportFragmentManager()
                 .findFragmentByTag("favoritesFragment");
         if (fragment != null) {
             fragment.closeProductsImagesFragment();
         }
+    }
+
+    @Override
+    public void updateUI(boolean onlineStatus) {
+        runOnUiThread(new Runnable() {
+            public void run() {
+                try {
+                    currentTimeTV = findViewById(R.id.current_time_tv);
+                    Date dt = new Date();
+                    int hours = dt.getHours();
+                    int minutes = dt.getMinutes();
+                    String curTime = hours + ":" + minutes;
+                    currentTimeTV.setText(curTime);
+                } catch (Exception e) {
+
+                }
+            }
+        });
     }
     //************* Interfaces ***********************
 
@@ -204,60 +227,5 @@ public class MainActivity extends AppCompatActivity implements Postman, Favorite
             catch (IOException e) { e.printStackTrace(); }
         }
     }*/
-
-//    public class ServerSocketThread extends Thread {
-//        @Override
-//        public void run() {
-//            Socket socket = null;
-//            try {
-//                serverSocket = new ServerSocket(SocketServerPORT);
-//                while (true) {
-//                    socket = serverSocket.accept();
-//                    FileTxThread fileTxThread = new FileTxThread(socket);
-//                    fileTxThread.start();
-//                }
-//            }
-//            catch (IOException e) {TODO Auto-generated catch blocke.printStackTrace(); }
-//            finally {
-//                if (socket != null) {
-//                    try {
-//                        socket.close();
-//                    }
-//                    catch (IOException e) { e.printStackTrace(); }
-//                }
-//            }
-//        }
-//    }
-//
-//    public class FileTxThread extends Thread {
-//        Socket socket;
-//        FileTxThread(Socket socket){
-//            this.socket= socket;
-//        }
-//        @Override
-//        public void run() {
-//            File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath()
-//                    + "/Retail/", "избранное");
-//            byte[] bytes = new byte[(int) file.length()];
-//            BufferedInputStream bis;
-//            try {
-//                bis = new BufferedInputStream(new FileInputStream(file));
-//                bis.read(bytes, 0, bytes.length);
-//                OutputStream os = socket.getOutputStream();
-//                os.write(bytes, 0, bytes.length);
-//                os.flush();
-//                socket.close();
-//            }
-//            catch (IOException e) { TODO Auto-generated catch block e.printStackTrace(); }
-//            finally {
-//                try {
-//                    socket.close();
-//                }
-//                catch (IOException e) { e.printStackTrace(); }
-//            }
-//
-//        }
-//    }
-
 
 }

@@ -143,5 +143,15 @@
         app:layout_constraintStart_toStartOf="@+id/address_tv"
         app:layout_constraintTop_toBottomOf="@+id/house_et" />
 
+    <Button
+        android:id="@+id/getproductsupdate_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="20dp"
+        android:text="Получить обновление списка"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

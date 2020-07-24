@@ -7,6 +7,9 @@ import android.database.Cursor;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.adamanta.kioskapp.settings.utils.SettingsDBHelper;
+import com.adamanta.kioskapp.utils.Constants;
+
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -18,7 +21,6 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import com.adamanta.kioskapp.settings.utils.SettingsDBHelper;
 
 public class ServerPollingTask extends AsyncTask<String, Integer, Void> {
 
@@ -40,8 +42,8 @@ public class ServerPollingTask extends AsyncTask<String, Integer, Void> {
     private boolean stop = false;
 
     // получаем ссылку на MainActivity
-    public void link(Activity act, Context context) {
-        this.activity = act;
+    public void link(Activity activity, Context context) {
+        this.activity = activity;
         this.context = context;
     }
     // обнуляем ссылку
@@ -59,20 +61,20 @@ public class ServerPollingTask extends AsyncTask<String, Integer, Void> {
             Log.e(TAG, "Context error" );
         } else {
             mDatabaseHelper = new SettingsDBHelper(context);
-            try{
+            try {
                 Cursor data = mDatabaseHelper.getRowsFromCOL3();
                 if (data!=null && data.getCount() > 0){
-                    if(data.moveToFirst()){
+                    if (data.moveToFirst()){
                         int i=0;
-                        while(data.moveToNext()){
+                        while (data.moveToNext()) {
                             i++;
-                            if(i==1)
+                            if (i==1)
                                 dbId = data.getString(0);
-                            if(i==2)
+                            if (i==2)
                                 contractId = data.getString(0);
-                            if(i==7)
+                            if (i==7)
                                 imei = data.getString(0);
-                            if(i==8)
+                            if (i==8)
                                 androidId = data.getString(0);
                         }
                     }
@@ -86,17 +88,15 @@ public class ServerPollingTask extends AsyncTask<String, Integer, Void> {
 
     @Override
     protected Void doInBackground(String... params) {
+        Log.e(TAG, "ServerPollingTask started");
         while (!stop) {
             try {
-                String url = "http://94.50.162.187:45000/tablet" + "/" + dbId;
-
+                String url = "http://" + Constants.SERVER_IP + ":" + Constants.SERVER_PORT + "/tablet" + "/" + dbId;
                 final MediaType JSON = MediaType.get("application/json; charset=utf-8");
                 JSONObject jsonObject = new JSONObject();
                 String json = String.valueOf(jsonObject);
                 jsonObject.put("1", "1");
-
                 RequestBody body = RequestBody.Companion.create(json, JSON);
-
                 OkHttpClient client = new OkHttpClient();
                 Request request = new Request.Builder()
                         .url(url)

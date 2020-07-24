@@ -1,6 +1,4 @@
 package com.adamanta.kioskapp.products.adapters;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.res.ColorStateList;
 import android.graphics.Color;
@@ -9,9 +7,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.adamanta.kioskapp.R;
 import com.adamanta.kioskapp.products.ProductsActivity;
 import com.adamanta.kioskapp.products.models.ProductsList;
-import com.adamanta.kioskapp.R;
 
 import java.util.List;
 
@@ -20,7 +21,7 @@ public class ProductsRVAdapter extends RecyclerView.Adapter<ProductsRVAdapter.Vi
 
     private List<ProductsList> products;
 
-    private int positionNumber =1000 ;
+    private int positionNumber = 1000 ;
     private boolean isItFirstCreate = true;
 
     public ProductsRVAdapter(List<ProductsList> products) { this.products = products; }

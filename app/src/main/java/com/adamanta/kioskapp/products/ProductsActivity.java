@@ -1,10 +1,9 @@
 package com.adamanta.kioskapp.products;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -16,11 +15,26 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.adamanta.kioskapp.MainActivity;
+import com.adamanta.kioskapp.R;
+import com.adamanta.kioskapp.productImagesFragment.ProductImagesFragment;
+import com.adamanta.kioskapp.productImagesFragment.ProductImagesSet;
+import com.adamanta.kioskapp.products.adapters.CategoriesRVAdapter;
+import com.adamanta.kioskapp.products.adapters.ProductsRVAdapter;
+import com.adamanta.kioskapp.products.fragments.ProductsCartFragment;
+import com.adamanta.kioskapp.products.interfaces.Postman;
+import com.adamanta.kioskapp.products.models.CategoriesList;
+import com.adamanta.kioskapp.products.models.ProductsList;
+import com.adamanta.kioskapp.products.utils.ProductsCategoriesDbHelper;
+import com.adamanta.kioskapp.products.utils.Utils;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -30,38 +44,26 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.adamanta.kioskapp.productImagesFragment.ProductImagesFragment;
-import com.adamanta.kioskapp.productImagesFragment.ProductImagesSet;
-import com.adamanta.kioskapp.products.interfaces.Postman;
-import com.adamanta.kioskapp.products.utils.Utils;
-import com.adamanta.kioskapp.products.adapters.CategoriesRVAdapter;
-import com.adamanta.kioskapp.products.adapters.ProductsRVAdapter;
-import com.adamanta.kioskapp.MainActivity;
-import com.adamanta.kioskapp.products.fragments.ProductsCartFragment;
-import com.adamanta.kioskapp.products.models.ProductsList;
-import com.adamanta.kioskapp.R;
-import com.adamanta.kioskapp.settings.AppSettings;
-import com.adamanta.kioskapp.products.models.CategoriesList;
-
 public class ProductsActivity extends AppCompatActivity implements Postman, ProductImagesSet {
     private final String TAG = this.getClass().getSimpleName();
-    final AppSettings appSettings = new AppSettings();
+    private ProductsCategoriesDbHelper productsCategoriesDBHelper;
+    public static String directory = "";
 
-    ImageView productsColumnImgV;
-    ImageView productMainImgV;
-    ImageView addToFavoritesImgB;
-    TextView productNameTV;
-    TextView manufacturerTV;            //производитель
-    TextView vendorcodeTV;              //артикул
-    TextView barcodeTV;                 //штрихкод
-    TextView priceProductTV;            //цена
-    TextView measureProductTV;          // чем измеряется
-    TextView weightTV;                  //кол-во
-    ImageButton removeProductImgB;
-    TextView countProductTV;
-    ImageButton addProductImgB;
+    ImageView productsColumnImgV,
+            productMainImgV,
+            addToFavoritesImgB;
+    TextView productNameTV,
+            manufacturerTV,            //производитель
+            vendorcodeTV,              //артикул
+            barcodeTV,                 //штрихкод
+            priceProductTV,            //цена
+            measureProductTV,          // чем измеряется
+            weightTV,                  //кол-во
+            countProductTV;
+    ImageButton removeProductImgB,
+            addProductImgB,
+            showCartButton;
     Button addProductToCartB;
-    ImageButton showCartButton;
 
     String productsDir = "";
     String productPathToFragments = "";
@@ -79,7 +81,7 @@ public class ProductsActivity extends AppCompatActivity implements Postman, Prod
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_products);
-        appSettings.setDIR_SD("Retail/ProductsActivity/категории/");
+        ProductsActivity.directory = "Retail/ProductsActivity/категории/";
 
         productsColumnImgV = findViewById(R.id.productscolumn_imgv);
         productMainImgV = findViewById(R.id.product_imgv);
@@ -99,6 +101,7 @@ public class ProductsActivity extends AppCompatActivity implements Postman, Prod
 
         Log.e(TAG, "ProductsActivity loading successful");
 
+        productsCategoriesDBHelper = new ProductsCategoriesDbHelper(this);
         createCategoriesRVAdapter(categoriesList);
     }
 
@@ -199,8 +202,7 @@ public class ProductsActivity extends AppCompatActivity implements Postman, Prod
             int categoryLevel = categoriesRVAdapter.categoryLevel(0);
             String folder = categoriesRVAdapter.prevFolderPath(categoryLevel);
             categoriesRVAdapter.categoryLevel(-1);
-            //Log.e(TAG, "Возврат к предыдущему каталогу:" + folder);
-            appSettings.setDIR_SD(folder);
+            ProductsActivity.directory = folder;
             //categoriesList.clear();
             categoriesRVAdapter.refreshProdActivityCatRV();
             //productsList.clear();
@@ -230,10 +232,9 @@ public class ProductsActivity extends AppCompatActivity implements Postman, Prod
             Log.e(TAG, "Память не доступна: " + Environment.getExternalStorageState());
             return;
         }
-        //Log.e(TAG, "Считывание файла с категориями происходит из: " + appSettings.getDIR_SD());
         try {
-            File sdFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/"
-                    +appSettings.getDIR_SD()+"/", "содержание");
+            /*File sdFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/"
+                    + ProductsActivity.directory +"/", "содержание");
             BufferedReader br = new BufferedReader(new FileReader(sdFile), 100);
             String categoryName, buttonColor, textColor;
             int number = 0;
@@ -248,11 +249,23 @@ public class ProductsActivity extends AppCompatActivity implements Postman, Prod
                     categories.add(new CategoriesList(number, categoryName, buttonColor, textColor));
                 }
             }
-            br.close();
+            br.close();*/
+
+            int number = 0;
+            Cursor data = productsCategoriesDBHelper.getWithParent("main");
+            while(data.moveToNext()){
+                categories.add(new CategoriesList(
+                        number,
+                        data.getString(1),
+                        data.getString(2),
+                        data.getString(3)
+                ));
+                number++;
+            }
+            data.close();
+
         }
-        catch(FileNotFoundException e){ e.printStackTrace();Log.e(TAG,"FileNotFoundEx= "+e); }
-        catch (IOException e) { e.printStackTrace(); Log.e(TAG,"IOException= " + e); }
-        //Log.e(TAG, "Эти записи внесены в список адаптера, создан список catRV");
+        catch(Exception e) { e.printStackTrace();Log.e( TAG,"Exc= "+e ); }
 
         final RecyclerView categoriesRecyclerView = findViewById(R.id.categories_rv);
         categoriesRecyclerView.setHasFixedSize(false);
