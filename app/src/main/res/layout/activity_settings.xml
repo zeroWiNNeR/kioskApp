@@ -87,9 +87,9 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="number"
-        android:text="Номер договора"
         app:layout_constraintStart_toStartOf="@+id/contract_tv"
-        app:layout_constraintTop_toBottomOf="@+id/contract_tv" />
+        app:layout_constraintTop_toBottomOf="@+id/contract_tv"
+        android:hint="Номер договора" />
 
     <TextView
         android:id="@+id/address_tv"
@@ -109,7 +109,7 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="textPersonName"
-        android:text="Город"
+        android:hint="Город"
         app:layout_constraintStart_toStartOf="@+id/address_tv"
         app:layout_constraintTop_toBottomOf="@+id/address_tv" />
 
@@ -119,7 +119,7 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="textPersonName"
-        android:text="Улица"
+        android:hint="Улица"
         app:layout_constraintStart_toStartOf="@+id/address_tv"
         app:layout_constraintTop_toBottomOf="@+id/city_et" />
 
@@ -129,7 +129,7 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="textPersonName"
-        android:text="Дом"
+        android:hint="Дом"
         app:layout_constraintStart_toStartOf="@+id/address_tv"
         app:layout_constraintTop_toBottomOf="@+id/street_et" />
 
@@ -139,7 +139,7 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="textPersonName"
-        android:text="Квартира"
+        android:hint="Квартира"
         app:layout_constraintStart_toStartOf="@+id/address_tv"
         app:layout_constraintTop_toBottomOf="@+id/house_et" />
 

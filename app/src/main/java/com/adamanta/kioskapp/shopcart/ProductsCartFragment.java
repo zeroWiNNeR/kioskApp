@@ -1,4 +1,5 @@
-package com.adamanta.kioskapp.products.fragments;
+package com.adamanta.kioskapp.shopcart;
+
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -15,17 +16,15 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.adamanta.kioskapp.R;
+import com.adamanta.kioskapp.products.utils.Utils;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.adamanta.kioskapp.products.adapters.CartRVAdapter;
-import com.adamanta.kioskapp.products.models.CartList;
-import com.adamanta.kioskapp.products.utils.Utils;
-import com.adamanta.kioskapp.R;
 
 public class ProductsCartFragment extends Fragment implements View.OnClickListener {
     private View v;

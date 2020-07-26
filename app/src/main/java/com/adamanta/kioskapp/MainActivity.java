@@ -2,9 +2,8 @@ package com.adamanta.kioskapp;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -14,32 +13,24 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.preference.PreferenceManager;
 
 import com.adamanta.kioskapp.favorites.FavoritesFragment;
 import com.adamanta.kioskapp.favorites.FavoritesSet;
 import com.adamanta.kioskapp.productImagesFragment.ProductImagesSet;
 import com.adamanta.kioskapp.products.ProductsActivity;
-import com.adamanta.kioskapp.products.fragments.ProductsCartFragment;
 import com.adamanta.kioskapp.products.interfaces.Postman;
-import com.adamanta.kioskapp.products.interfaces.UIController;
-import com.adamanta.kioskapp.products.utils.Utils;
 import com.adamanta.kioskapp.settings.SettingsActivity;
+import com.adamanta.kioskapp.shopcart.ProductsCartFragment;
 import com.adamanta.kioskapp.threads.CheckVersionTask;
 import com.adamanta.kioskapp.threads.CheckVersionTask2;
-import com.adamanta.kioskapp.threads.TimeRunner;
+import com.adamanta.kioskapp.threads.UIBarControllerThread;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.util.Date;
+import java.util.Set;
 
-public class MainActivity extends AppCompatActivity implements Postman, FavoritesSet, ProductImagesSet, UIController {
+public class MainActivity extends AppCompatActivity implements Postman, FavoritesSet, ProductImagesSet, IMainActivity {
     private final String TAG = this.getClass().getSimpleName();
-    Context context;
-    Intent intent;
-
-    private TextView currentTimeTV;
+    UIBarControllerThread uiBarControllerThread;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,14 +40,34 @@ public class MainActivity extends AppCompatActivity implements Postman, Favorite
         setContentView(R.layout.activity_main);
         Log.e(TAG, "MainActivity");
 
-        Runnable runnable = new TimeRunner(this);
-        Thread connectionTestThread= new Thread(runnable);
-        connectionTestThread.start();
+        boolean isAliveUIBarControllerThread = false;
+        Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
+        for (Thread t : threadSet) {
+            if (t.getThreadGroup() == Thread.currentThread().getThreadGroup()) {
+                System.out.println("Thread: "+t+" : "+"state: "+t.getState());
+            }
+            if (t.getName().equals("UIBarControllerThread")) {
+                isAliveUIBarControllerThread = true;
+                uiBarControllerThread = (UIBarControllerThread) t;
+                uiBarControllerThread.link(this);
+                return;
+            }
+        }
+        if (!isAliveUIBarControllerThread) {
+            uiBarControllerThread = (UIBarControllerThread) getLastNonConfigurationInstance();
+            if (uiBarControllerThread == null) {
+                uiBarControllerThread = new UIBarControllerThread();
+                uiBarControllerThread.setName("UIBarControllerThread");
+                uiBarControllerThread.link(this);
+                uiBarControllerThread.start();
+            }
+        }
     }
-
 
     //***************************** Buttons *********************************
     public void onClick(@NonNull View v) {
+        Context context;
+        Intent intent;
         switch (v.getId()) {
             case R.id.ProductsButton:
                 context = v.getContext();
@@ -67,7 +78,7 @@ public class MainActivity extends AppCompatActivity implements Postman, Favorite
             case R.id.FavoritesButton:
                 Fragment favoritesFragment = FavoritesFragment.newInstance(123);
                 FragmentTransaction ftFavoritesFragment = getSupportFragmentManager().beginTransaction();
-                ftFavoritesFragment.replace(R.id.mainactivity_constraintlayout, favoritesFragment, "favoritesFragment");
+                ftFavoritesFragment.replace(R.id.mainactivity_fragment_layout, favoritesFragment, "favoritesFragment");
                 ftFavoritesFragment.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                 ftFavoritesFragment.addToBackStack(null);
                 ftFavoritesFragment.commit();
@@ -76,7 +87,7 @@ public class MainActivity extends AppCompatActivity implements Postman, Favorite
             case R.id.CartButton:
                 Fragment cartFragment = ProductsCartFragment.newInstance(123);
                 FragmentTransaction ftCartFragment = getSupportFragmentManager().beginTransaction();
-                ftCartFragment.replace(R.id.mainactivity_constraintlayout, cartFragment, "cartFragment");
+                ftCartFragment.replace(R.id.mainactivity_fragment_layout, cartFragment, "cartFragment");
                 ftCartFragment.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                 ftCartFragment.addToBackStack(null);
                 ftCartFragment.commit();
@@ -132,36 +143,36 @@ public class MainActivity extends AppCompatActivity implements Postman, Favorite
         }
     }
 
-    private void checkTheme() {
-        try {
-            File settingsFile = new File(
-                    Environment.getExternalStorageDirectory().getAbsolutePath() + "/Retail/",
-                    "settings");
-            int numberLines = Utils.getNumOfLinesInFile(settingsFile);
-            int lineNumber = 0;
-            for (int i = 0; i < numberLines; i++) {
-                if (lineNumber == 6) {
-                    BufferedReader br = new BufferedReader(new FileReader(settingsFile), 100);
-                    String[] sArr = br.readLine().split("=");
-                    if (sArr[1].contains("green")) {
-                        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-                        int theme = sp.getInt("THEME", R.style.AppTheme_greenNoActionBar);
-                        setTheme(theme);
-                    } else if (sArr[1].contains("blue")) {
-                        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-                        int theme = sp.getInt("THEME", R.style.AppTheme_blueNoActionBar);
-                        setTheme(theme);
-
-                    }
-                }
-                lineNumber++;
-            }
-        } catch (Exception e) { Log.e(TAG, "Exc= " + e);}
-    }
+//    private void checkTheme() {
+//        try {
+//            File settingsFile = new File(
+//                    Environment.getExternalStorageDirectory().getAbsolutePath() + "/Retail/",
+//                    "settings");
+//            int numberLines = Utils.getNumOfLinesInFile(settingsFile);
+//            int lineNumber = 0;
+//            for (int i = 0; i < numberLines; i++) {
+//                if (lineNumber == 6) {
+//                    BufferedReader br = new BufferedReader(new FileReader(settingsFile), 100);
+//                    String[] sArr = br.readLine().split("=");
+//                    if (sArr[1].contains("green")) {
+//                        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+//                        int theme = sp.getInt("THEME", R.style.AppTheme_greenNoActionBar);
+//                        setTheme(theme);
+//                    } else if (sArr[1].contains("blue")) {
+//                        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+//                        int theme = sp.getInt("THEME", R.style.AppTheme_blueNoActionBar);
+//                        setTheme(theme);
+//
+//                    }
+//                }
+//                lineNumber++;
+//            }
+//        } catch (IOException e) { Log.e(TAG, "Exc= " + e); }
+//
+//    }
     //************* UI ***********************
 
 
-    //************* Interfaces ***********************
     @Override
     public void calculation() {
         ProductsCartFragment fragment = (ProductsCartFragment)getSupportFragmentManager()
@@ -199,33 +210,41 @@ public class MainActivity extends AppCompatActivity implements Postman, Favorite
     }
 
     @Override
-    public void updateUI(boolean onlineStatus) {
+    public void updateUI(boolean isOnline) {
         runOnUiThread(new Runnable() {
             public void run() {
-                try {
-                    currentTimeTV = findViewById(R.id.current_time_tv);
-                    Date dt = new Date();
-                    int hours = dt.getHours();
-                    int minutes = dt.getMinutes();
-                    String curTime = hours + ":" + minutes;
-                    currentTimeTV.setText(curTime);
-                } catch (Exception e) {
-
+                Date dt = new Date();
+                int hours = dt.getHours();
+                int minutes = dt.getMinutes();
+                String curTime;
+                if (minutes >= 0 && minutes <= 9) {
+                    curTime = hours + ":0" + minutes;
+                } else {
+                    curTime = hours + ":" + minutes;
+                }
+                TextView currentTimeTV = findViewById(R.id.current_time_tv);
+                currentTimeTV.setText(curTime);
+                TextView currentOnlineStatus = findViewById(R.id.current_online_status_tv);
+                if (isOnline) {
+                    currentOnlineStatus.setText("ПОДКЛЮЧЕНО");
+                    currentOnlineStatus.setTextColor(Color.rgb(127, 255, 0));
+                } else {
+                    currentOnlineStatus.setText("ОТКЛЮЧЕНО");
+                    currentOnlineStatus.setTextColor(Color.rgb(255, 0, 0));
                 }
             }
         });
     }
-    //************* Interfaces ***********************
 
-    /*@Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (serverSocket != null) {
-            try {
-                serverSocket.close();
-            }
-            catch (IOException e) { e.printStackTrace(); }
-        }
-    }*/
+//    @Override
+//    protected void onDestroy() {
+//        super.onDestroy();
+//        if (serverSocket != null) {
+//            try {
+//                serverSocket.close();
+//            }
+//            catch (IOException e) { e.printStackTrace(); }
+//        }
+//    }
 
 }

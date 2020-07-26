@@ -29,12 +29,12 @@ import com.adamanta.kioskapp.productImagesFragment.ProductImagesFragment;
 import com.adamanta.kioskapp.productImagesFragment.ProductImagesSet;
 import com.adamanta.kioskapp.products.adapters.CategoriesRVAdapter;
 import com.adamanta.kioskapp.products.adapters.ProductsRVAdapter;
-import com.adamanta.kioskapp.products.fragments.ProductsCartFragment;
 import com.adamanta.kioskapp.products.interfaces.Postman;
 import com.adamanta.kioskapp.products.models.CategoriesList;
 import com.adamanta.kioskapp.products.models.ProductsList;
 import com.adamanta.kioskapp.products.utils.ProductsCategoriesDbHelper;
 import com.adamanta.kioskapp.products.utils.Utils;
+import com.adamanta.kioskapp.shopcart.ProductsCartFragment;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -391,7 +391,7 @@ public class ProductsActivity extends AppCompatActivity implements Postman, Prod
             }
             br3.close();
         }
-        catch(FileNotFoundException e){e.printStackTrace();Log.e(TAG,"FileNotFoundEx="+e); }
+        catch(FileNotFoundException e){ e.printStackTrace(); Log.e(TAG,"FileNotFoundEx="+e); }
         catch (IOException e) { e.printStackTrace(); Log.e(TAG, "IOException= " + e); }
         //---------------------------------------------------------------
         if (Utils.checkInFavorites(productName)) {

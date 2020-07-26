@@ -1,4 +1,4 @@
-package com.adamanta.kioskapp.products.models;
+package com.adamanta.kioskapp.shopcart;
 
 public class CartList{
 
