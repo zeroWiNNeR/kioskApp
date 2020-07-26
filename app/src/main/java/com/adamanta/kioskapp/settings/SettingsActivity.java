@@ -60,17 +60,9 @@ public class SettingsActivity extends AppCompatActivity implements ISettingsActi
         settingsDBHelper = new SettingsDBHelper(this);
 
         checkRegistration();
-
-        Log.e(TAG, "mac: " + getMacAddr());
-        Log.e(TAG, "imei: " + getImeiAddr());
-        Log.e(TAG, "androidId: " + getDeviceUniqueID(this));
-
-//        ServerPollingTask serverPollingTask; = (ServerPollingTask) getLastNonConfigurationInstance();
-//        if (serverPollingTask == null) {
-//            serverPollingTask = new ServerPollingTask();
-//            serverPollingTask.link(this, SettingsActivity.this);
-//            serverPollingTask.execute();
-//        }
+//        Log.e(TAG, "mac: " + getMacAddr());
+//        Log.e(TAG, "imei: " + getImeiAddr());
+//        Log.e(TAG, "androidId: " + getDeviceUniqueID(this));
     }
 
     //***************************** Buttons *********************************
@@ -216,17 +208,4 @@ public class SettingsActivity extends AppCompatActivity implements ISettingsActi
     public void showToastMessage(String message) {
         Toast.makeText(this.getApplicationContext(), message, Toast.LENGTH_SHORT).show();
     }
-
-//    @Override
-//    protected void onPause() {
-//        super.onPause();
-//        serverPollingTask.unLink();
-//    }
-//    @Override
-//    protected void onDestroy() {
-//        super.onDestroy();
-//        serverPollingTask.unLink();
-//        serverPollingTask = null;
-//    }
-
 }

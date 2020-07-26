@@ -25,7 +25,10 @@ import com.adamanta.kioskapp.threads.CheckVersionTask;
 import com.adamanta.kioskapp.threads.CheckVersionTask2;
 import com.adamanta.kioskapp.threads.UIBarControllerThread;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Set;
 
 public class MainActivity extends AppCompatActivity implements Postman, FavoritesSet, ProductImagesSet, IMainActivity {
@@ -213,15 +216,9 @@ public class MainActivity extends AppCompatActivity implements Postman, Favorite
     public void updateUI(boolean isOnline) {
         runOnUiThread(new Runnable() {
             public void run() {
-                Date dt = new Date();
-                int hours = dt.getHours();
-                int minutes = dt.getMinutes();
-                String curTime;
-                if (minutes >= 0 && minutes <= 9) {
-                    curTime = hours + ":0" + minutes;
-                } else {
-                    curTime = hours + ":" + minutes;
-                }
+                Date currentDate = new Date();
+                DateFormat timeFormat = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
+                String curTime = timeFormat.format(currentDate);
                 TextView currentTimeTV = findViewById(R.id.current_time_tv);
                 currentTimeTV.setText(curTime);
                 TextView currentOnlineStatus = findViewById(R.id.current_online_status_tv);
