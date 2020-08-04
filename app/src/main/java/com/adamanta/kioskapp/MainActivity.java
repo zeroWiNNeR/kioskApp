@@ -2,6 +2,7 @@ package com.adamanta.kioskapp;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,13 +17,11 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.adamanta.kioskapp.favorites.FavoritesFragment;
 import com.adamanta.kioskapp.favorites.FavoritesSet;
+import com.adamanta.kioskapp.product.ProductsFragment;
 import com.adamanta.kioskapp.productImagesFragment.ProductImagesSet;
-import com.adamanta.kioskapp.products.ProductsActivity;
 import com.adamanta.kioskapp.products.interfaces.Postman;
 import com.adamanta.kioskapp.settings.SettingsActivity;
 import com.adamanta.kioskapp.shopcart.ProductsCartFragment;
-import com.adamanta.kioskapp.threads.CheckVersionTask;
-import com.adamanta.kioskapp.threads.CheckVersionTask2;
 import com.adamanta.kioskapp.threads.UIBarControllerThread;
 
 import java.text.DateFormat;
@@ -37,7 +36,7 @@ public class MainActivity extends AppCompatActivity implements Postman, Favorite
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         //checkTheme();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -61,6 +60,7 @@ public class MainActivity extends AppCompatActivity implements Postman, Favorite
             if (uiBarControllerThread == null) {
                 uiBarControllerThread = new UIBarControllerThread();
                 uiBarControllerThread.setName("UIBarControllerThread");
+                uiBarControllerThread.setPriority(2);
                 uiBarControllerThread.link(this);
                 uiBarControllerThread.start();
             }
@@ -73,9 +73,15 @@ public class MainActivity extends AppCompatActivity implements Postman, Favorite
         Intent intent;
         switch (v.getId()) {
             case R.id.ProductsButton:
-                context = v.getContext();
-                intent = new Intent(context, ProductsActivity.class);
-                context.startActivity(intent);
+//                context = v.getContext();
+//                intent = new Intent(context, ProductsActivity.class);
+//                context.startActivity(intent);
+                Fragment productsFragment = ProductsFragment.newInstance(123);
+                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.replace(R.id.mainactivity_fragment_layout, productsFragment, "productsFragment");
+                fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
                 break;
 
             case R.id.FavoritesButton:
@@ -102,26 +108,6 @@ public class MainActivity extends AppCompatActivity implements Postman, Favorite
                 context.startActivity(intent);
                 break;
 
-            case R.id.CheckVersionButton:
-                context = v.getContext();
-                CheckVersionTask checkVersionTask = (CheckVersionTask) getLastNonConfigurationInstance();
-                if (checkVersionTask == null) {
-                    checkVersionTask = new CheckVersionTask();
-                    checkVersionTask.link(this, context);
-                    checkVersionTask.execute();
-                }
-                break;
-
-            case R.id.CheckVersionButton2:
-                context = v.getContext();
-                CheckVersionTask2 checkVersionTask2 = (CheckVersionTask2) getLastNonConfigurationInstance();
-                if (checkVersionTask2 == null) {
-                    checkVersionTask2 = new CheckVersionTask2();
-                    checkVersionTask2.link(this, context);
-                    checkVersionTask2.execute();
-                }
-                break;
-
             default:
                 break;
         }
@@ -132,10 +118,8 @@ public class MainActivity extends AppCompatActivity implements Postman, Favorite
     //************* UI ***********************
     @Override
     public void onAttachedToWindow() {
-        getWindow().addFlags(
-                WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
-        getWindow().addFlags(
-                WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
     }
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
@@ -217,7 +201,7 @@ public class MainActivity extends AppCompatActivity implements Postman, Favorite
         runOnUiThread(new Runnable() {
             public void run() {
                 Date currentDate = new Date();
-                DateFormat timeFormat = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
+                DateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
                 String curTime = timeFormat.format(currentDate);
                 TextView currentTimeTV = findViewById(R.id.current_time_tv);
                 currentTimeTV.setText(curTime);
@@ -226,7 +210,7 @@ public class MainActivity extends AppCompatActivity implements Postman, Favorite
                     currentOnlineStatus.setText("ПОДКЛЮЧЕНО");
                     currentOnlineStatus.setTextColor(Color.rgb(127, 255, 0));
                 } else {
-                    currentOnlineStatus.setText("ОТКЛЮЧЕНО");
+                    currentOnlineStatus.setText("НЕТ СОЕДИНЕНИЯ");
                     currentOnlineStatus.setTextColor(Color.rgb(255, 0, 0));
                 }
             }

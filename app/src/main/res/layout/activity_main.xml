@@ -23,12 +23,15 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:layout_marginEnd="50dp"
+        android:focusable="auto"
+        android:hint="Поиск..."
+        android:inputType="textMultiLine"
+        android:background="@android:color/transparent"
         android:textSize="30sp"
         app:layout_constraintBottom_toTopOf="@+id/mainactivity_fragment_layout"
         app:layout_constraintEnd_toStartOf="@+id/current_online_status_tv"
         app:layout_constraintStart_toEndOf="@+id/search_iv"
-        app:layout_constraintTop_toTopOf="parent"
-        android:hint="Введите текст..." />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/current_online_status_tv"
@@ -36,8 +39,8 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="20dp"
         android:enabled="false"
-        android:text="ОТКЛЮЧЕНО"
-        android:textSize="30sp"
+        android:text="НЕТ СОЕДИНЕНИЯ"
+        android:textSize="14sp"
         app:layout_constraintBottom_toTopOf="@+id/mainactivity_fragment_layout"
         app:layout_constraintEnd_toStartOf="@+id/current_time_tv"
         app:layout_constraintTop_toTopOf="parent" />
@@ -46,9 +49,9 @@
         android:id="@+id/current_time_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="50dp"
+        android:layout_marginEnd="10dp"
         android:text="--:--"
-        android:textSize="30sp"
+        android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@+id/mainactivity_fragment_layout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -57,7 +60,7 @@
         android:id="@+id/br_imgv"
         android:layout_width="0dp"
         android:layout_height="1dp"
-        android:layout_marginTop="69dp"
+        android:layout_marginTop="49dp"
         android:background="#2F000000"
         android:contentDescription="@string/app_name"
         app:layout_constraintEnd_toEndOf="parent"
@@ -69,31 +72,11 @@
         android:id="@+id/mainactivity_fragment_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="70dp"
+        android:layout_marginTop="50dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
-
-        <Button
-            android:id="@+id/CheckVersionButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="100dp"
-            android:onClick="onClick"
-            android:text="CheckVersion"
-            app:layout_constraintBottom_toBottomOf="@+id/CartButton"
-            app:layout_constraintStart_toEndOf="@+id/CartButton" />
-
-        <Button
-            android:id="@+id/CheckVersionButton2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="100dp"
-            android:onClick="onClick"
-            android:text="CheckVersion2"
-            app:layout_constraintBottom_toBottomOf="@+id/SettingsButton"
-            app:layout_constraintEnd_toStartOf="@+id/SettingsButton" />
 
         <ImageButton
             android:id="@+id/SettingsButton"
@@ -126,7 +109,7 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginStart="50dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="50dp"
             android:layout_marginEnd="50dp"
             android:layout_marginBottom="200dp"
             android:gravity="center|top"

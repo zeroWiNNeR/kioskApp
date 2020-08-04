@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/settingsactivity_mainlayout"
+    android:id="@+id/settings_activity_mainlayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFFFFF"
@@ -11,7 +11,7 @@
     tools:context=".settings.SettingsActivity">
 
     <ImageButton
-        android:id="@+id/MainMenuButton"
+        android:id="@+id/activity_settings_main_menu_imgbtn"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_marginStart="10dp"
@@ -24,7 +24,7 @@
         app:srcCompat="@android:drawable/ic_menu_sort_by_size" />
 
     <ImageButton
-        android:id="@+id/SaveButton"
+        android:id="@+id/activity_settings_save_imgbtn"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_marginStart="80dp"
@@ -36,7 +36,7 @@
         app:srcCompat="@android:drawable/ic_menu_save" />
 
     <TextView
-        android:id="@+id/theme_tv"
+        android:id="@+id/activity_settings_theme_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="50dp"
@@ -48,29 +48,29 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Switch
-        android:id="@+id/greentheme_sw"
+        android:id="@+id/activity_settings_greentheme_sw"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:text="Зелёный:  "
         android:textColor="#8BC34A"
         android:textSize="24sp"
-        app:layout_constraintStart_toStartOf="@+id/theme_tv"
-        app:layout_constraintTop_toBottomOf="@+id/theme_tv" />
+        app:layout_constraintStart_toStartOf="@+id/activity_settings_theme_tv"
+        app:layout_constraintTop_toBottomOf="@+id/activity_settings_theme_tv" />
 
     <Switch
-        android:id="@+id/bluetheme_sw"
+        android:id="@+id/activity_settings_bluetheme_sw"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:text="Голубой:   "
         android:textColor="#2196F3"
         android:textSize="24sp"
-        app:layout_constraintStart_toStartOf="@+id/theme_tv"
-        app:layout_constraintTop_toBottomOf="@+id/greentheme_sw" />
+        app:layout_constraintStart_toStartOf="@+id/activity_settings_theme_tv"
+        app:layout_constraintTop_toBottomOf="@+id/activity_settings_greentheme_sw" />
 
     <TextView
-        android:id="@+id/contract_tv"
+        android:id="@+id/activity_settings_contract_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="100dp"
@@ -78,21 +78,21 @@
         android:text="Договор:"
         android:textColor="#C6000000"
         android:textSize="24sp"
-        app:layout_constraintStart_toEndOf="@+id/theme_tv"
+        app:layout_constraintStart_toEndOf="@+id/activity_settings_theme_tv"
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/contractid_et"
+        android:id="@+id/activity_settings_contractid_et"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="number"
-        app:layout_constraintStart_toStartOf="@+id/contract_tv"
-        app:layout_constraintTop_toBottomOf="@+id/contract_tv"
+        app:layout_constraintStart_toStartOf="@+id/activity_settings_contract_tv"
+        app:layout_constraintTop_toBottomOf="@+id/activity_settings_contract_tv"
         android:hint="Номер договора" />
 
     <TextView
-        android:id="@+id/address_tv"
+        android:id="@+id/activity_settings_address_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="150dp"
@@ -100,55 +100,56 @@
         android:text="Адрес:"
         android:textColor="#C6000000"
         android:textSize="24sp"
-        app:layout_constraintStart_toEndOf="@+id/contract_tv"
+        app:layout_constraintStart_toEndOf="@+id/activity_settings_contract_tv"
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/city_et"
+        android:id="@+id/activity_settings_city_et"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="textPersonName"
         android:hint="Город"
-        app:layout_constraintStart_toStartOf="@+id/address_tv"
-        app:layout_constraintTop_toBottomOf="@+id/address_tv" />
+        app:layout_constraintStart_toStartOf="@+id/activity_settings_address_tv"
+        app:layout_constraintTop_toBottomOf="@+id/activity_settings_address_tv" />
 
     <EditText
-        android:id="@+id/street_et"
+        android:id="@+id/activity_settings_street_et"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="textPersonName"
         android:hint="Улица"
-        app:layout_constraintStart_toStartOf="@+id/address_tv"
-        app:layout_constraintTop_toBottomOf="@+id/city_et" />
+        app:layout_constraintStart_toStartOf="@+id/activity_settings_address_tv"
+        app:layout_constraintTop_toBottomOf="@+id/activity_settings_city_et" />
 
     <EditText
-        android:id="@+id/house_et"
+        android:id="@+id/activity_settings_house_et"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="textPersonName"
         android:hint="Дом"
-        app:layout_constraintStart_toStartOf="@+id/address_tv"
-        app:layout_constraintTop_toBottomOf="@+id/street_et" />
+        app:layout_constraintStart_toStartOf="@+id/activity_settings_address_tv"
+        app:layout_constraintTop_toBottomOf="@+id/activity_settings_street_et" />
 
     <EditText
-        android:id="@+id/apartment_et"
+        android:id="@+id/activity_settings_apartment_et"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="textPersonName"
         android:hint="Квартира"
-        app:layout_constraintStart_toStartOf="@+id/address_tv"
-        app:layout_constraintTop_toBottomOf="@+id/house_et" />
+        app:layout_constraintStart_toStartOf="@+id/activity_settings_address_tv"
+        app:layout_constraintTop_toBottomOf="@+id/activity_settings_house_et" />
 
     <Button
-        android:id="@+id/getproductsupdate_btn"
+        android:id="@+id/activity_settings_getproductsupdate_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
         android:layout_marginBottom="20dp"
+        android:onClick="onClick"
         android:text="Получить обновление списка"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

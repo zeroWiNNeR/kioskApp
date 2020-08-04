@@ -2,7 +2,6 @@ package com.adamanta.kioskapp.threads;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.database.Cursor;
 import android.util.Log;
 
 import com.adamanta.kioskapp.IMainActivity;
@@ -51,49 +50,42 @@ public class UIBarControllerThread extends Thread {
                         Log.e(TAG, "Context error" );
                     } else {
                         SettingsDBHelper settingsDBHelper = new SettingsDBHelper(context);
-                        Cursor data = settingsDBHelper.getRowsFromCOL3();
-                        if (data!=null && data.getCount() > 0){
-                            if (data.moveToFirst()){
-                                int i=0;
-                                while (data.moveToNext()) {
-                                    i++;
-                                    if (i==1) dbId = data.getString(0);
-                                }
-                            }
-                            data.close();
-                        } else {
-                            Log.e(TAG, "SettingsDB reading error!");
-                        }
+                        dbId = settingsDBHelper.getStringValueByArgument("dbId");
                     }
 
-                    try {
-                        String url = "http://"+ Constants.SERVER_IP+":"+Constants.SERVER_PORT+"/tablet"+"/"+dbId;
-                        final MediaType JSON = MediaType.get("application/json; charset=utf-8");
-                        JSONObject jsonObject = new JSONObject();
-                        jsonObject.put("1", "1");
-                        String json = String.valueOf(jsonObject);
-                        RequestBody body = RequestBody.Companion.create(json, JSON);
-                        OkHttpClient client = new OkHttpClient();
-                        Request request = new Request.Builder()
-                                .url(url)
-                                .patch(body)
-                                .build();
-                        try (Response response = client.newCall(request).execute()) {
-                            if (!response.isSuccessful())
-                                throw new IOException("Unexpected code " + response);
-                            String responseText = Objects.requireNonNull(response.body()).string();
-                            JSONObject jsonResponseObject = new JSONObject(responseText);
-                            String status = jsonResponseObject.get("status").toString();
-
-                            isOnline = status.equals("OK");
-                        }
-
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                    if (dbId.equals("null")) {
                         isOnline = false;
-                        Log.e(TAG,"Exception: " + e);
+                    } else {
+                        try {
+                            String url = "http://"+ Constants.SERVER_IP+":"+Constants.SERVER_PORT+"/tablet"+"/"+dbId;
+                            final MediaType JSON = MediaType.get("application/json; charset=utf-8");
+                            JSONObject jsonObject = new JSONObject();
+                            jsonObject.put("1", "1");
+                            String json = String.valueOf(jsonObject);
+                            RequestBody body = RequestBody.Companion.create(json, JSON);
+                            OkHttpClient client = new OkHttpClient();
+                            Request request = new Request.Builder()
+                                    .url(url)
+                                    .patch(body)
+                                    .build();
+                            try (Response response = client.newCall(request).execute()) {
+                                if (!response.isSuccessful())
+                                    throw new IOException("Unexpected code " + response);
+                                String responseText = Objects.requireNonNull(response.body()).string();
+                                JSONObject jsonResponseObject = new JSONObject(responseText);
+                                String status = jsonResponseObject.get("status").toString();
+
+                                isOnline = status.equals("OK");
+                            }
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            isOnline = false;
+                            Log.e(TAG,"Exception: " + e);
+                        }
+
+                        lastPollingTime = now;
                     }
-                    lastPollingTime = now;
                 }
                 ((IMainActivity) context).updateUI(isOnline);
                 Thread.sleep(1000);

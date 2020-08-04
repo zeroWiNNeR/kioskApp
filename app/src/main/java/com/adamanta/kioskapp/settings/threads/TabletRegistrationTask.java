@@ -119,6 +119,7 @@ public class TabletRegistrationTask extends AsyncTask<String, String, String> {
 
                     SettingsDBHelper settingsDBHelper = new SettingsDBHelper(context);
                     settingsDBHelper.addData("saved", "true");
+                    settingsDBHelper.addData("lastAppliedChangeId", "-1");
                     settingsDBHelper.addData("dbId", String.valueOf(dbId));
                     settingsDBHelper.addData("contractId", contractId);
                     settingsDBHelper.addData("imei", imei);

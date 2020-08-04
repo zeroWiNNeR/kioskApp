@@ -57,10 +57,9 @@ public class ProductsCartFragment extends Fragment implements View.OnClickListen
                              @Nullable Bundle savedInstanceState) {
         v = inflater.inflate(R.layout.prodactivity_cart_fragment, container, false);
 
-        try{
+        try {
             File sdFileCart = new File(Environment.getExternalStorageDirectory().getAbsolutePath()
                     + "/" + "Retail/", "корзина");
-
             BufferedReader br = new BufferedReader(new FileReader(sdFileCart), 100);
             if (br.readLine() == null){ Utils.writeStringToFile(sdFileCart, " ", false); }
             br.close();
@@ -100,9 +99,10 @@ public class ProductsCartFragment extends Fragment implements View.OnClickListen
             }
             totalpriceTV = v.findViewById(R.id.totalprice_tv);
             totalpriceTV.setText(s);
+        } catch(IOException e) {
+            e.printStackTrace();
+            Log.e(TAG, "IOException= " + e);
         }
-        catch(IOException e) { e.printStackTrace(); Log.e(TAG, "IOException= " + e); }
-
 
         //****************************** Buttons ***********************************
         ImageButton closeFragmentBtn = v.findViewById(R.id.closefragment_btn);

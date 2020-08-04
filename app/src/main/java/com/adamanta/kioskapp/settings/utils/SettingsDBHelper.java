@@ -54,10 +54,10 @@ public class SettingsDBHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * Returns all the data from database
-     * @return
+     * Returns value by argument from db
+     * @return data
      */
-    public Cursor getValue(String argument){
+    public Cursor getValue(String argument) {
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "SELECT " + COL3 + " FROM " + TABLE_NAME +
                 " WHERE " + COL2 + " = '" + argument + "'";
@@ -66,10 +66,71 @@ public class SettingsDBHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * Returns all the data from database
-     * @return
+     * Returns value by argument from db
+     * @return long value - значение lastAppliedChangeId из БД
      */
-    public Cursor getRowsFromCOL3(){
+    public long getLastAppliedChangeId() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT " + COL3 + " FROM " + TABLE_NAME +
+                " WHERE " + COL2 + " = 'lastAppliedChangeId'";
+        Cursor data = db.rawQuery(query, null);
+        if (data==null || data.getCount()==0) {
+            return 0L;
+        }
+        data.moveToFirst();
+        long value = data.getLong(0);
+        data.close();
+        return value;
+    }
+
+    /**
+     * Returns value by argument from db
+     * @return String value
+     */
+    public String getStringValueByArgument(String argument) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT " + COL3 + " FROM " + TABLE_NAME +
+                " WHERE " + COL2 + " = '" + argument + "'";
+        Cursor data = db.rawQuery(query, null);
+        //этот вариант также работает, нативный удобнее
+//        Cursor data = db.query(
+//                TABLE_NAME,
+//                new String[] {"argument", "value" },
+//                "argument = ?", new String[] {"lastAppliedChangeID"},
+//                null, null, null
+//                );
+        if (data==null || data.getCount()==0) {
+            if (argument.equals("lastAppliedChangeId")){
+                return "0";
+            } else {
+                return "null";
+            }
+        }
+        data.moveToFirst();
+        String value = data.getString(0);
+        data.close();
+        return value;
+    }
+
+    /**
+     * Returns all the data from database
+     * @param argument - меняемый параметр
+     * @param value - новое значение параметра
+     * @return result of setValue operation
+     */
+    public void setValue(String argument, String value) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "UPDATE " + TABLE_NAME +
+                " SET " + COL3 + " = '" + value + "'" +
+                " WHERE " + COL2 + " = '" + argument + "'";
+        db.execSQL(query);
+    }
+
+    /**
+     * Returns all the data from database
+     * @return data
+     */
+    public Cursor getRowsFromCOL3() {
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "SELECT " + COL3 + " FROM " + TABLE_NAME;
         Cursor data = db.rawQuery(query, null);
@@ -78,31 +139,28 @@ public class SettingsDBHelper extends SQLiteOpenHelper {
 
     /**
      * Returns only the ID that matches the name passed in
-     * @param argument
-     * @return
+     * @param argument - название аргумента
      */
-    public Cursor getID(String argument){
+    public Cursor getID(String argument) {
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "SELECT " + COL1 + " FROM " + TABLE_NAME +
                 " WHERE " + COL2 + " = '" + argument + "'";
-        Cursor data = db.rawQuery(query, null);
-        return data;
+        return db.rawQuery(query, null);
     }
 
 
     /**
-     * Updates the name field
-     * @param newValue
-     * @param id
-     * @param oldValue
+     * Updates the Value field
+     * @param id - id изменяемой строки в БД
+     * @param argument - изменяемый аргумент
+     * @param newValue - новое значение аргумента
      */
-    public void updateText(int id, String argument, String oldValue, String newValue){
+    public void updateRowField(int id, String argument, String newValue) {
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "UPDATE " + TABLE_NAME +
                 " SET " + COL3 + " = '" + newValue +
                 "' WHERE " + COL1 + " = '" + id + "'" +
-                " AND " + COL2 + " = '" + argument + "'" +
-                " AND " + COL3 + " = '" + oldValue + "'";
+                " AND " + COL2 + " = '" + argument + "'";
         Log.d(TAG, "updateText: query: " + query);
         Log.d(TAG, "updateText: Setting text to " + argument + ": " + newValue);
         db.execSQL(query);
@@ -110,9 +168,9 @@ public class SettingsDBHelper extends SQLiteOpenHelper {
 
     /**
      * Delete from database
-     * @param argument
+     * @param argument - название удаляемого аргумента
      */
-    public void deleteName(String argument){
+    public void deleteName(String argument) {
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "DELETE FROM " + TABLE_NAME +
                 " WHERE " + COL2 + " = '" + argument + "'";

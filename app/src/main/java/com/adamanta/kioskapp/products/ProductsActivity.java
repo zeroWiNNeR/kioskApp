@@ -401,7 +401,7 @@ public class ProductsActivity extends AppCompatActivity implements Postman, Prod
         }
         addToFavoritesImgB.setVisibility(View.VISIBLE);
     }
-    public void clearProductCard(){
+    public void clearProductCard() {
         removeProductImgB.setVisibility(View.INVISIBLE);
         addProductImgB.setVisibility(View.INVISIBLE);
 
@@ -428,7 +428,7 @@ public class ProductsActivity extends AppCompatActivity implements Postman, Prod
         productsColumnImgV.setVisibility(View.INVISIBLE);
     }
 
-    public void productsColumnImgVAction(@NonNull String action){
+    public void productsColumnImgVAction(@NonNull String action) {
         if(action.contains("show"))
             productsColumnImgV.setVisibility(View.VISIBLE);
         if (action.contains("hide"))

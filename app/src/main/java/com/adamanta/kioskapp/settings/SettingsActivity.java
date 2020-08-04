@@ -23,6 +23,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.adamanta.kioskapp.MainActivity;
 import com.adamanta.kioskapp.R;
 import com.adamanta.kioskapp.settings.interfaces.ISettingsActivity;
+import com.adamanta.kioskapp.settings.threads.ChangesDownloadThread;
 import com.adamanta.kioskapp.settings.threads.TabletRegistrationTask;
 import com.adamanta.kioskapp.settings.utils.SettingsDBHelper;
 
@@ -50,12 +51,12 @@ public class SettingsActivity extends AppCompatActivity implements ISettingsActi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
-        contractIdET = findViewById(R.id.contractid_et);
-        cityET = findViewById(R.id.city_et);
-        streetET = findViewById(R.id.street_et);
-        houseET = findViewById(R.id.house_et);
-        apartmentET = findViewById(R.id.apartment_et);
-        saveButton = findViewById(R.id.SaveButton);
+        contractIdET = findViewById(R.id.activity_settings_contractid_et);
+        cityET = findViewById(R.id.activity_settings_city_et);
+        streetET = findViewById(R.id.activity_settings_street_et);
+        houseET = findViewById(R.id.activity_settings_house_et);
+        apartmentET = findViewById(R.id.activity_settings_apartment_et);
+        saveButton = findViewById(R.id.activity_settings_save_imgbtn);
 
         settingsDBHelper = new SettingsDBHelper(this);
 
@@ -68,25 +69,26 @@ public class SettingsActivity extends AppCompatActivity implements ISettingsActi
     //***************************** Buttons *********************************
     public void onClick(@NonNull View v) {
         switch (v.getId()) {
-            case R.id.MainMenuButton:
+            case R.id.activity_settings_main_menu_imgbtn:
                 Context context = v.getContext();
                 Intent intent = new Intent(context, MainActivity.class);
                 context.startActivity(intent);
                 break;
 
-            case R.id.SaveButton:
-                Cursor data = settingsDBHelper.getValue("saved");
-                if (data==null || data.getCount()==0) {
+            case R.id.activity_settings_save_imgbtn:
+                String saved = settingsDBHelper.getStringValueByArgument("saved");
+                if (saved.equals("null") || saved.equals("false")) {
                     saveChanges();
                     TabletRegistrationTask savingTask = new TabletRegistrationTask(
                             this, this, contractId, imei, androidId,
                             city, street, house, apartment);
                     savingTask.execute();
                 }
-                if (!data.isClosed()) {
-                    data.close();
-                }
                 break;
+
+            case R.id.activity_settings_getproductsupdate_btn:
+                ChangesDownloadThread changesDownloadThread = new ChangesDownloadThread(this);
+                changesDownloadThread.start();
 
             default:
                 break;
@@ -160,22 +162,22 @@ public class SettingsActivity extends AppCompatActivity implements ISettingsActi
 
     @Override
     public void checkRegistration() {
-        try{
+        try {
             Cursor data = settingsDBHelper.getRowsFromCOL3();
             if (data!=null && data.getCount() > 0){
                 if (data.moveToFirst()) {
                     int i=0;
                     while(data.moveToNext()) {
                         i++;
-                        if (i==2)
+                        if (i==3)
                             contractIdET.setText(data.getString(0));
-                        if (i==5)
-                            cityET.setText(data.getString(0));
                         if (i==6)
-                            streetET.setText(data.getString(0));
+                            cityET.setText(data.getString(0));
                         if (i==7)
-                            houseET.setText(data.getString(0));
+                            streetET.setText(data.getString(0));
                         if (i==8)
+                            houseET.setText(data.getString(0));
+                        if (i==9)
                             apartmentET.setText(data.getString(0));
                     }
                 }
