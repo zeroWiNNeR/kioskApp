@@ -1,6 +1,5 @@
 package com.adamanta.kioskapp.product;
 
-import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,14 +15,16 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.adamanta.kioskapp.R;
+import com.adamanta.kioskapp.product.utils.CategoriesDBHelper;
+import com.adamanta.kioskapp.product.utils.ProductsDBHelper;
 import com.adamanta.kioskapp.products.models.CategoriesList;
-import com.adamanta.kioskapp.products.utils.ProductsCategoriesDbHelper;
 
 import java.util.List;
 
 public class ProductsFragment extends Fragment implements View.OnClickListener {
     private final String TAG = this.getClass().getSimpleName();
-    private ProductsCategoriesDbHelper productsCategoriesDBHelper;
+    private ProductsDBHelper productsDBHelper;
+    private CategoriesDBHelper categoriesDBHelper;
     private ImageView productsColumnImgV,
             productMainImgV,
             addToFavoritesImgB;
@@ -84,7 +85,7 @@ public class ProductsFragment extends Fragment implements View.OnClickListener {
         addProductToCartB = view.findViewById(R.id.fragment_products_addtocart_btn);
         showCartButton = view.findViewById(R.id.fragment_products_showcart_btn);
 
-        productsCategoriesDBHelper = new ProductsCategoriesDbHelper(view.getContext());
+        productsDBHelper = new ProductsDBHelper(view.getContext());
 
         return view;
     }
@@ -106,17 +107,17 @@ public class ProductsFragment extends Fragment implements View.OnClickListener {
     private void createCategoriesRVAdapter(List<CategoriesList> categories) {
         try {
             int number = 0;
-            Cursor data = productsCategoriesDBHelper.getWithParent("main");
-            while (data.moveToNext()) {
-                categories.add(new CategoriesList(
-                        number,
-                        data.getString(1),
-                        data.getString(2),
-                        data.getString(3)
-                ));
-                number++;
-            }
-            data.close();
+//            Cursor data = productsDBHelper.getWithParent("main");
+//            while (data.moveToNext()) {
+//                categories.add(new CategoriesList(
+//                        number,
+//                        data.getString(1),
+//                        data.getString(2),
+//                        data.getString(3)
+//                ));
+//                number++;
+//            }
+//            data.close();
 
         }
         catch(Exception e) { e.printStackTrace();Log.e( TAG,"Exc= "+e ); }

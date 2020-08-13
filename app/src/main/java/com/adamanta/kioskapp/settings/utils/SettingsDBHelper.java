@@ -5,16 +5,13 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 public class SettingsDBHelper extends SQLiteOpenHelper {
 
-    private final String TAG = this.getClass().getSimpleName();
-
-    private static final String TABLE_NAME = "settings";
+    private static final String TABLE_NAME = "SETTINGS";
     private static final String COL1 = "id";
-    private static final String COL2 = "argument";
-    private static final String COL3 = "value";
+    private static final String COL2 = "ARGUMENT";
+    private static final String COL3 = "VALUE";
 
     public SettingsDBHelper(Context context) {
         super(context, TABLE_NAME, null, 1);
@@ -23,15 +20,15 @@ public class SettingsDBHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         String createTable = "CREATE TABLE " + TABLE_NAME +
-                " (ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                " (id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 COL2 + " ARGUMENT," +
                 COL3 + " VALUE)";
         db.execSQL(createTable);
     }
 
     @Override
-    public void onUpgrade(SQLiteDatabase db, int i, int i1) {
-        db.execSQL("DROP IF TABLE EXISTS " + TABLE_NAME);
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
         onCreate(db);
     }
 
@@ -41,10 +38,8 @@ public class SettingsDBHelper extends SQLiteOpenHelper {
         contentValues.put(COL2, argument);
         contentValues.put(COL3, value);
 
-        Log.d(TAG, "addValue: Adding " + argument + ": " + value + " to " + TABLE_NAME);
-
         long result = db.insert(TABLE_NAME, null, contentValues);
-
+        db.close();
         //if date as inserted incorrectly it will return -1
         if (result == -1) {
             return false;
@@ -55,24 +50,11 @@ public class SettingsDBHelper extends SQLiteOpenHelper {
 
     /**
      * Returns value by argument from db
-     * @return data
-     */
-    public Cursor getValue(String argument) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        String query = "SELECT " + COL3 + " FROM " + TABLE_NAME +
-                " WHERE " + COL2 + " = '" + argument + "'";
-        Cursor data = db.rawQuery(query, null);
-        return data;
-    }
-
-    /**
-     * Returns value by argument from db
      * @return long value - значение lastAppliedChangeId из БД
      */
     public long getLastAppliedChangeId() {
         SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT " + COL3 + " FROM " + TABLE_NAME +
-                " WHERE " + COL2 + " = 'lastAppliedChangeId'";
+        String query = "SELECT " + COL3 + " FROM " + TABLE_NAME + " WHERE " + COL2 + " = 'lastAppliedChangeId'";
         Cursor data = db.rawQuery(query, null);
         if (data==null || data.getCount()==0) {
             return 0L;
@@ -80,6 +62,7 @@ public class SettingsDBHelper extends SQLiteOpenHelper {
         data.moveToFirst();
         long value = data.getLong(0);
         data.close();
+        db.close();
         return value;
     }
 
@@ -109,6 +92,7 @@ public class SettingsDBHelper extends SQLiteOpenHelper {
         data.moveToFirst();
         String value = data.getString(0);
         data.close();
+        db.close();
         return value;
     }
 
@@ -120,21 +104,33 @@ public class SettingsDBHelper extends SQLiteOpenHelper {
      */
     public void setValue(String argument, String value) {
         SQLiteDatabase db = this.getWritableDatabase();
-        String query = "UPDATE " + TABLE_NAME +
-                " SET " + COL3 + " = '" + value + "'" +
-                " WHERE " + COL2 + " = '" + argument + "'";
+        String query = "UPDATE " + TABLE_NAME + " SET " + COL3 + " = '" + value +
+                "' WHERE " + COL2 + " = '" + argument + "'";
         db.execSQL(query);
+        db.close();
     }
 
     /**
      * Returns all the data from database
      * @return data
      */
-    public Cursor getRowsFromCOL3() {
+    public String[] getAllValues() {
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "SELECT " + COL3 + " FROM " + TABLE_NAME;
-        Cursor data = db.rawQuery(query, null);
-        return data;
+        Cursor cursor = db.rawQuery(query, null);
+        if (cursor==null || cursor.getCount()==0) {
+            return null;
+        }
+        String[] values = new String[cursor.getCount()];
+        cursor.moveToFirst();
+        int i = 0;
+        while (cursor.moveToNext()) {
+            values[i] = cursor.getString(0);
+            i++;
+        }
+        cursor.close();
+        db.close();
+        return values;
     }
 
     /**
@@ -143,8 +139,7 @@ public class SettingsDBHelper extends SQLiteOpenHelper {
      */
     public Cursor getID(String argument) {
         SQLiteDatabase db = this.getWritableDatabase();
-        String query = "SELECT " + COL1 + " FROM " + TABLE_NAME +
-                " WHERE " + COL2 + " = '" + argument + "'";
+        String query = "SELECT " + COL1 + " FROM " + TABLE_NAME + " WHERE " + COL2 + " = '" + argument + "'";
         return db.rawQuery(query, null);
     }
 
@@ -157,13 +152,10 @@ public class SettingsDBHelper extends SQLiteOpenHelper {
      */
     public void updateRowField(int id, String argument, String newValue) {
         SQLiteDatabase db = this.getWritableDatabase();
-        String query = "UPDATE " + TABLE_NAME +
-                " SET " + COL3 + " = '" + newValue +
-                "' WHERE " + COL1 + " = '" + id + "'" +
-                " AND " + COL2 + " = '" + argument + "'";
-        Log.d(TAG, "updateText: query: " + query);
-        Log.d(TAG, "updateText: Setting text to " + argument + ": " + newValue);
+        String query = "UPDATE " + TABLE_NAME + " SET " + COL3 + " = '" + newValue +
+                "' WHERE " + COL1 + " = '" + id + "' AND " + COL2 + " = '" + argument + "'";
         db.execSQL(query);
+        db.close();
     }
 
     /**
@@ -172,10 +164,8 @@ public class SettingsDBHelper extends SQLiteOpenHelper {
      */
     public void deleteName(String argument) {
         SQLiteDatabase db = this.getWritableDatabase();
-        String query = "DELETE FROM " + TABLE_NAME +
-                " WHERE " + COL2 + " = '" + argument + "'";
-        Log.d(TAG, "deleteText: query: " + query);
-        Log.d(TAG, "deleteText: Deleting " + argument + "from database.");
+        String query = "DELETE FROM " + TABLE_NAME + " WHERE " + COL2 + " = '" + argument + "'";
         db.execSQL(query);
+        db.close();
     }
 }

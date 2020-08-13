@@ -3,7 +3,6 @@ package com.adamanta.kioskapp.products;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -25,6 +24,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.adamanta.kioskapp.MainActivity;
 import com.adamanta.kioskapp.R;
+import com.adamanta.kioskapp.product.utils.CategoriesDBHelper;
+import com.adamanta.kioskapp.product.utils.ProductsDBHelper;
 import com.adamanta.kioskapp.productImagesFragment.ProductImagesFragment;
 import com.adamanta.kioskapp.productImagesFragment.ProductImagesSet;
 import com.adamanta.kioskapp.products.adapters.CategoriesRVAdapter;
@@ -32,7 +33,6 @@ import com.adamanta.kioskapp.products.adapters.ProductsRVAdapter;
 import com.adamanta.kioskapp.products.interfaces.Postman;
 import com.adamanta.kioskapp.products.models.CategoriesList;
 import com.adamanta.kioskapp.products.models.ProductsList;
-import com.adamanta.kioskapp.products.utils.ProductsCategoriesDbHelper;
 import com.adamanta.kioskapp.products.utils.Utils;
 import com.adamanta.kioskapp.shopcart.ProductsCartFragment;
 
@@ -46,7 +46,8 @@ import java.util.List;
 
 public class ProductsActivity extends AppCompatActivity implements Postman, ProductImagesSet {
     private final String TAG = this.getClass().getSimpleName();
-    private ProductsCategoriesDbHelper productsCategoriesDBHelper;
+    private ProductsDBHelper productsDBHelper;
+    private CategoriesDBHelper categoriesDBHelper;
     public static String directory = "";
 
     ImageView productsColumnImgV,
@@ -101,7 +102,8 @@ public class ProductsActivity extends AppCompatActivity implements Postman, Prod
 
         Log.e(TAG, "ProductsActivity loading successful");
 
-        productsCategoriesDBHelper = new ProductsCategoriesDbHelper(this);
+        productsDBHelper = new ProductsDBHelper(this);
+        categoriesDBHelper = new CategoriesDBHelper(this);
         createCategoriesRVAdapter(categoriesList);
     }
 
@@ -251,18 +253,18 @@ public class ProductsActivity extends AppCompatActivity implements Postman, Prod
             }
             br.close();*/
 
-            int number = 0;
-            Cursor data = productsCategoriesDBHelper.getWithParent("main");
-            while(data.moveToNext()){
-                categories.add(new CategoriesList(
-                        number,
-                        data.getString(1),
-                        data.getString(2),
-                        data.getString(3)
-                ));
-                number++;
-            }
-            data.close();
+//            int number = 0;
+//            Cursor data = productsDBHelper.getWithParent("main");
+//            while(data.moveToNext()){
+//                categories.add(new CategoriesList(
+//                        number,
+//                        data.getString(1),
+//                        data.getString(2),
+//                        data.getString(3)
+//                ));
+//                number++;
+//            }
+//            data.close();
 
         }
         catch(Exception e) { e.printStackTrace();Log.e( TAG,"Exc= "+e ); }

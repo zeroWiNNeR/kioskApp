@@ -1,15 +1,10 @@
-/*
- * Copyright (c) 2020.
- */
-
 package com.adamanta.kioskapp.product.model;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 public class Product {
 
-    private Long id;
+    private long id;
 
     private char type;
 
@@ -27,6 +22,8 @@ public class Product {
 
     private Long barcode;
 
+    private String weight;
+
     private BigDecimal minSize;
 
     private BigDecimal sizeStep;
@@ -41,8 +38,6 @@ public class Product {
 
     private BigDecimal stockQuantity;
 
-    private String stockPosition;
-
     private String manufacturer;
 
     private String description;
@@ -51,11 +46,11 @@ public class Product {
 
     private String prevComposition;
 
-    private LocalDateTime prevCompositionDate;
+    private String prevCompositionDate;
 
     private String prevPrevComposition;
 
-    private LocalDateTime prevPrevCompositionDate;
+    private String prevPrevCompositionDate;
 
     private String information;
 
@@ -93,11 +88,11 @@ public class Product {
         this.position = position;
     }
 
-    public boolean isEnable() {
+    public boolean getIsEnable() {
         return isEnable;
     }
 
-    public void setEnable(boolean enable) {
+    public void setIsEnable(boolean enable) {
         isEnable = enable;
     }
 
@@ -131,6 +126,14 @@ public class Product {
 
     public void setBarcode(Long barcode) {
         this.barcode = barcode;
+    }
+
+    public String getWeight() {
+        return weight;
+    }
+
+    public void setWeight(String weight) {
+        this.weight = weight;
     }
 
     public BigDecimal getMinSize() {
@@ -189,14 +192,6 @@ public class Product {
         this.stockQuantity = stockQuantity;
     }
 
-    public String getStockPosition() {
-        return stockPosition;
-    }
-
-    public void setStockPosition(String stockPosition) {
-        this.stockPosition = stockPosition;
-    }
-
     public String getManufacturer() {
         return manufacturer;
     }
@@ -229,11 +224,11 @@ public class Product {
         this.prevComposition = prevComposition;
     }
 
-    public LocalDateTime getPrevCompositionDate() {
+    public String getPrevCompositionDate() {
         return prevCompositionDate;
     }
 
-    public void setPrevCompositionDate(LocalDateTime prevCompositionDate) {
+    public void setPrevCompositionDate(String prevCompositionDate) {
         this.prevCompositionDate = prevCompositionDate;
     }
 
@@ -245,11 +240,11 @@ public class Product {
         this.prevPrevComposition = prevPrevComposition;
     }
 
-    public LocalDateTime getPrevPrevCompositionDate() {
+    public String getPrevPrevCompositionDate() {
         return prevPrevCompositionDate;
     }
 
-    public void setPrevPrevCompositionDate(LocalDateTime prevPrevCompositionDate) {
+    public void setPrevPrevCompositionDate(String prevPrevCompositionDate) {
         this.prevPrevCompositionDate = prevPrevCompositionDate;
     }
 

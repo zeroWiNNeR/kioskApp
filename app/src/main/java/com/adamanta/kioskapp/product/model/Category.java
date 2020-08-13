@@ -1,7 +1,3 @@
-/*
- * Copyright (c) 2020.
- */
-
 package com.adamanta.kioskapp.product.model;
 
 public class Category {
@@ -60,11 +56,11 @@ public class Category {
         this.position = position;
     }
 
-    public boolean isEnable() {
+    public boolean getIsEnable() {
         return isEnable;
     }
 
-    public void setEnable(boolean enable) {
+    public void setIsEnable(boolean enable) {
         isEnable = enable;
     }
 

@@ -80,15 +80,13 @@ public class TabletRegistrationTask extends AsyncTask<String, String, String> {
                     .url(url)
                     .post(body)
                     .build();
-
             try (Response response = client.newCall(request).execute()) {
                 if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
                 responseText = Objects.requireNonNull(response.body()).string();
             }
-
         } catch (Exception e) {
             e.printStackTrace();
-            Log.e(TAG, "Excp= " + e);
+            Log.e(TAG, "Exc= " + e);
         }
         return null;
     }
@@ -119,7 +117,7 @@ public class TabletRegistrationTask extends AsyncTask<String, String, String> {
 
                     SettingsDBHelper settingsDBHelper = new SettingsDBHelper(context);
                     settingsDBHelper.addData("saved", "true");
-                    settingsDBHelper.addData("lastAppliedChangeId", "-1");
+                    settingsDBHelper.addData("lastAppliedChangeId", "0");
                     settingsDBHelper.addData("dbId", String.valueOf(dbId));
                     settingsDBHelper.addData("contractId", contractId);
                     settingsDBHelper.addData("imei", imei);

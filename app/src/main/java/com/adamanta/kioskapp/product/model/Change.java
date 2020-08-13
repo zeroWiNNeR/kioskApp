@@ -108,7 +108,7 @@ public class Change {
         this.position = position;
     }
 
-    public boolean isEnable() {
+    public boolean getIsEnable() {
         return isEnable;
     }
 

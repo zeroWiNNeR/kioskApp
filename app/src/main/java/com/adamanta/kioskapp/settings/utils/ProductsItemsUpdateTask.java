@@ -6,7 +6,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.adamanta.kioskapp.products.utils.ProductsCategoriesDbHelper;
+import com.adamanta.kioskapp.product.utils.ProductsDBHelper;
 
 import org.json.JSONObject;
 
@@ -20,7 +20,7 @@ import okhttp3.Response;
 
 public class ProductsItemsUpdateTask extends AsyncTask<String, Integer, Void> {
     private final String TAG = this.getClass().getSimpleName();
-    private ProductsCategoriesDbHelper productsCategoriesDbHelperHeper;
+    private ProductsDBHelper productsDBHelper;
 
     @SuppressLint("StaticFieldLeak")
     private Activity activity;

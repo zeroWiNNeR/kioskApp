@@ -23,6 +23,7 @@ import com.adamanta.kioskapp.products.interfaces.Postman;
 import com.adamanta.kioskapp.settings.SettingsActivity;
 import com.adamanta.kioskapp.shopcart.ProductsCartFragment;
 import com.adamanta.kioskapp.threads.UIBarControllerThread;
+import com.adamanta.kioskapp.utils.FoldersCreator;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -41,6 +42,8 @@ public class MainActivity extends AppCompatActivity implements Postman, Favorite
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Log.e(TAG, "MainActivity");
+
+        FoldersCreator.createFolders(this);
 
         boolean isAliveUIBarControllerThread = false;
         Set<Thread> threadSet = Thread.getAllStackTraces().keySet();

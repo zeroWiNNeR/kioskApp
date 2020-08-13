@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
-import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -162,47 +161,31 @@ public class SettingsActivity extends AppCompatActivity implements ISettingsActi
 
     @Override
     public void checkRegistration() {
-        try {
-            Cursor data = settingsDBHelper.getRowsFromCOL3();
-            if (data!=null && data.getCount() > 0){
-                if (data.moveToFirst()) {
-                    int i=0;
-                    while(data.moveToNext()) {
-                        i++;
-                        if (i==3)
-                            contractIdET.setText(data.getString(0));
-                        if (i==6)
-                            cityET.setText(data.getString(0));
-                        if (i==7)
-                            streetET.setText(data.getString(0));
-                        if (i==8)
-                            houseET.setText(data.getString(0));
-                        if (i==9)
-                            apartmentET.setText(data.getString(0));
-                    }
-                }
-                data.close();
-                contractIdET.setFocusable(false);
-                cityET.setFocusable(false);
-                streetET.setFocusable(false);
-                houseET.setFocusable(false);
-                apartmentET.setFocusable(false);
-                saveButton.setClickable(false);
-                saveButton.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#A8A8A8")));
+        String[] values = settingsDBHelper.getAllValues();
+        if (values != null) {
+            contractIdET.setText(values[2]);
+            cityET.setText(values[5]);
+            streetET.setText(values[6]);
+            houseET.setText(values[7]);
+            apartmentET.setText(values[8]);
 
-            } else {
-                getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-                contractIdET.setFocusable(true);
-                cityET.setFocusable(true);
-                streetET.setFocusable(true);
-                houseET.setFocusable(true);
-                apartmentET.setFocusable(true);
-                saveButton.setClickable(true);
-                saveButton.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#6495ED")));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.e(TAG,"checkChangesExc: " + e);
+            contractIdET.setFocusable(false);
+            cityET.setFocusable(false);
+            streetET.setFocusable(false);
+            houseET.setFocusable(false);
+            apartmentET.setFocusable(false);
+            saveButton.setClickable(false);
+            saveButton.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#A8A8A8")));
+
+        } else {
+            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+            contractIdET.setFocusable(true);
+            cityET.setFocusable(true);
+            streetET.setFocusable(true);
+            houseET.setFocusable(true);
+            apartmentET.setFocusable(true);
+            saveButton.setClickable(true);
+            saveButton.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#6495ED")));
         }
     }
 
