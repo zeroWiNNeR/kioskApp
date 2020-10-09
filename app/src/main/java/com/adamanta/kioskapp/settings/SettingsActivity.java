@@ -21,18 +21,17 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.adamanta.kioskapp.MainActivity;
 import com.adamanta.kioskapp.R;
-import com.adamanta.kioskapp.settings.interfaces.ISettingsActivity;
-import com.adamanta.kioskapp.settings.threads.ChangesDownloadThread;
+import com.adamanta.kioskapp.settings.threads.ChangesDownloadTask;
 import com.adamanta.kioskapp.settings.threads.TabletRegistrationTask;
 import com.adamanta.kioskapp.settings.utils.SettingsDBHelper;
 
+import java.io.File;
 import java.net.NetworkInterface;
 import java.util.Collections;
 import java.util.List;
 
 public class SettingsActivity extends AppCompatActivity implements ISettingsActivity {
 
-    private final String TAG = this.getClass().getSimpleName();
     private SettingsDBHelper settingsDBHelper;
 
     private EditText contractIdET, cityET, streetET, houseET, apartmentET;
@@ -86,14 +85,34 @@ public class SettingsActivity extends AppCompatActivity implements ISettingsActi
                 break;
 
             case R.id.activity_settings_getproductsupdate_btn:
-                ChangesDownloadThread changesDownloadThread = new ChangesDownloadThread(this);
-                changesDownloadThread.start();
+                ChangesDownloadTask changesDownloadTask = new ChangesDownloadTask(this);
+                changesDownloadTask.execute();
+                break;
+
+            case R.id.activity_settings_clear_btn:
+                v.getContext().deleteDatabase("CATEGORIES");
+                v.getContext().deleteDatabase("PRODUCTS");
+                v.getContext().deleteDatabase("SETTINGS");
+
+                deleteRecursive(v.getContext().getFilesDir());
+
+                Toast.makeText(getApplicationContext(),"Удаление выполнено успешно!",Toast.LENGTH_SHORT).show();
+                v.getContext().startActivity(new Intent(v.getContext(), MainActivity.class));
+                break;
 
             default:
                 break;
         }
     }
     //***************************** Buttons *********************************
+
+    private void deleteRecursive(File folder) {
+        if (folder.isDirectory()) {
+            for (File child : folder.listFiles())
+                deleteRecursive(child);
+        }
+        folder.delete();
+    }
 
     private String getMacAddr() {
         try {
@@ -116,7 +135,7 @@ public class SettingsActivity extends AppCompatActivity implements ISettingsActi
                 }
                 return res1.toString();
             }
-        } catch (Exception e) {e.printStackTrace();Log.e(TAG,"getMacAddrExc: " + e);}
+        } catch (Exception e) {e.printStackTrace();Log.e("SETTINGS","getMacAddrExc: " + e);}
         return "02:00:00:00:00:00";
     }
 
@@ -129,7 +148,7 @@ public class SettingsActivity extends AppCompatActivity implements ISettingsActi
             } else {
                 return "00:00";
             }
-        } catch (Exception e) {e.printStackTrace(); Log.e(TAG,"getMacAddrExc: " + e);}
+        } catch (Exception e) {e.printStackTrace(); Log.e("SETTINGS","getMacAddrExc: " + e);}
         return "Error while get IMEI";
     }
 
@@ -140,7 +159,6 @@ public class SettingsActivity extends AppCompatActivity implements ISettingsActi
     }
 
     private void saveChanges(){
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         if (contractIdET.getText().toString().matches("[\\d]+")){
             try{
                 contractId = contractIdET.getText().toString().replaceAll("\\s+", "");
@@ -152,7 +170,7 @@ public class SettingsActivity extends AppCompatActivity implements ISettingsActi
                 apartment = apartmentET.getText().toString().replaceAll("\\s+", "");
             } catch (Exception e) {
                 e.printStackTrace();
-                Log.e(TAG, "saveChangesExc: " + e);
+                Log.e("SETTINGS", "saveChangesExc: " + e);
             }
         } else {
             Toast.makeText(getApplicationContext(),"Номер договора введён не верно!",Toast.LENGTH_SHORT).show();
@@ -164,25 +182,28 @@ public class SettingsActivity extends AppCompatActivity implements ISettingsActi
         String[] values = settingsDBHelper.getAllValues();
         if (values != null) {
             contractIdET.setText(values[2]);
-            cityET.setText(values[5]);
-            streetET.setText(values[6]);
-            houseET.setText(values[7]);
-            apartmentET.setText(values[8]);
-
             contractIdET.setFocusable(false);
+            cityET.setText(values[5]);
             cityET.setFocusable(false);
+            streetET.setText(values[6]);
             streetET.setFocusable(false);
+            houseET.setText(values[7]);
             houseET.setFocusable(false);
+            apartmentET.setText(values[8]);
             apartmentET.setFocusable(false);
             saveButton.setClickable(false);
             saveButton.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#A8A8A8")));
-
-        } else {
             getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        } else {
+            contractIdET.setText("");
             contractIdET.setFocusable(true);
+            cityET.setText("");
             cityET.setFocusable(true);
+            streetET.setText("");
             streetET.setFocusable(true);
+            houseET.setText("");
             houseET.setFocusable(true);
+            apartmentET.setText("");
             apartmentET.setFocusable(true);
             saveButton.setClickable(true);
             saveButton.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#6495ED")));

@@ -4,7 +4,9 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 public class SettingsDBHelper extends SQLiteOpenHelper {
 
@@ -21,8 +23,8 @@ public class SettingsDBHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         String createTable = "CREATE TABLE " + TABLE_NAME +
                 " (id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                COL2 + " ARGUMENT," +
-                COL3 + " VALUE)";
+                COL2 + " TEXT," +
+                COL3 + " TEXT)";
         db.execSQL(createTable);
     }
 
@@ -46,6 +48,7 @@ public class SettingsDBHelper extends SQLiteOpenHelper {
         } else {
             return true;
         }
+
     }
 
     /**
@@ -55,13 +58,16 @@ public class SettingsDBHelper extends SQLiteOpenHelper {
     public long getLastAppliedChangeId() {
         SQLiteDatabase db = this.getReadableDatabase();
         String query = "SELECT " + COL3 + " FROM " + TABLE_NAME + " WHERE " + COL2 + " = 'lastAppliedChangeId'";
-        Cursor data = db.rawQuery(query, null);
-        if (data==null || data.getCount()==0) {
+        Cursor cursor = db.rawQuery(query, null);
+        if (cursor==null || cursor.getCount()==0) {
+            if (cursor != null)
+                cursor.close();
+            db.close();
             return 0L;
         }
-        data.moveToFirst();
-        long value = data.getLong(0);
-        data.close();
+        cursor.moveToFirst();
+        long value = cursor.getLong(0);
+        cursor.close();
         db.close();
         return value;
     }
@@ -71,29 +77,34 @@ public class SettingsDBHelper extends SQLiteOpenHelper {
      * @return String value
      */
     public String getStringValueByArgument(String argument) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT " + COL3 + " FROM " + TABLE_NAME +
-                " WHERE " + COL2 + " = '" + argument + "'";
-        Cursor data = db.rawQuery(query, null);
-        //этот вариант также работает, нативный удобнее
-//        Cursor data = db.query(
-//                TABLE_NAME,
-//                new String[] {"argument", "value" },
-//                "argument = ?", new String[] {"lastAppliedChangeID"},
-//                null, null, null
-//                );
-        if (data==null || data.getCount()==0) {
-            if (argument.equals("lastAppliedChangeId")){
-                return "0";
-            } else {
-                return "null";
+        try (SQLiteDatabase db = this.getReadableDatabase()) {
+            String query = "SELECT " + COL3 + " FROM " + TABLE_NAME +
+                    " WHERE " + COL2 + " = '" + argument + "'";
+            Cursor cursor = db.rawQuery(query, null);
+//            этот вариант также работает, нативный удобнее
+//            Cursor data = db.query(
+//                    TABLE_NAME,
+//                    new String[] {"argument", "value" },
+//                    "argument = ?", new String[] {"lastAppliedChangeID"},
+//                    null, null, null
+//            );
+            if (cursor == null || cursor.getCount() == 0) {
+                if (cursor != null)
+                    cursor.close();
+                if (argument.equals("lastAppliedChangeId")) {
+                    return "0";
+                } else {
+                    return "null";
+                }
             }
+            cursor.moveToFirst();
+            String value = cursor.getString(0);
+            cursor.close();
+            return value;
+        } catch (SQLiteException e) {
+            Log.e("SettingsDBHelper", "Ошибка выполнения запроса: Чтение записи по аргументу " + argument);
+            return "null";
         }
-        data.moveToFirst();
-        String value = data.getString(0);
-        data.close();
-        db.close();
-        return value;
     }
 
     /**
@@ -119,6 +130,9 @@ public class SettingsDBHelper extends SQLiteOpenHelper {
         String query = "SELECT " + COL3 + " FROM " + TABLE_NAME;
         Cursor cursor = db.rawQuery(query, null);
         if (cursor==null || cursor.getCount()==0) {
+            if (cursor != null)
+                cursor.close();
+            db.close();
             return null;
         }
         String[] values = new String[cursor.getCount()];
@@ -132,17 +146,6 @@ public class SettingsDBHelper extends SQLiteOpenHelper {
         db.close();
         return values;
     }
-
-    /**
-     * Returns only the ID that matches the name passed in
-     * @param argument - название аргумента
-     */
-    public Cursor getID(String argument) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        String query = "SELECT " + COL1 + " FROM " + TABLE_NAME + " WHERE " + COL2 + " = '" + argument + "'";
-        return db.rawQuery(query, null);
-    }
-
 
     /**
      * Updates the Value field

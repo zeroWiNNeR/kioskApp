@@ -1,6 +1,10 @@
 package com.adamanta.kioskapp.settings.threads;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.os.AsyncTask;
 import android.util.Log;
 
 import com.adamanta.kioskapp.product.model.Category;
@@ -8,6 +12,7 @@ import com.adamanta.kioskapp.product.model.Change;
 import com.adamanta.kioskapp.product.model.Product;
 import com.adamanta.kioskapp.product.utils.CategoriesDBHelper;
 import com.adamanta.kioskapp.product.utils.ProductsDBHelper;
+import com.adamanta.kioskapp.settings.ISettingsActivity;
 import com.adamanta.kioskapp.settings.utils.SettingsDBHelper;
 import com.adamanta.kioskapp.utils.Constants;
 
@@ -30,25 +35,37 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class ChangesDownloadThread extends Thread {
+public class ChangesDownloadTask extends AsyncTask<String, String, String> {
 
     private final String TAG = this.getClass().getSimpleName();
+    @SuppressLint("StaticFieldLeak")
     private Context context;
+    private ProgressDialog dialog;
 
-    public ChangesDownloadThread(Context context) {
+    public ChangesDownloadTask(Context context) {
         this.context = context;
+        this.dialog = new ProgressDialog((Activity) context);
     }
 
     @Override
-    public void run() {
+    protected void onPreExecute() {
+        super.onPreExecute();
         Log.e(TAG, "ChangesDownloadThread started");
-        SettingsDBHelper settingsDBHelper = new SettingsDBHelper(context);
-        CategoriesDBHelper categoriesDBHelper = new CategoriesDBHelper(context);
-        ProductsDBHelper productsDBHelper = new ProductsDBHelper(context);
-        long lastAppliedChangeId = settingsDBHelper.getLastAppliedChangeId();
+        dialog.setMessage("Обновление списка товаров...");
+        dialog.setIndeterminate(true);
+        dialog.setCancelable(true);
+        dialog.show();
+    }
+
+    @Override
+    protected String doInBackground(String... params) {
         boolean isUpdated = false;
         while (!isUpdated) {
             try {
+                SettingsDBHelper settingsDBHelper = new SettingsDBHelper(context);
+                CategoriesDBHelper categoriesDBHelper = new CategoriesDBHelper(context);
+                ProductsDBHelper productsDBHelper = new ProductsDBHelper(context);
+                long lastAppliedChangeId = settingsDBHelper.getLastAppliedChangeId();
                 String url = "http://"+Constants.SERVER_IP+":"+Constants.SERVER_PORT+"/changeapplied"+"?lastAppliedChangeId="+lastAppliedChangeId;
 
                 OkHttpClient client = new OkHttpClient();
@@ -142,7 +159,7 @@ public class ChangesDownloadThread extends Thread {
                                         category.setName(change.getName());
                                         if (!categoriesDBHelper.saveCategory(category)) {
                                             Log.e(TAG, "Ошибка сохранения категории в БД!");
-                                            return;
+                                            return null;
                                         }
                                     } else if (change.getType() == 'p') {
                                         Product product = new Product();
@@ -176,7 +193,7 @@ public class ChangesDownloadThread extends Thread {
 
                                         if (!productsDBHelper.saveProduct(product)) {
                                             Log.e(TAG, "Ошибка сохранения продукта в БД!");
-                                            return;
+                                            return null;
                                         }
                                     }
                                 } else if (change.getAction().equals("edit")) {
@@ -185,7 +202,7 @@ public class ChangesDownloadThread extends Thread {
                                             Category category = categoriesDBHelper.getByCategory(change.getCategory());
                                             if (category == null) {
                                                 Log.e(TAG, "Не удалось получить категорию из БД!");
-                                                return;
+                                                return null;
                                             }
                                             if (change.getParentCategory() != null) category.setParentCategory(change.getParentCategory());
                                             if (change.getPosition() > 0) category.setPosition(change.getPosition());
@@ -193,13 +210,13 @@ public class ChangesDownloadThread extends Thread {
                                             if (change.getName() != null) category.setName(change.getName());
 
                                             if (!categoriesDBHelper.updateCategory(category))
-                                                return;
+                                                return null;
 
                                         } else if (change.getType() == 'p') {
                                             Product product = productsDBHelper.getByArticle(change.getArticle());
                                             if (product == null) {
                                                 Log.e(TAG, "Не удалось получить продукт из БД!");
-                                                return;
+                                                return null;
                                             }
                                             if (change.getParentCategory() != null) product.setParentCategory(change.getParentCategory());
                                             if (change.getPosition() > 0) product.setPosition(change.getPosition());
@@ -234,20 +251,20 @@ public class ChangesDownloadThread extends Thread {
                                             }
 
                                             if (!productsDBHelper.updateProduct(product))
-                                                return;
+                                                return null;
                                         }
                                     }
                                 } else if (change.getAction().equals("del")) {
                                     if (change.getType() == 'c') {
                                         if (!categoriesDBHelper.deleteByCategory(change.getCategory())) {
                                             Log.e(TAG, "Ошибка при удалении категории из БД!");
-                                            return;
+                                            return null;
                                         }
                                     } else if (change.getType() == 'p') {
                                         deleteFolderWithImages(change.getArticle());
                                         if (!productsDBHelper.deleteByArticle(change.getArticle())) {
                                             Log.e(TAG, "Ошибка при удалении продукта из БД!");
-                                            return;
+                                            return null;
                                         }
                                     }
                                 }
@@ -267,6 +284,7 @@ public class ChangesDownloadThread extends Thread {
                     } else if (status.equals("UPDATED")) {
                         isUpdated = true;
                     }
+
                 } catch (IOException e) {
                     e.printStackTrace();
                     Log.e(TAG, "Ошибка отправки/приема запроса, либо ошибка записи!");
@@ -276,7 +294,15 @@ public class ChangesDownloadThread extends Thread {
                 Log.e(TAG, "Ошибка парсинга JSON");
             }
         }
-        Log.e(TAG, "213");
+        return null;
+    }
+
+    @Override
+    protected void onPostExecute(String result) {
+        super.onPostExecute(result);
+        Log.e(TAG, "Список синхронизирован!");
+        ((ISettingsActivity) context).showToastMessage("Список синхронизирован!");
+        dialog.dismiss();
     }
 
     private void saveImages(Long article, String imagesInfo) {

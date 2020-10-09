@@ -15,8 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.adamanta.kioskapp.R;
-import com.adamanta.kioskapp.products.interfaces.Postman;
-import com.adamanta.kioskapp.products.utils.Utils;
+import com.adamanta.kioskapp.product.utils.Utils;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -24,7 +23,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
 
-public class CartRVAdapter extends RecyclerView.Adapter<CartRVAdapter.ViewHolder> implements Postman {
+public class CartRVAdapter extends RecyclerView.Adapter<CartRVAdapter.ViewHolder> {
     private final String TAG = this.getClass().getSimpleName();
     private Activity activity;
     View v;
@@ -190,48 +189,46 @@ public class CartRVAdapter extends RecyclerView.Adapter<CartRVAdapter.ViewHolder
             }
             mLastClickTime = now;
 
-            switch (v.getId()) {
-                case R.id.itemremove_ibtn:
-                    changeAmount(item, '-');
-                    if (v.getContext() instanceof Activity)
-                        activity = (Activity) v.getContext();
-                    try {
-                        ((Postman) activity).calculation();
-                    } catch (ClassCastException e) {
-                        Log.e(TAG, "ClassCastExc" + e);
-                    }
-                    break;
-
-                case R.id.itemadd_ibtn:
-                    changeAmount(item, '+');
-                    if (v.getContext() instanceof Activity)
-                        activity = (Activity) v.getContext();
-                    try {
-                        ((Postman) activity).calculation();
-                    } catch (ClassCastException e) {
-                        Log.e(TAG, "ClassCastExc" + e);
-                    }
-                    break;
-
-                case R.id.deleteitem_ibtn:
-                    delete(item);
-                    if (v.getContext() instanceof Activity)
-                        activity = (Activity) v.getContext();
-                    try {
-                        ((Postman) activity).calculation();
-                    } catch (ClassCastException e) {
-                        Log.e(TAG, "ClassCastExc" + e);
-                    }
-                    break;
-
-                default:
-                    break;
-            }
+//            switch (v.getId()) {
+//                case R.id.itemremove_ibtn:
+//                    changeAmount(item, '-');
+//                    if (v.getContext() instanceof Activity)
+//                        activity = (Activity) v.getContext();
+//                    try {
+//                        ((Postman) activity).calculation();
+//                    } catch (ClassCastException e) {
+//                        Log.e(TAG, "ClassCastExc" + e);
+//                    }
+//                    break;
+//
+//                case R.id.itemadd_ibtn:
+//                    changeAmount(item, '+');
+//                    if (v.getContext() instanceof Activity)
+//                        activity = (Activity) v.getContext();
+//                    try {
+//                        ((Postman) activity).calculation();
+//                    } catch (ClassCastException e) {
+//                        Log.e(TAG, "ClassCastExc" + e);
+//                    }
+//                    break;
+//
+//                case R.id.deleteitem_ibtn:
+//                    delete(item);
+//                    if (v.getContext() instanceof Activity)
+//                        activity = (Activity) v.getContext();
+//                    try {
+//                        ((Postman) activity).calculation();
+//                    } catch (ClassCastException e) {
+//                        Log.e(TAG, "ClassCastExc" + e);
+//                    }
+//                    break;
+//
+//                default:
+//                    break;
+//            }
         }
 
     }
 
-    @Override
-    public void calculation(){
-    }
+
 }

@@ -1,4 +1,5 @@
 package com.adamanta.kioskapp.favorites;
+
 import android.app.Activity;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,10 +11,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.List;
-
-import com.adamanta.kioskapp.products.utils.Utils;
 import com.adamanta.kioskapp.R;
+import com.adamanta.kioskapp.product.utils.Utils;
+
+import java.util.List;
 
 public class FavoritesRVAdapter extends RecyclerView.Adapter<FavoritesRVAdapter.ViewHolder>{
     private final String TAG = this.getClass().getSimpleName();

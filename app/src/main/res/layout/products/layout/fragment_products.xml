@@ -11,14 +11,14 @@
     tools:context=".product.ProductsFragment">
 
     <ImageButton
-        android:id="@+id/fragment_products_main_menu_imgbtn"
+        android:id="@+id/fragment_products_mainmenu_imgbtn"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_marginStart="10dp"
         android:layout_marginTop="1dp"
         android:backgroundTint="#6495ED"
         android:contentDescription="@string/app_name"
-        app:layout_constraintBottom_toTopOf="@+id/fragment_products_categories_rv"
+        app:layout_constraintBottom_toTopOf="@+id/fragment_products_first_rv"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@android:drawable/ic_menu_sort_by_size" />
@@ -32,7 +32,7 @@
         android:layout_marginTop="1dp"
         android:backgroundTint="#6495ED"
         android:contentDescription="@string/app_name"
-        app:layout_constraintBottom_toTopOf="@+id/fragment_products_categories_rv"
+        app:layout_constraintBottom_toTopOf="@+id/fragment_products_first_rv"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@android:drawable/ic_menu_revert" />
@@ -47,7 +47,7 @@
         android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/fragment_products_constraintlayout"
-        app:layout_constraintStart_toEndOf="@+id/fragment_products_categories_rv"
+        app:layout_constraintStart_toEndOf="@+id/fragment_products_first_rv"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/products_activity_main_image"
         tools:visibility="visible" />
@@ -58,8 +58,8 @@
         android:layout_height="5dp"
         android:background="#6FFFFFFF"
         android:visibility="visible"
-        app:layout_constraintStart_toStartOf="@+id/fragment_products_categories_rv"
-        app:layout_constraintTop_toTopOf="@+id/fragment_products_categories_rv"
+        app:layout_constraintStart_toStartOf="@+id/fragment_products_first_rv"
+        app:layout_constraintTop_toTopOf="@+id/fragment_products_first_rv"
         app:srcCompat="@color/light_gray" />
 
     <ImageView
@@ -68,8 +68,8 @@
         android:layout_height="3dp"
         android:background="#9FFFFFFF"
         android:visibility="visible"
-        app:layout_constraintStart_toStartOf="@+id/fragment_products_categories_rv"
-        app:layout_constraintTop_toTopOf="@+id/fragment_products_categories_rv"
+        app:layout_constraintStart_toStartOf="@+id/fragment_products_first_rv"
+        app:layout_constraintTop_toTopOf="@+id/fragment_products_first_rv"
         app:srcCompat="@color/prodactivity_columncolor" />
 
     <ImageView
@@ -80,7 +80,7 @@
         android:background="#2F000000"
         android:contentDescription="@string/app_name"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/fragment_products_categories_rv"
+        app:layout_constraintEnd_toEndOf="@+id/fragment_products_first_rv"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@color/prodactivity_columncolor" />
@@ -99,7 +99,7 @@
         app:srcCompat="@color/prodactivity_columncolor" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/fragment_products_categories_rv"
+        android:id="@+id/fragment_products_first_rv"
         android:layout_width="269dp"
         android:layout_height="0dp"
         android:layout_marginTop="65dp"
@@ -112,7 +112,7 @@
     </androidx.recyclerview.widget.RecyclerView>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/fragment_products_products_rv"
+        android:id="@+id/fragment_products_second_rv"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="4dp"
@@ -121,10 +121,10 @@
         android:layout_marginBottom="2dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/fragment_products_productscolumn_imgv"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/fragment_products_categories_rv"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/fragment_products_first_rv"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" >
+        app:layout_constraintVertical_bias="0.0">
 
     </androidx.recyclerview.widget.RecyclerView>
 
@@ -137,6 +137,110 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:visibility="visible">
 
+        <TextView
+            android:id="@+id/fragment_products_productfullname_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-medium"
+            android:textSize="24sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/fragment_products_productmanufacturer_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/fragment_products_productfullname_tv" />
+
+        <TextView
+            android:id="@+id/fragment_products_productweight_tv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="65dp"
+            android:fontFamily="sans-serif-medium"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toStartOf="@+id/fragment_products_product_imgv"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toTopOf="@+id/fragment_products_productcountall_tv"
+            app:layout_constraintEnd_toEndOf="@+id/fragment_products_plusproduct_imgbtn"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <TextView
+                android:id="@+id/fragment_products_productpriceall_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:text=""
+                android:textSize="27sp"
+                android:visibility="invisible" />
+
+            <TextView
+                android:id="@+id/fragment_products_productpriceallrub_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginBottom="20dp"
+                android:text="руб."
+                android:textSize="27sp"
+                android:visibility="invisible" />
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/fragment_products_minusproduct_imgbtn"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_marginBottom="30dp"
+            android:backgroundTint="#6495ED"
+            android:tint="#FFFFFF"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toTopOf="@+id/fragment_products_addtocart_btn"
+            app:layout_constraintStart_toStartOf="@+id/fragment_products_addtocart_btn"
+            app:srcCompat="@drawable/ic_remove" />
+
+        <TextView
+            android:id="@+id/fragment_products_productcountall_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_marginBottom="40dp"
+            android:textSize="24sp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toTopOf="@+id/fragment_products_addtocart_btn"
+            app:layout_constraintEnd_toStartOf="@+id/fragment_products_plusproduct_imgbtn"
+            app:layout_constraintStart_toEndOf="@+id/fragment_products_minusproduct_imgbtn" />
+
+        <TextView
+            android:id="@+id/fragment_products_productsizetype_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="-5dp"
+            android:textSize="24sp"
+            app:layout_constraintBottom_toTopOf="@+id/fragment_products_addtocart_btn"
+            app:layout_constraintEnd_toStartOf="@+id/fragment_products_plusproduct_imgbtn"
+            app:layout_constraintStart_toEndOf="@+id/fragment_products_minusproduct_imgbtn"
+            app:layout_constraintTop_toBottomOf="@+id/fragment_products_productcountall_tv" />
+
+        <ImageButton
+            android:id="@+id/fragment_products_plusproduct_imgbtn"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_marginEnd="2dp"
+            android:layout_marginBottom="30dp"
+            android:backgroundTint="#6495ED"
+            android:tint="#FFFFFF"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toTopOf="@+id/fragment_products_addtocart_btn"
+            app:layout_constraintEnd_toStartOf="@+id/fragment_products_product_imgv"
+            app:srcCompat="@android:drawable/ic_input_add" />
+
         <Button
             android:id="@+id/fragment_products_addtocart_btn"
             style="@style/Widget.AppCompat.ImageButton"
@@ -145,62 +249,12 @@
             android:layout_marginEnd="2dp"
             android:layout_marginBottom="64dp"
             android:backgroundTint="#8BC34A"
-            android:onClick="onClick"
             android:text="Добавить"
             android:textSize="24sp"
             android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="@+id/fragment_products_product_imgv"
             app:layout_constraintEnd_toStartOf="@+id/fragment_products_product_imgv"
             app:layout_constraintStart_toStartOf="parent" />
-
-        <TextView
-            android:id="@+id/fragment_products_prodcount_et"
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:layout_marginBottom="40dp"
-            android:textSize="24sp"
-            android:visibility="invisible"
-            app:layout_constraintBottom_toTopOf="@+id/fragment_products_addtocart_btn"
-            app:layout_constraintEnd_toStartOf="@+id/fragment_products_addproduct_imgbtn"
-            app:layout_constraintStart_toEndOf="@+id/fragment_products_removeproduct_imgbtn" />
-
-        <TextView
-            android:id="@+id/fragment_products_productmeasure_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="-5dp"
-            android:textSize="24sp"
-            app:layout_constraintBottom_toTopOf="@+id/fragment_products_addtocart_btn"
-            app:layout_constraintEnd_toStartOf="@+id/fragment_products_addproduct_imgbtn"
-            app:layout_constraintStart_toEndOf="@+id/fragment_products_removeproduct_imgbtn"
-            app:layout_constraintTop_toBottomOf="@+id/fragment_products_prodcount_et" />
-
-        <ImageButton
-            android:id="@+id/fragment_products_removeproduct_imgbtn"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
-            android:layout_marginBottom="30dp"
-            android:backgroundTint="#6495ED"
-            android:onClick="onClick"
-            android:tint="#FFFFFF"
-            android:visibility="invisible"
-            app:layout_constraintBottom_toTopOf="@+id/fragment_products_addtocart_btn"
-            app:layout_constraintStart_toStartOf="@+id/fragment_products_addtocart_btn"
-            app:srcCompat="@drawable/ic_remove" />
-
-        <ImageButton
-            android:id="@+id/fragment_products_addproduct_imgbtn"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
-            android:layout_marginEnd="2dp"
-            android:layout_marginBottom="30dp"
-            android:backgroundTint="#6495ED"
-            android:onClick="onClick"
-            android:tint="#FFFFFF"
-            android:visibility="invisible"
-            app:layout_constraintBottom_toTopOf="@+id/fragment_products_addtocart_btn"
-            app:layout_constraintEnd_toStartOf="@+id/fragment_products_product_imgv"
-            app:srcCompat="@android:drawable/ic_input_add" />
 
         <ImageButton
             android:id="@+id/fragment_products_showcart_btn"
@@ -222,7 +276,6 @@
             android:layout_height="350dp"
             android:layout_marginTop="65dp"
             android:background="@drawable/light_black_border"
-            android:onClick="onClick"
             android:visibility="invisible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -231,7 +284,6 @@
             android:id="@+id/fragment_products_addtofavorites_imgbtn"
             android:layout_width="80dp"
             android:layout_height="80dp"
-            android:onClick="onClick"
             android:scaleType="centerCrop"
             android:visibility="invisible"
             app:layout_constraintStart_toStartOf="@+id/fragment_products_product_imgv"
@@ -239,35 +291,18 @@
             app:srcCompat="@drawable/ic_notfavorites" />
 
         <TextView
-            android:id="@+id/fragment_products_productname_tv"
+            android:id="@+id/fragment_products_productarticle_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
             android:fontFamily="sans-serif-medium"
-            android:textSize="24sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/fragment_products_productman_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="20sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/fragment_products_productname_tv" />
-
-        <TextView
-            android:id="@+id/fragment_products_productweight_tv"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="65dp"
-            android:fontFamily="sans-serif-medium"
+            android:textColor="#61747474"
             android:textSize="18sp"
-            app:layout_constraintEnd_toStartOf="@+id/fragment_products_product_imgv"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/fragment_products_product_imgv" />
 
         <TextView
-            android:id="@+id/fragment_products_barcode_tv"
+            android:id="@+id/fragment_products_productbarcode_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-medium"
@@ -277,27 +312,12 @@
             app:layout_constraintTop_toBottomOf="@+id/fragment_products_product_imgv" />
 
         <TextView
-            android:id="@+id/fragment_products_vendorcode_tv"
+            android:id="@+id/fragment_products_composition_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:fontFamily="sans-serif-medium"
-            android:textColor="#61747474"
-            android:textSize="18sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/fragment_products_product_imgv" />
-
-        <TextView
-            android:id="@+id/fragment_products_priceproduct_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:layout_marginBottom="15dp"
-            android:text=""
-            android:textSize="27sp"
             android:visibility="invisible"
-            app:layout_constraintBottom_toTopOf="@+id/fragment_products_prodcount_et"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/fragment_products_productarticle_tv" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

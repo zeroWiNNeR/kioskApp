@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
@@ -18,8 +17,8 @@ import androidx.fragment.app.FragmentTransaction;
 import com.adamanta.kioskapp.favorites.FavoritesFragment;
 import com.adamanta.kioskapp.favorites.FavoritesSet;
 import com.adamanta.kioskapp.product.ProductsFragment;
-import com.adamanta.kioskapp.productImagesFragment.ProductImagesSet;
-import com.adamanta.kioskapp.products.interfaces.Postman;
+import com.adamanta.kioskapp.product.fragments.productImagesFragment.ProductImagesFragment;
+import com.adamanta.kioskapp.product.model.CategoryAndProduct;
 import com.adamanta.kioskapp.settings.SettingsActivity;
 import com.adamanta.kioskapp.shopcart.ProductsCartFragment;
 import com.adamanta.kioskapp.threads.UIBarControllerThread;
@@ -31,17 +30,14 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Set;
 
-public class MainActivity extends AppCompatActivity implements Postman, FavoritesSet, ProductImagesSet, IMainActivity {
-    private final String TAG = this.getClass().getSimpleName();
+public class MainActivity extends AppCompatActivity implements FavoritesSet, IMainActivity {
     UIBarControllerThread uiBarControllerThread;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-        //checkTheme();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Log.e(TAG, "MainActivity");
 
         FoldersCreator.createFolders(this);
 
@@ -72,16 +68,11 @@ public class MainActivity extends AppCompatActivity implements Postman, Favorite
 
     //***************************** Buttons *********************************
     public void onClick(@NonNull View v) {
-        Context context;
-        Intent intent;
         switch (v.getId()) {
             case R.id.ProductsButton:
-//                context = v.getContext();
-//                intent = new Intent(context, ProductsActivity.class);
-//                context.startActivity(intent);
                 Fragment productsFragment = ProductsFragment.newInstance(123);
                 FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                fragmentTransaction.replace(R.id.mainactivity_fragment_layout, productsFragment, "productsFragment");
+                fragmentTransaction.replace(R.id.mainactivity_fragment_layout, productsFragment, "ProductsFragment");
                 fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                 fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();
@@ -90,7 +81,7 @@ public class MainActivity extends AppCompatActivity implements Postman, Favorite
             case R.id.FavoritesButton:
                 Fragment favoritesFragment = FavoritesFragment.newInstance(123);
                 FragmentTransaction ftFavoritesFragment = getSupportFragmentManager().beginTransaction();
-                ftFavoritesFragment.replace(R.id.mainactivity_fragment_layout, favoritesFragment, "favoritesFragment");
+                ftFavoritesFragment.replace(R.id.mainactivity_fragment_layout, favoritesFragment, "FavoritesFragment");
                 ftFavoritesFragment.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                 ftFavoritesFragment.addToBackStack(null);
                 ftFavoritesFragment.commit();
@@ -99,15 +90,15 @@ public class MainActivity extends AppCompatActivity implements Postman, Favorite
             case R.id.CartButton:
                 Fragment cartFragment = ProductsCartFragment.newInstance(123);
                 FragmentTransaction ftCartFragment = getSupportFragmentManager().beginTransaction();
-                ftCartFragment.replace(R.id.mainactivity_fragment_layout, cartFragment, "cartFragment");
+                ftCartFragment.replace(R.id.mainactivity_fragment_layout, cartFragment, "CartFragment");
                 ftCartFragment.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                 ftCartFragment.addToBackStack(null);
                 ftCartFragment.commit();
                 break;
 
             case R.id.SettingsButton:
-                context = v.getContext();
-                intent = new Intent(context, SettingsActivity.class);
+                Context context = v.getContext();
+                Intent intent = new Intent(context, SettingsActivity.class);
                 context.startActivity(intent);
                 break;
 
@@ -118,7 +109,6 @@ public class MainActivity extends AppCompatActivity implements Postman, Favorite
     //***************************** Buttons *********************************
 
 
-    //************* UI ***********************
     @Override
     public void onAttachedToWindow() {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
@@ -133,71 +123,32 @@ public class MainActivity extends AppCompatActivity implements Postman, Favorite
         }
     }
 
-//    private void checkTheme() {
-//        try {
-//            File settingsFile = new File(
-//                    Environment.getExternalStorageDirectory().getAbsolutePath() + "/Retail/",
-//                    "settings");
-//            int numberLines = Utils.getNumOfLinesInFile(settingsFile);
-//            int lineNumber = 0;
-//            for (int i = 0; i < numberLines; i++) {
-//                if (lineNumber == 6) {
-//                    BufferedReader br = new BufferedReader(new FileReader(settingsFile), 100);
-//                    String[] sArr = br.readLine().split("=");
-//                    if (sArr[1].contains("green")) {
-//                        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-//                        int theme = sp.getInt("THEME", R.style.AppTheme_greenNoActionBar);
-//                        setTheme(theme);
-//                    } else if (sArr[1].contains("blue")) {
-//                        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-//                        int theme = sp.getInt("THEME", R.style.AppTheme_blueNoActionBar);
-//                        setTheme(theme);
-//
-//                    }
-//                }
-//                lineNumber++;
-//            }
-//        } catch (IOException e) { Log.e(TAG, "Exc= " + e); }
-//
+//    @Override
+//    public void calculation() {
+//        ProductsCartFragment fragment = (ProductsCartFragment)getSupportFragmentManager()
+//                .findFragmentByTag("CartFragment");
+//        if (fragment != null) {
+//            fragment.calculation();
+//        }
 //    }
-    //************* UI ***********************
-
-
-    @Override
-    public void calculation() {
-        ProductsCartFragment fragment = (ProductsCartFragment)getSupportFragmentManager()
-                .findFragmentByTag("cartFragment");
-        if (fragment != null) {
-            fragment.calculation();
-        }
-    }
 
     @Override
     public void favoritesSetCard(String productPath, String productName) {
         FavoritesFragment fragment = (FavoritesFragment)getSupportFragmentManager()
-                .findFragmentByTag("favoritesFragment");
+                .findFragmentByTag("FavoritesFragment");
         if (fragment != null) {
             fragment.setCard(productPath, productName);
         }
     }
 
-    @Override
-    public void productImagesSetImgV(String path, String productName) {
-        FavoritesFragment fragment = (FavoritesFragment)getSupportFragmentManager()
-                .findFragmentByTag("favoritesFragment");
-        if (fragment != null) {
-            fragment.ftr(path, productName);
-        }
-    }
-
-    @Override
-    public void productImagesFragmentClose() {
-        FavoritesFragment fragment = (FavoritesFragment)getSupportFragmentManager()
-                .findFragmentByTag("favoritesFragment");
-        if (fragment != null) {
-            fragment.closeProductsImagesFragment();
-        }
-    }
+//    @Override
+//    public void productImagesSetImgV(String path, String productName) {
+//        FavoritesFragment fragment = (FavoritesFragment)getSupportFragmentManager()
+//                .findFragmentByTag("FavoritesFragment");
+//        if (fragment != null) {
+//            fragment.ftr(path, productName);
+//        }
+//    }
 
     @Override
     public void updateUI(boolean isOnline) {
@@ -219,6 +170,33 @@ public class MainActivity extends AppCompatActivity implements Postman, Favorite
             }
         });
     }
+
+    @Override
+    public void productsFragmentUpdateSecondRVData(long parentCategory) {
+        ProductsFragment fragment = (ProductsFragment) getSupportFragmentManager().findFragmentByTag("ProductsFragment");
+        if (fragment != null)
+            fragment.updateSecondRVData(parentCategory);
+    }
+    @Override
+    public void productsFragmentResetPickedCategories() {
+        ProductsFragment fragment = (ProductsFragment) getSupportFragmentManager().findFragmentByTag("ProductsFragment");
+        if (fragment != null)
+            fragment.resetPickedCategories();
+    }
+    @Override
+    public void productsFragmentSetProductCard (CategoryAndProduct product) {
+        ProductsFragment fragment = (ProductsFragment) getSupportFragmentManager().findFragmentByTag("ProductsFragment");
+        if (fragment != null)
+            fragment.setProductCard(product);
+    }
+
+    @Override
+    public void productImagesFragmentChangeMainImage (String imageAbsolutePath) {
+        ProductImagesFragment fragment = (ProductImagesFragment) getSupportFragmentManager().findFragmentByTag("ProductImagesFragment");
+        if (fragment != null)
+            fragment.changeMainImage(imageAbsolutePath);
+    }
+
 
 //    @Override
 //    protected void onDestroy() {

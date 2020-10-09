@@ -1,7 +1,6 @@
-package com.adamanta.kioskapp.productImagesFragment;
-import android.app.Activity;
+package com.adamanta.kioskapp.product.fragments.productImagesFragment;
+
 import android.graphics.Bitmap;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,23 +9,20 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.io.File;
+import com.adamanta.kioskapp.IMainActivity;
+import com.adamanta.kioskapp.R;
+import com.adamanta.kioskapp.product.utils.Utils;
+
 import java.util.List;
 
-import com.adamanta.kioskapp.products.utils.Utils;
-import com.adamanta.kioskapp.R;
-
 public class ProductImagesRVAdapter extends RecyclerView.Adapter<ProductImagesRVAdapter.ViewHolder> {
-    private final String TAG = this.getClass().getSimpleName();
-    private Activity activity;
 
-    private List<ProductImagesList> productImagesList;
-
+    private List<ProductImage> productImagesList;
     private int positionNumber = 1000;
-    private int prevpositionNumber = 0;
+    private int prevPositionNumber = 0;
     private boolean isItFirstCreate = true;
 
-    public ProductImagesRVAdapter(List<ProductImagesList> productImagesList) { this.productImagesList = productImagesList; }
+    public ProductImagesRVAdapter(List<ProductImage> productImagesList) { this.productImagesList = productImagesList; }
 
     @NonNull
     @Override
@@ -38,11 +34,10 @@ public class ProductImagesRVAdapter extends RecyclerView.Adapter<ProductImagesRV
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
-        ProductImagesList item = productImagesList.get(position);
-        viewHolder.productImagesButtonListener.setItem(item);
+        ProductImage image = productImagesList.get(position);
+        viewHolder.productImagesButtonListener.setItem(image);
 
-        File sdFile = new File(item.getPath(), item.getProductName());
-        Bitmap bitmap = Utils.getScaledBitmap(sdFile.getAbsolutePath(), 200, 200);
+        Bitmap bitmap = Utils.getScaledBitmap(image.getImage().getAbsolutePath(), 200, 200);
         viewHolder.productImagesImgV.setImageBitmap(bitmap);
 
         if (isItFirstCreate) {
@@ -52,8 +47,7 @@ public class ProductImagesRVAdapter extends RecyclerView.Adapter<ProductImagesRV
                 viewHolder.productImagesImgV.setBackgroundResource(R.drawable.light_black_border);
             }
             isItFirstCreate = false;
-        }
-        else {
+        } else {
             if (position == positionNumber) {
                 viewHolder.productImagesImgV.setBackgroundResource(R.drawable.black_border);
             } else {
@@ -67,42 +61,32 @@ public class ProductImagesRVAdapter extends RecyclerView.Adapter<ProductImagesRV
 
     class ViewHolder extends RecyclerView.ViewHolder {
         private ImageView productImagesImgV;
-
         private productImagesButtonListener productImagesButtonListener;
 
         private ViewHolder(@NonNull View itemView) {
             super(itemView);
             productImagesImgV = itemView.findViewById(R.id.productimages_rvitem_imgv);
-
             productImagesButtonListener = new productImagesButtonListener();
             productImagesImgV.setOnClickListener(productImagesButtonListener);
         }
     }
 
     private class productImagesButtonListener implements View.OnClickListener {
-        private ProductImagesList productImagesItem;
+        private ProductImage productImage;
 
-        private void setItem(ProductImagesList productImagesList) {
-            this.productImagesItem = productImagesList;
+        private void setItem (ProductImage productImage) {
+            this.productImage = productImage;
         }
 
         @Override
         public void onClick(@NonNull View v) {
-            notifyItemChanged(prevpositionNumber);
-            positionNumber = productImagesItem.getNumberInList();
+            notifyItemChanged(prevPositionNumber);
+            positionNumber = productImage.getPositionInList();
             //notifyDataSetChanged();
             notifyItemChanged(positionNumber);
-            prevpositionNumber = positionNumber;
+            prevPositionNumber = positionNumber;
 
-            if (v.getContext() instanceof Activity)
-                activity = (Activity) v.getContext();
-            try{
-                ((ProductImagesSet) activity).productImagesSetImgV(
-                        productImagesItem.getPath(),
-                        productImagesItem.getProductName()
-                );
-            }
-            catch (ClassCastException e) { Log.e(TAG, "ClassCastExc" + e); }
+            ((IMainActivity) v.getContext()).productImagesFragmentChangeMainImage(productImage.getImage().getAbsolutePath());
         }
 
     }

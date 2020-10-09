@@ -1,4 +1,4 @@
-package com.adamanta.kioskapp.settings.interfaces;
+package com.adamanta.kioskapp.settings;
 
 public interface ISettingsActivity {
 

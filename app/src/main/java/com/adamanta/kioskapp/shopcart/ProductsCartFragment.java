@@ -17,7 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.adamanta.kioskapp.R;
-import com.adamanta.kioskapp.products.utils.Utils;
+import com.adamanta.kioskapp.product.utils.Utils;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -61,7 +61,7 @@ public class ProductsCartFragment extends Fragment implements View.OnClickListen
             File sdFileCart = new File(Environment.getExternalStorageDirectory().getAbsolutePath()
                     + "/" + "Retail/", "корзина");
             BufferedReader br = new BufferedReader(new FileReader(sdFileCart), 100);
-            if (br.readLine() == null){ Utils.writeStringToFile(sdFileCart, " ", false); }
+            if (br.readLine() == null) { Utils.writeStringToFile(sdFileCart, " ", false); }
             br.close();
 
             int lineNumber = 1;

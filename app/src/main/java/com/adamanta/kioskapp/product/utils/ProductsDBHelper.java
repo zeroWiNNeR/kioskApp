@@ -6,9 +6,12 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.adamanta.kioskapp.product.model.CategoryAndProduct;
 import com.adamanta.kioskapp.product.model.Product;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ProductsDBHelper extends SQLiteOpenHelper {
 
@@ -48,31 +51,31 @@ public class ProductsDBHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         String createTable = "CREATE TABLE " + TABLE_NAME +
                 " (id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                COL2 + " TEXT TYPE," +
-                COL3 + " INTEGER PARENT_CATEGORY," +
-                COL4 + " INTEGER POSITION," +
-                COL5 + " INTEGER IS_ENABLE," +
-                COL6 + " TEXT NAME," +
-                COL7 + " TEXT FULL_NAME," +
-                COL8 + " INTEGER ARTICLE," +
-                COL9 + " INTEGER BARCODE," +
-                COL10 + " TEXT WEIGHT," +
-                COL11 + " TEXT MIN_SIZE," +
-                COL12 + " TEXT SIZE_STEP," +
-                COL13 + " TEXT PRICE_PER_SIZE_STEP," +
-                COL14 + " TEXT WEIGHT_PER_SIZE_STEP," +
-                COL15 + " TEXT MAX_SIZE," +
-                COL16 + " TEXT SIZE_TYPE," +
-                COL17 + " TEXT STOCK_QUANTITY," +
-                COL18 + " TEXT MANUFACTURER," +
-                COL19 + " TEXT DESCRIPTION," +
-                COL20 + " TEXT COMPOSITION," +
-                COL21 + " TEXT PREV_COMPOSITION," +
-                COL22 + " TEXT PREV_COMPOSITION_DATE," +
-                COL23 + " TEXT PREV_PREV_COMPOSITION," +
-                COL24 + " TEXT PREV_PREV_COMPOSITION_DATE," +
-                COL25 + " TEXT INFORMATION," +
-                COL26 + " TEXT IMAGES_INFO)";
+                COL2 + " TEXT," +
+                COL3 + " INTEGER," +
+                COL4 + " INTEGER," +
+                COL5 + " INTEGER," +
+                COL6 + " TEXT," +
+                COL7 + " TEXT," +
+                COL8 + " INTEGER," +
+                COL9 + " INTEGER," +
+                COL10 + " TEXT," +
+                COL11 + " TEXT," +
+                COL12 + " TEXT," +
+                COL13 + " TEXT," +
+                COL14 + " TEXT," +
+                COL15 + " TEXT," +
+                COL16 + " TEXT," +
+                COL17 + " TEXT," +
+                COL18 + " TEXT," +
+                COL19 + " TEXT," +
+                COL20 + " TEXT," +
+                COL21 + " TEXT," +
+                COL22 + " TEXT," +
+                COL23 + " TEXT," +
+                COL24 + " TEXT," +
+                COL25 + " TEXT," +
+                COL26 + " TEXT)";
 
         db.execSQL(createTable);
     }
@@ -134,6 +137,9 @@ public class ProductsDBHelper extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery(query, null);
 
         if (cursor==null || cursor.getCount()==0) {
+            if (cursor != null)
+                cursor.close();
+            db.close();
             return null;
         }
 
@@ -168,6 +174,56 @@ public class ProductsDBHelper extends SQLiteOpenHelper {
         cursor.close();
         db.close();
         return product;
+    }
+
+    public List<CategoryAndProduct> getListCategoryAndProductByParentCategory(long parentCategory) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT * FROM " + TABLE_NAME + " WHERE " + COL3 + " = '" + parentCategory + "'";
+        Cursor cursor = db.rawQuery(query, null);
+
+        if (cursor==null || cursor.getCount()==0) {
+            if (cursor != null)
+                cursor.close();
+            db.close();
+            return new ArrayList<>();
+        }
+
+//        cursor.moveToFirst();
+        List<CategoryAndProduct> products = new ArrayList<>();
+        while (cursor.moveToNext()) {
+            CategoryAndProduct product = new CategoryAndProduct();
+            product.setId(cursor.getLong(0));
+            product.setType(cursor.getString(1).charAt(0));
+            product.setParentCategory(cursor.getLong(2));
+            product.setPosition(cursor.getInt(3));
+            product.setIsEnable( cursor.getInt(4) == 1 );
+            product.setName(cursor.getString(5));
+            product.setFullName(cursor.getString(6));
+            product.setArticle(cursor.getLong(7));
+            product.setBarcode(cursor.getLong(8));
+            product.setWeight(cursor.getString(9));
+            product.setMinSize(new BigDecimal(cursor.getString(10)));
+            product.setSizeStep(new BigDecimal(cursor.getString(11)));
+            product.setPricePerSizeStep(new BigDecimal(cursor.getString(12)));
+            product.setWeightPerSizeStep(new BigDecimal(cursor.getString(13)));
+            product.setMaxSize(new BigDecimal(cursor.getString(14)));
+            product.setSizeType(cursor.getString(15));
+            product.setStockQuantity(new BigDecimal(cursor.getString(16)));
+            product.setManufacturer(cursor.getString(17));
+            product.setDescription(cursor.getString(18));
+            product.setComposition(cursor.getString(19));
+            product.setPrevComposition(cursor.getString(20));
+            product.setPrevCompositionDate(cursor.getString(21));
+            product.setPrevPrevComposition(cursor.getString(22));
+            product.setPrevPrevCompositionDate(cursor.getString(23));
+            product.setInformation(cursor.getString(24));
+            product.setImagesInfo(cursor.getString(25));
+            products.add(product);
+        }
+
+        cursor.close();
+        db.close();
+        return products;
     }
 
     /*

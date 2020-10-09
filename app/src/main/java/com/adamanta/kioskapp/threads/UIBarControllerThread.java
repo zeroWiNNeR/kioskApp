@@ -27,7 +27,7 @@ public class UIBarControllerThread extends Thread {
     private long lastPollingTime = 0L;
     private boolean isOnline = false;
 
-    // получаем ссылку на Activity
+    // получаем ссылку на context Activity
     public void link(Context context) {
         this.context = context;
     }

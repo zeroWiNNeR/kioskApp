@@ -23,8 +23,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.adamanta.kioskapp.R;
-import com.adamanta.kioskapp.productImagesFragment.ProductImagesFragment;
-import com.adamanta.kioskapp.products.utils.Utils;
+import com.adamanta.kioskapp.product.fragments.productImagesFragment.ProductImagesFragment;
+import com.adamanta.kioskapp.product.utils.Utils;
 import com.adamanta.kioskapp.shopcart.ProductsCartFragment;
 
 import java.io.BufferedReader;
@@ -92,7 +92,7 @@ public class FavoritesFragment extends Fragment implements View.OnClickListener 
                     + "/" + "Retail/", "избранное");
 
             BufferedReader br = new BufferedReader(new FileReader(sdFileCart), 100);
-            if (br.readLine() == null){ Utils.writeStringToFile(sdFileCart, " ", false); }
+            if (br.readLine() == null) { Utils.writeStringToFile(sdFileCart, " ", false); }
             br.close();
 
             String str;
@@ -208,7 +208,7 @@ public class FavoritesFragment extends Fragment implements View.OnClickListener 
                 break;
 
             case R.id.favorites_product_imgv:
-                Fragment productImagesFragment = ProductImagesFragment.newInstance(productPathToFragments+";"+productNameToFragments);
+                Fragment productImagesFragment = ProductImagesFragment.newInstance(0L, "123");
                 FragmentTransaction ftr = getChildFragmentManager().beginTransaction();
                 ftr.replace(R.id.favorites_mainlayout, productImagesFragment, "productImagesFragment");
                 ftr.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
@@ -341,7 +341,7 @@ public class FavoritesFragment extends Fragment implements View.OnClickListener 
         ProductImagesFragment fragment = (ProductImagesFragment)getChildFragmentManager()
                 .findFragmentByTag("productImagesFragment");
         if (fragment != null) {
-            fragment.setImageView(path, productName);
+            fragment.changeMainImage(path);
         }
     }
 

@@ -7,7 +7,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.adamanta.kioskapp.settings.interfaces.ISettingsActivity;
+import com.adamanta.kioskapp.settings.ISettingsActivity;
 import com.adamanta.kioskapp.settings.utils.SettingsDBHelper;
 import com.adamanta.kioskapp.utils.Constants;
 

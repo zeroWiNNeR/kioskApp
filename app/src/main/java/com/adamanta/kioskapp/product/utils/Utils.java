@@ -1,4 +1,4 @@
-package com.adamanta.kioskapp.products.utils;
+package com.adamanta.kioskapp.product.utils;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
@@ -13,7 +13,6 @@ import java.text.DecimalFormat;
 
 public final class Utils {
     private static final String TAG = "Utils";
-
 
     public static Bitmap getScaledBitmap(String path, int destWidth, int destHeight){
         //read in the dimensions of the image on disk
