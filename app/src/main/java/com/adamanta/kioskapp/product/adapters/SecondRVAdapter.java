@@ -56,6 +56,7 @@ public class SecondRVAdapter extends RecyclerView.Adapter<SecondRVAdapter.ViewHo
 
     public void updateListData (List<CategoryAndProduct> categoryAndProductList) {
         this.categoryAndProductList = categoryAndProductList;
+        pickedProductArticle = -1L;
         notifyDataSetChanged();
     }
 

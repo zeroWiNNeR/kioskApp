@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.adamanta.kioskapp.R;
+import com.adamanta.kioskapp.favorites.utils.FavoritesDBHelper;
 import com.adamanta.kioskapp.product.adapters.FirstRVAdapter;
 import com.adamanta.kioskapp.product.adapters.SecondRVAdapter;
 import com.adamanta.kioskapp.product.fragments.productImagesFragment.ProductImagesFragment;
@@ -41,6 +42,7 @@ public class ProductsFragment extends Fragment implements View.OnClickListener {
     private View view;
     private ProductsDBHelper productsDBHelper;
     private CategoriesDBHelper categoriesDBHelper;
+    private FavoritesDBHelper favoritesDBHelper;
     private CategoryAndProduct product;
     private ImageView productsFragmentMainImgV, productsColumnImgV, productMainImgV, addToFavoritesImgBtn;
     private TextView productFullNameTV, manufacturerTV, weightTV, priceAllTV, priceAllRubTV, countAllTV, sizeTypeTV, articleTV, barcodeTV, compositionTV;
@@ -79,6 +81,7 @@ public class ProductsFragment extends Fragment implements View.OnClickListener {
         productMainImgV = view.findViewById(R.id.fragment_products_product_imgv);
         productMainImgV.setOnClickListener(this);
         addToFavoritesImgBtn = view.findViewById(R.id.fragment_products_addtofavorites_imgbtn);
+        addToFavoritesImgBtn.setOnClickListener(this);
         productFullNameTV = view.findViewById(R.id.fragment_products_productfullname_tv);
         manufacturerTV = view.findViewById(R.id.fragment_products_productmanufacturer_tv);
         weightTV = view.findViewById(R.id.fragment_products_productweight_tv);
@@ -99,6 +102,7 @@ public class ProductsFragment extends Fragment implements View.OnClickListener {
 
         productsDBHelper = new ProductsDBHelper(view.getContext());
         categoriesDBHelper = new CategoriesDBHelper(view.getContext());
+        favoritesDBHelper = new FavoritesDBHelper(view.getContext());
 
         List<Category> categories = categoriesDBHelper.getCategoriesByParentCategory(0L);
         firstRVAdapter = new FirstRVAdapter(categories);
@@ -191,6 +195,13 @@ public class ProductsFragment extends Fragment implements View.OnClickListener {
 
 
             case R.id.fragment_products_addtofavorites_imgbtn:
+                if (favoritesDBHelper.findByArticle(product.getArticle())) {
+                    favoritesDBHelper.deleteByArticle(product.getArticle());
+                    addToFavoritesImgBtn.setImageResource(R.drawable.ic_notfavorites);
+                } else if (!favoritesDBHelper.findByArticle(product.getArticle())) {
+                    favoritesDBHelper.saveProduct(product.getArticle());
+                    addToFavoritesImgBtn.setImageResource(R.drawable.ic_favorites);
+                }
                 break;
 
             case R.id.fragment_products_product_imgv:
@@ -235,24 +246,19 @@ public class ProductsFragment extends Fragment implements View.OnClickListener {
 
         TextView priceAllRubProductTV = view.findViewById(R.id.fragment_products_productpriceallrub_tv);
         priceAllRubProductTV.setVisibility(View.VISIBLE);
-
         minusProductImgBtn.setVisibility(View.VISIBLE);
         minusProductImgBtn.setClickable(true);
         minusProductImgBtn.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#8BC34A")));
-
         plusProductImgBtn.setVisibility(View.VISIBLE);
         plusProductImgBtn.setClickable(true);
         plusProductImgBtn.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#8BC34A")));
-
         priceAllTV.setVisibility(View.VISIBLE);
         priceAllRubTV.setVisibility(View.VISIBLE);
         countAllTV.setVisibility(View.VISIBLE);
-
         addProductToCartBtn.setVisibility(View.VISIBLE);
         addProductToCartBtn.setClickable(true);
         addProductToCartBtn.setText("Добавить");
         addProductToCartBtn.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#8BC34A")));
-
         showCartBtn.setVisibility(View.VISIBLE);
 
         String[] imagesInfo = product.getImagesInfo().split("\\|");
@@ -273,7 +279,6 @@ public class ProductsFragment extends Fragment implements View.OnClickListener {
         File filesDir = view.getContext().getFilesDir();
         File productImagesDir = new File(filesDir.getAbsolutePath() + "/images/products/" + product.getArticle() + "/");
         File productMainImg = new File(productImagesDir, mainProductImgName);
-
         Bitmap bitmap = Utils.getScaledBitmap(productMainImg.getAbsolutePath(), 250, 350);
         productMainImgV.setImageBitmap(bitmap);
         productMainImgV.setVisibility(View.VISIBLE);
@@ -296,7 +301,6 @@ public class ProductsFragment extends Fragment implements View.OnClickListener {
             plusProductImgBtn.setClickable(false);
             addProductToCartBtn.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#D3D3D3")));
             addProductToCartBtn.setClickable(false);
-
             priceAllTV.setText("Нет в наличии");
             countAllTV.setText("0");
         }
@@ -326,7 +330,7 @@ public class ProductsFragment extends Fragment implements View.OnClickListener {
         barcodeTV.setText(String.valueOf("Ш/н " + product.getBarcode()));
         compositionTV.setText(product.getComposition());
 
-        if (Utils.checkInFavorites(product.getName())) {
+        if (favoritesDBHelper.findByArticle(product.getArticle())) {
             addToFavoritesImgBtn.setImageResource(R.drawable.ic_favorites);
         } else {
             addToFavoritesImgBtn.setImageResource(R.drawable.ic_notfavorites);
@@ -337,7 +341,6 @@ public class ProductsFragment extends Fragment implements View.OnClickListener {
     private void clearProductCard() {
         minusProductImgBtn.setVisibility(View.INVISIBLE);
         plusProductImgBtn.setVisibility(View.INVISIBLE);
-
         productFullNameTV.setText(null);
         manufacturerTV.setText(null);
         weightTV.setText(null);
@@ -348,24 +351,17 @@ public class ProductsFragment extends Fragment implements View.OnClickListener {
         articleTV.setText(null);
         barcodeTV.setText(null);
         compositionTV.setText(null);
-
         addProductToCartBtn.setVisibility(View.INVISIBLE);
         showCartBtn.setVisibility(View.INVISIBLE);
-
         productMainImgV.setImageBitmap(null);
         productMainImgV.setVisibility(View.INVISIBLE);
-
         addToFavoritesImgBtn.setVisibility(View.INVISIBLE);
-
         productFullNameTV.setText(null);
         manufacturerTV.setText(null);
-
         weightTV.setText(null);
         priceAllTV.setText(null);
-
         articleTV.setText(null);
         barcodeTV.setText(null);
-
         productsColumnImgV.setVisibility(View.INVISIBLE);
     }
 

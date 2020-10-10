@@ -54,6 +54,7 @@ public class MainActivity extends AppCompatActivity implements FavoritesSet, IMa
                 return;
             }
         }
+
         if (!isAliveUIBarControllerThread) {
             uiBarControllerThread = (UIBarControllerThread) getLastNonConfigurationInstance();
             if (uiBarControllerThread == null) {
