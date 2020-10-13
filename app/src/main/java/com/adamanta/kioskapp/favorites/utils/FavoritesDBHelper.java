@@ -74,6 +74,33 @@ public class FavoritesDBHelper extends SQLiteOpenHelper {
         }
     }
 
+    /**
+     * Returns all the data from database
+     * @return data
+     */
+    public long[] getAllValues() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT " + COL2 + " FROM " + TABLE_NAME;
+        Cursor cursor = db.rawQuery(query, null);
+        if (cursor==null || cursor.getCount()==0) {
+            if (cursor != null)
+                cursor.close();
+            db.close();
+            return new long[0];
+        }
+        long[] values = new long[cursor.getCount()];
+        cursor.moveToFirst();
+        int i = 0;
+        while (!cursor.isAfterLast()) {
+            values[i] = cursor.getLong(0);
+            i++;
+            cursor.moveToNext();
+        }
+        cursor.close();
+        db.close();
+        return values;
+    }
+
     public boolean deleteByArticle(long article) {
         SQLiteDatabase db = this.getWritableDatabase();
         long result = db.delete(
@@ -83,5 +110,7 @@ public class FavoritesDBHelper extends SQLiteOpenHelper {
         db.close();
         return result != -1;
     }
+
+
 
 }

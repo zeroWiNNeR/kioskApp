@@ -15,10 +15,11 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.adamanta.kioskapp.favorites.FavoritesFragment;
-import com.adamanta.kioskapp.favorites.FavoritesSet;
+import com.adamanta.kioskapp.favorites.IFavoritesFragment;
 import com.adamanta.kioskapp.product.ProductsFragment;
 import com.adamanta.kioskapp.product.fragments.productImagesFragment.ProductImagesFragment;
 import com.adamanta.kioskapp.product.model.CategoryAndProduct;
+import com.adamanta.kioskapp.product.model.Product;
 import com.adamanta.kioskapp.settings.SettingsActivity;
 import com.adamanta.kioskapp.shopcart.ProductsCartFragment;
 import com.adamanta.kioskapp.threads.UIBarControllerThread;
@@ -30,7 +31,7 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Set;
 
-public class MainActivity extends AppCompatActivity implements FavoritesSet, IMainActivity {
+public class MainActivity extends AppCompatActivity implements IFavoritesFragment, IMainActivity {
     UIBarControllerThread uiBarControllerThread;
 
     @Override
@@ -134,11 +135,11 @@ public class MainActivity extends AppCompatActivity implements FavoritesSet, IMa
 //    }
 
     @Override
-    public void favoritesSetCard(String productPath, String productName) {
+    public void favoritesFragmentSetProductCard(Product product) {
         FavoritesFragment fragment = (FavoritesFragment)getSupportFragmentManager()
                 .findFragmentByTag("FavoritesFragment");
         if (fragment != null) {
-            fragment.setCard(productPath, productName);
+            fragment.setProductCard(product);
         }
     }
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/favoritesrv_constraintlayout"
+    android:id="@+id/fragment_favorites_rv_constraintlayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginEnd="5dp"
@@ -9,7 +9,7 @@
     android:minHeight="50dp">
 
     <ImageButton
-        android:id="@+id/favorites_rvdeleteitem_ibtn"
+        android:id="@+id/fragment_favorites_rv_deleteitem_imgbtn"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_marginTop="1dp"
@@ -23,17 +23,17 @@
         app:srcCompat="@drawable/ic_close" />
 
     <TextView
-        android:id="@+id/favoritesitemcountmeasure_tv"
+        android:id="@+id/fragment_favorites_rv_item_countmeasure_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAlignment="textStart"
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/favorites_rvdeleteitem_ibtn"
+        app:layout_constraintEnd_toStartOf="@+id/fragment_favorites_rv_deleteitem_imgbtn"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/favorites_rvitemnumber_tv"
+        android:id="@+id/fragment_favorites_rv_productname_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:minWidth="50dp"

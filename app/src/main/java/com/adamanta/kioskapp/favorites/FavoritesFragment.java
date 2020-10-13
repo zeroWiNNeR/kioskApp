@@ -4,7 +4,6 @@ import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,47 +22,32 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.adamanta.kioskapp.R;
+import com.adamanta.kioskapp.favorites.utils.FavoritesDBHelper;
 import com.adamanta.kioskapp.product.fragments.productImagesFragment.ProductImagesFragment;
+import com.adamanta.kioskapp.product.model.Product;
+import com.adamanta.kioskapp.product.utils.ProductsDBHelper;
 import com.adamanta.kioskapp.product.utils.Utils;
-import com.adamanta.kioskapp.shopcart.ProductsCartFragment;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 public class FavoritesFragment extends Fragment implements View.OnClickListener {
-    private View v;
+    private View view;
+    private FavoritesDBHelper favoritesDBHelper;
+    private ProductsDBHelper productsDBHelper;
     private List<FavoritesList> favoritesList = new ArrayList<>();
-    private final String TAG = this.getClass().getSimpleName();
 
-    private ImageView favoritesProductMainImgV;
-    private TextView favoritesProductNameTV;
-    private TextView favoritesProductmanTV;
-    private TextView favoritesVendorcodeTV;
-    private TextView favoritesBarcodeTV;
-    private TextView favoritesPriceProductTV;
-    private TextView favoritesMeasureProductTV;
-    private TextView favoritesWeightTV;
-    private ImageButton favoritesRemoveProductImgB;
-    private TextView favoritesCountProductTV;
-    private ImageButton favoritesAddProductImgB;
-    private Button favoritesAddProductToCartB;
-    private ImageButton favoritesShowCartButton;
+    private ImageView productMainImgV;
+    private TextView productFullNameTV, manufacturerTV, weightTV, priceAllTV, priceAllRubTV, countAllTV, sizeTypeTV, articleTV, barcodeTV, compositionTV;
+    private ImageButton minusProductImgBtn, plusProductImgBtn, showCartBtn;
+    private Button addProductToCartBtn;
 
-    private String productPathToFragments = "";
-    private String productNameToFragments = "";
-    private float countProductTVChangeFloat = 0;
-    private int countProductTVChangeInt = 0;
-    private float startCountProduct = 0;
-    private int startCountProductInt = 0;
-    private boolean isCountInt;
-    private int amountProductAll = 1;
-
-    private FavoritesRVAdapter favoritesRVAdapter = new FavoritesRVAdapter(favoritesList);
+    private FavoritesRVAdapter favoritesRVAdapter;
+    private Product product;
+    private BigDecimal currentPriceAll;
 
     public static FavoritesFragment newInstance(int num) {
         FavoritesFragment f = new FavoritesFragment();
@@ -85,135 +69,115 @@ public class FavoritesFragment extends Fragment implements View.OnClickListener 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        v = inflater.inflate(R.layout.favorites_fragment, container, false);
+        view = inflater.inflate(R.layout.favorites_fragment, container, false);
 
-        try{
-            File sdFileCart = new File(Environment.getExternalStorageDirectory().getAbsolutePath()
-                    + "/" + "Retail/", "избранное");
-
-            BufferedReader br = new BufferedReader(new FileReader(sdFileCart), 100);
-            if (br.readLine() == null) { Utils.writeStringToFile(sdFileCart, " ", false); }
-            br.close();
-
-            String str;
-            BufferedReader br2 = new BufferedReader(new FileReader(sdFileCart), 100);
-            while((str = br2.readLine()) != null) {
-                if (str.contains(";")) {
-                    String[] sArr = str.split(";");
-                    favoritesList.add(new FavoritesList(sArr[0], sArr[1]));
-                }
-            }
-            br2.close();
+        favoritesDBHelper = new FavoritesDBHelper(view.getContext());
+        productsDBHelper = new ProductsDBHelper(view.getContext());
+        long[] favoriteProductArticles = favoritesDBHelper.getAllValues();
+        List<Product> favoriteProductsList = new ArrayList<>();
+        for (long article : favoriteProductArticles) {
+            Product productFromDb = productsDBHelper.getByArticle(article);
+            if (productFromDb != null)
+                favoriteProductsList.add(productFromDb);
         }
-        catch(IOException e) { e.printStackTrace(); Log.e(TAG, "IOException= " + e); }
 
-
-        //****************************** Buttons ***********************************
-        ImageButton closeFragmentBtn = v.findViewById(R.id.favorites_closefragment_imgb);
+        ImageButton closeFragmentBtn = view.findViewById(R.id.fragment_favorites_closefragment_imgb);
         closeFragmentBtn.setOnClickListener(this);
+        productMainImgV = view.findViewById(R.id.fragment_favorites_product_imgv);
+        productMainImgV.setOnClickListener(this);
+        productFullNameTV = view.findViewById(R.id.fragment_favorites_productfullname_tv);
+        manufacturerTV = view.findViewById(R.id.fragment_favorites_productmanufacturer_tv);
+        weightTV = view.findViewById(R.id.fragment_favorites_productweight_tv);
+        priceAllTV = view.findViewById(R.id.fragment_favorites_productpriceall_tv);
+        priceAllRubTV = view.findViewById(R.id.fragment_favorites_productpriceallrub_tv);
+        minusProductImgBtn = view.findViewById(R.id.fragment_favorites_minusproduct_imgbtn);
+        minusProductImgBtn.setOnClickListener(this);
+        countAllTV = view.findViewById(R.id.fragment_favorites_productcountall_tv);
+        sizeTypeTV = view.findViewById(R.id.fragment_favorites_productsizetype_tv);
+        plusProductImgBtn = view.findViewById(R.id.fragment_favorites_plusproduct_imgbtn);
+        plusProductImgBtn.setOnClickListener(this);
+        addProductToCartBtn = view.findViewById(R.id.fragment_favorites_addtocart_btn);
+        addProductToCartBtn.setOnClickListener(this);
+        showCartBtn = view.findViewById(R.id.fragment_favorites_showcart_btn);
+        articleTV = view.findViewById(R.id.fragment_favorites_productarticle_tv);
+        barcodeTV = view.findViewById(R.id.fragment_favorites_productbarcode_tv);
+        compositionTV = view.findViewById(R.id.fragment_favorites_composition_tv);
 
-        favoritesProductMainImgV = v.findViewById(R.id.favorites_product_imgv);
-        favoritesProductMainImgV.setOnClickListener(this);
-        favoritesProductNameTV = v.findViewById(R.id.favorites_productname_tv);
-        favoritesProductmanTV = v.findViewById(R.id.favorites_productman_tv);
-        favoritesVendorcodeTV = v.findViewById(R.id.favorites_vendorcode_tv);
-        favoritesBarcodeTV = v.findViewById(R.id.favorites_barcode_tv);
-        favoritesPriceProductTV = v.findViewById(R.id.favorites_priceproduct_tv);
-        favoritesWeightTV = v.findViewById(R.id.favorites_productweight_tv);
-        favoritesRemoveProductImgB = v.findViewById(R.id.favorites_removeproduct_imgb);
-        favoritesRemoveProductImgB.setOnClickListener(this);
-        favoritesCountProductTV = v.findViewById(R.id.favorites_prodcount_et);
-        favoritesMeasureProductTV = v.findViewById(R.id.favorites_productmeasure_tv);
-        favoritesAddProductImgB = v.findViewById(R.id.favorites_addproduct_imgb);
-        favoritesAddProductImgB.setOnClickListener(this);
-        favoritesAddProductToCartB = v.findViewById(R.id.favorites_addtocart_b);
-        favoritesAddProductToCartB.setOnClickListener(this);
-        favoritesShowCartButton = v.findViewById(R.id.favorites_showcart_b);
-        favoritesShowCartButton.setOnClickListener(this);
-        //****************************** Buttons ***********************************
-
-        //****************************** Favorites Adapter *****************************
-        final RecyclerView favoritesRecyclerView = v.findViewById(R.id.favorites_rv);
+        favoritesRVAdapter = new FavoritesRVAdapter(favoriteProductsList);
+        final RecyclerView favoritesRecyclerView = view.findViewById(R.id.fragment_favorites_rv);
         favoritesRecyclerView.setHasFixedSize(false);
         favoritesRecyclerView.setAdapter(favoritesRVAdapter);
-        final LinearLayoutManager layoutManager = new LinearLayoutManager(v.getContext());
+        final LinearLayoutManager layoutManager = new LinearLayoutManager(view.getContext());
         favoritesRecyclerView.setLayoutManager(layoutManager);
         final RecyclerView.ItemAnimator itemAnimator = new DefaultItemAnimator();
         favoritesRecyclerView.setItemAnimator(itemAnimator);
-        //****************************** Favorites Adapter *****************************
 
-        return v;
+        return view;
     }
 
-    //***************************** Buttons *********************************
     public void onClick(@NonNull View v) {
         switch (v.getId()){
-            case R.id.favorites_closefragment_imgb:
+            case R.id.fragment_favorites_closefragment_imgb:
                 try{
                     getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
-                } catch (NullPointerException e){ Log.e(TAG,"NullPointExc" + e); }
+                } catch (NullPointerException e) { Log.e(this.getClass().getName(),"NullPointExc" + e); }
                 break;
 
-            case R.id.favorites_removeproduct_imgb:
-                if (isCountInt) {
-                    int countProduct = Integer.parseInt(favoritesCountProductTV.getText().toString());
-                    if (countProduct > startCountProduct) {
-                        favoritesCountProductTV.setText(String.valueOf(countProduct - countProductTVChangeInt));
-                        amountProductAll--;
+            case R.id.fragment_favorites_minusproduct_imgbtn:
+                BigDecimal currentCountAll = new BigDecimal(countAllTV.getText().toString());
+                currentCountAll = currentCountAll.subtract(product.getSizeStep());
+                if (currentCountAll.compareTo(product.getMinSize()) >= 0) {
+                    if (currentCountAll.stripTrailingZeros().scale() <= 0) {
+                        countAllTV.setText(String.valueOf(currentCountAll.toBigIntegerExact()));
+                    } else {
+                        countAllTV.setText(String.valueOf(currentCountAll));
                     }
-                } else if (!isCountInt) {
-                    float countProduct = Float.parseFloat(favoritesCountProductTV.getText().toString());
-                    if (countProduct > startCountProduct) {
-                        float buf = countProduct - countProductTVChangeFloat;
-                        favoritesCountProductTV.setText(Utils.formatFloatToString(buf, 1));
-                        amountProductAll--;
+                    currentPriceAll = currentPriceAll.subtract(product.getPricePerSizeStep());
+                    priceAllTV.setText(String.valueOf(currentPriceAll));
+                    addProductToCartBtn.setText("Добавить");
+                }
+                addProductToCartBtn.setText("Добавить");
+                break;
+
+            case R.id.fragment_favorites_plusproduct_imgbtn:
+                currentCountAll = new BigDecimal(countAllTV.getText().toString());
+                currentCountAll = currentCountAll.add(product.getSizeStep());
+                if (currentCountAll.compareTo(product.getMaxSize()) <= 0) {
+                    if (currentCountAll.stripTrailingZeros().scale() <= 0) {
+                        countAllTV.setText(String.valueOf(currentCountAll.toBigIntegerExact()));
+                    } else {
+                        countAllTV.setText(String.valueOf(currentCountAll));
                     }
+                    currentPriceAll = currentPriceAll.add(product.getPricePerSizeStep());
+                    priceAllTV.setText(String.valueOf(currentPriceAll));
+                    addProductToCartBtn.setText("Добавить");
                 }
-                favoritesAddProductToCartB.setText("Добавить");
+                addProductToCartBtn.setText("Добавить");
                 break;
 
-            case R.id.favorites_addproduct_imgb:
-                if (isCountInt) {
-                    int countProduct = Integer.parseInt(favoritesCountProductTV.getText().toString());
-                    favoritesCountProductTV.setText(String.valueOf(countProduct + countProductTVChangeInt));
-                } else if (!isCountInt){
-                    float countProduct = Float.parseFloat(favoritesCountProductTV.getText().toString());
-                    float buf = countProduct + countProductTVChangeFloat;
-                    favoritesCountProductTV.setText(Utils.formatFloatToString(buf, 1));
+            case R.id.fragment_favorites_addtocart_btn:
+
+                addProductToCartBtn.setText(R.string.addtocart);
+                break;
+
+            case R.id.fragment_favorites_showcart_btn:
+//                Fragment cartFragment = ProductsCartFragment.newInstance(123);
+//                FragmentTransaction ft = getChildFragmentManager().beginTransaction();
+//                ft.replace(R.id.fragment_favorites_mainlayout, cartFragment, "cartFragment");
+//                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+//                ft.addToBackStack(null);
+//                ft.commit();
+                break;
+
+            case R.id.fragment_favorites_product_imgv:
+                Fragment productImagesFragment = ProductImagesFragment.newInstance(product.getArticle(), product.getImagesInfo());
+                if (getActivity() != null) {
+                    FragmentTransaction ftr = getActivity().getSupportFragmentManager().beginTransaction();
+                    ftr.add(R.id.mainactivity_fragment_layout, productImagesFragment, "ProductImagesFragment");
+                    ftr.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+                    ftr.addToBackStack(null);
+                    ftr.commit();
                 }
-                amountProductAll++;
-                favoritesAddProductToCartB.setText("Добавить");
-                break;
-
-            case R.id.favorites_addtocart_b:
-                String productName = favoritesProductNameTV.getText().toString(),
-                        vendorcode = favoritesVendorcodeTV.getText().toString().substring(8),
-                        amountMeasure = favoritesMeasureProductTV.getText().toString(),
-                        countProduct = favoritesCountProductTV.getText().toString(),
-                        priceProduct = favoritesPriceProductTV.getText().toString();
-
-                Utils.addProductToCartFile(isCountInt, productName, vendorcode, priceProduct,
-                        countProduct, amountMeasure, amountProductAll);
-                amountProductAll = 1;
-                favoritesAddProductToCartB.setText(R.string.addtocart);
-                break;
-
-            case R.id.favorites_showcart_b:
-                Fragment cartFragment = ProductsCartFragment.newInstance(123);
-                FragmentTransaction ft = getChildFragmentManager().beginTransaction();
-                ft.replace(R.id.favorites_mainlayout, cartFragment, "cartFragment");
-                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-                ft.addToBackStack(null);
-                ft.commit();
-                break;
-
-            case R.id.favorites_product_imgv:
-                Fragment productImagesFragment = ProductImagesFragment.newInstance(0L, "123");
-                FragmentTransaction ftr = getChildFragmentManager().beginTransaction();
-                ftr.replace(R.id.favorites_mainlayout, productImagesFragment, "productImagesFragment");
-                ftr.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-                ftr.addToBackStack(null);
-                ftr.commit();
                 break;
 
             default:
@@ -221,120 +185,96 @@ public class FavoritesFragment extends Fragment implements View.OnClickListener 
         }
     }
 
-    //***************************** Buttons *********************************
 
-    //************ Interfaces ******************
-    public void setCard(String productPath, String productName) {
-        favoritesRemoveProductImgB.setVisibility(View.VISIBLE);
-        favoritesRemoveProductImgB.setClickable(true);
-        favoritesRemoveProductImgB.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#8BC34A")));
 
-        favoritesAddProductImgB.setVisibility(View.VISIBLE);
-        favoritesAddProductImgB.setClickable(true);
-        favoritesAddProductImgB.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#8BC34A")));
+    public void setProductCard(Product product) {
+        this.product = product;
 
-        favoritesPriceProductTV.setVisibility(View.VISIBLE);
-        favoritesCountProductTV.setVisibility(View.VISIBLE);
+        TextView priceAllRubProductTV = view.findViewById(R.id.fragment_favorites_productpriceallrub_tv);
+        priceAllRubProductTV.setVisibility(View.VISIBLE);
+        minusProductImgBtn.setVisibility(View.VISIBLE);
+        minusProductImgBtn.setClickable(true);
+        minusProductImgBtn.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#8BC34A")));
+        plusProductImgBtn.setVisibility(View.VISIBLE);
+        plusProductImgBtn.setClickable(true);
+        plusProductImgBtn.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#8BC34A")));
+        priceAllTV.setVisibility(View.VISIBLE);
+        priceAllRubTV.setVisibility(View.VISIBLE);
+        countAllTV.setVisibility(View.VISIBLE);
+        addProductToCartBtn.setVisibility(View.VISIBLE);
+        addProductToCartBtn.setClickable(true);
+        addProductToCartBtn.setText("Добавить");
+        addProductToCartBtn.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#8BC34A")));
+        showCartBtn.setVisibility(View.VISIBLE);
 
-        favoritesAddProductToCartB.setVisibility(View.VISIBLE);
-        favoritesAddProductToCartB.setClickable(true);
-        favoritesAddProductToCartB.setText("Добавить");
-        favoritesAddProductToCartB.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#8BC34A")));
-
-        favoritesShowCartButton.setVisibility(View.VISIBLE);
-
-        //vendorcode запоминаем для поиска цены
-        String vendorcode = "";
-        productPathToFragments = productPath;
-        productNameToFragments = productName;
-        //---------------------------------------------------------------
-        //установка изображения товара
-        //File sdPath = Environment.getExternalStorageDirectory();
-        //sdPath = new File(sdPath.getAbsolutePath() + "/" + productsDir + "/");
-        File sdFile = new File(productPath, productName + "_1.webp");
-        Bitmap bitmap = Utils.getScaledBitmap(sdFile.getAbsolutePath(), 250, 350);
-        favoritesProductMainImgV.setImageBitmap(bitmap);
-        favoritesProductMainImgV.setVisibility(View.VISIBLE);
-        //---------------------------------------------------------------
-        try {
-            String str;
-            //заполнение элементов в карточке товара
-            sdFile = new File(productPath, productName);
-            BufferedReader br = new BufferedReader(new FileReader(sdFile), 100);
-            int strNum = 1;
-            while ((str = br.readLine()) != null){
-                if (strNum == 1) {
-                    favoritesProductNameTV.setText(str);
-                } else if (strNum == 2) {
-                    favoritesProductmanTV.setText(str);
-                } else if (strNum == 3) {
-                    favoritesWeightTV.setText(str);
-                } else if (strNum == 5) {
-                    favoritesVendorcodeTV.setText(str);
-                    vendorcode = str.substring(8);
-                } else if(strNum == 6){
-                    favoritesBarcodeTV.setText(str);
-                } else if(strNum == 7){
-                    str = str.substring(11);
-                    String[] buf = str.split(";");
-                    favoritesCountProductTV.setText(buf[0]);
-                    startCountProduct = Float.parseFloat(buf[0]);
-                    if (buf[0].contains(".")){
-                        int ibuf = buf[0].indexOf(".");
-                        String sbuf = buf[0].substring(0, ibuf);
-                        startCountProductInt = Integer.parseInt(sbuf);
-                    } else {
-                        startCountProductInt = Integer.parseInt(buf[0]);
-                    }
-                    favoritesMeasureProductTV.setText(buf[2]);
-                    if (buf[3].contains("1")) {
-                        countProductTVChangeInt = Integer.parseInt(buf[1]);
-                        isCountInt = true;
-                    } else if (buf[3].contains("0")) {
-                        countProductTVChangeFloat = Float.parseFloat(buf[1]);
-                        isCountInt = false;
-                    }
-                    amountProductAll = Math.round(Float.parseFloat(buf[0])/Float.parseFloat(buf[1]));
-                }
-                strNum++;
-            }
-            br.close();
-            //---------------------------------------------------------------
-            //загрузка цены
-            File sdFilePrice = new File(Environment.getExternalStorageDirectory().getAbsolutePath()
-                    + "/" + "Retail/ProductsActivity/", "цена");
-            BufferedReader br2 = new BufferedReader(new FileReader(sdFilePrice), 100);
-            while ((str = br2.readLine()) != null){
-                if(str.contains(vendorcode)){
-                    favoritesPriceProductTV.setText(String.valueOf(str.substring(7) + " руб."));
-                    break;
-                }
-            }
-            br2.close();
-            //---------------------------------------------------------------
-            //загрузка количества
-            File sdFileCount = new File(Environment.getExternalStorageDirectory().getAbsolutePath()
-                    + "/" + "Retail/ProductsActivity/", "колич");
-            BufferedReader br3 = new BufferedReader(new FileReader(sdFileCount), 100);
-            while ((str = br3.readLine()) != null){
-                if(str.contains(vendorcode) && str.contains("не")){
-                    favoritesRemoveProductImgB.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#D3D3D3")));
-                    favoritesRemoveProductImgB.setClickable(false);
-                    favoritesAddProductImgB.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#D3D3D3")));
-                    favoritesAddProductImgB.setClickable(false);
-                    favoritesAddProductToCartB.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#D3D3D3")));
-                    favoritesAddProductToCartB.setClickable(false);
-
-                    favoritesPriceProductTV.setText("Нет в наличии");
-                    favoritesCountProductTV.setText("0");
-                    break;
-                }
-            }
-            br3.close();
+        String[] imagesInfo = product.getImagesInfo().split("\\|");
+        String[] images = new String[0];
+        if (imagesInfo.length == 1) {
+            images = imagesInfo[0].split(";");
+        } else if (imagesInfo.length > 1) {
+            images = imagesInfo[1].split(";");
         }
-        catch(FileNotFoundException e){e.printStackTrace();Log.e(TAG,"FileNotFoundEx="+e); }
-        catch (IOException e) { e.printStackTrace(); Log.e(TAG, "IOException= " + e); }
-        //---------------------------------------------------------------
+        String mainProductImgName = "1.webp";
+        for (String image : images) {
+            String position = image.split("=")[1];
+            if (position.equals("1")) {
+                mainProductImgName = image.split("=")[0];
+            }
+        }
+
+        File filesDir = view.getContext().getFilesDir();
+        File productImagesDir = new File(filesDir.getAbsolutePath() + "/images/products/" + product.getArticle() + "/");
+        File productMainImg = new File(productImagesDir, mainProductImgName);
+        Bitmap bitmap = Utils.getScaledBitmap(productMainImg.getAbsolutePath(), 250, 350);
+        productMainImgV.setImageBitmap(bitmap);
+        productMainImgV.setVisibility(View.VISIBLE);
+
+        productFullNameTV.setText(product.getFullName());
+        manufacturerTV.setText(product.getManufacturer());
+        weightTV.setText(product.getWeight());
+        DecimalFormat countFormat = new DecimalFormat("###.##");
+        countAllTV.setText(countFormat.format(product.getMinSize()));
+        sizeTypeTV.setText(product.getSizeType());
+        BigDecimal priceAll = product.getMinSize().divide(product.getSizeStep()).multiply(product.getPricePerSizeStep());
+        DecimalFormat priceFormat = new DecimalFormat("###.##");
+        priceAllTV.setText(priceFormat.format(priceAll));
+        currentPriceAll = priceAll;
+
+        if (product.getStockQuantity().compareTo(new BigDecimal(0)) == 0) {
+            minusProductImgBtn.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#D3D3D3")));
+            minusProductImgBtn.setClickable(false);
+            plusProductImgBtn.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#D3D3D3")));
+            plusProductImgBtn.setClickable(false);
+            addProductToCartBtn.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#D3D3D3")));
+            addProductToCartBtn.setClickable(false);
+            priceAllTV.setText("Нет в наличии");
+            countAllTV.setText("0");
+        }
+
+        String article = product.getArticle().toString();
+        switch (article.length()) {
+            case 1:
+                article = "Арт. 00000" + article;
+                break;
+            case 2:
+                article = "Арт. 0000" + article;
+                break;
+            case 3:
+                article = "Арт. 000" + article;
+                break;
+            case 4:
+                article = "Арт. 00" + article;
+                break;
+            case 5:
+                article = "Арт. 0" + article;
+                break;
+            default:
+                article = "Арт. " + article;
+                break;
+        }
+        articleTV.setText(article);
+        barcodeTV.setText(String.valueOf("Ш/н " + product.getBarcode()));
+        compositionTV.setText(product.getComposition());
     }
 
     public void ftr(String path, String productName) {
@@ -345,7 +285,7 @@ public class FavoritesFragment extends Fragment implements View.OnClickListener 
         }
     }
 
-    public void closeProductsImagesFragment(){
+    public void closeProductsImagesFragment() {
         ProductImagesFragment fragment = (ProductImagesFragment)getChildFragmentManager()
                 .findFragmentByTag("productImagesFragment");
         if (fragment != null) {
@@ -353,5 +293,5 @@ public class FavoritesFragment extends Fragment implements View.OnClickListener 
             ftr.commit();
         }
     }
-    //************ Interfaces ******************
+
 }
