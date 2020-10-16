@@ -1,7 +1,6 @@
 package com.adamanta.kioskapp.settings.threads;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
@@ -37,20 +36,20 @@ import okhttp3.Response;
 
 public class ChangesDownloadTask extends AsyncTask<String, String, String> {
 
-    private final String TAG = this.getClass().getSimpleName();
     @SuppressLint("StaticFieldLeak")
-    private Context context;
+    private final Context context;
     private ProgressDialog dialog;
 
     public ChangesDownloadTask(Context context) {
         this.context = context;
-        this.dialog = new ProgressDialog((Activity) context);
+        this.dialog = new ProgressDialog(context);
     }
 
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        Log.e(TAG, "ChangesDownloadThread started");
+        Log.e(this.getClass().getSimpleName(), "ChangesDownloadThread started");
+        dialog = new ProgressDialog(context);
         dialog.setMessage("Обновление списка товаров...");
         dialog.setIndeterminate(true);
         dialog.setCancelable(true);
@@ -158,7 +157,7 @@ public class ChangesDownloadTask extends AsyncTask<String, String, String> {
                                         category.setIsEnable(change.getIsEnable());
                                         category.setName(change.getName());
                                         if (!categoriesDBHelper.saveCategory(category)) {
-                                            Log.e(TAG, "Ошибка сохранения категории в БД!");
+                                            Log.e(this.getClass().getSimpleName(), "Ошибка сохранения категории в БД!");
                                             return null;
                                         }
                                     } else if (change.getType() == 'p') {
@@ -192,7 +191,7 @@ public class ChangesDownloadTask extends AsyncTask<String, String, String> {
                                         saveImages(product.getArticle(), product.getImagesInfo());
 
                                         if (!productsDBHelper.saveProduct(product)) {
-                                            Log.e(TAG, "Ошибка сохранения продукта в БД!");
+                                            Log.e(this.getClass().getSimpleName(), "Ошибка сохранения продукта в БД!");
                                             return null;
                                         }
                                     }
@@ -201,7 +200,7 @@ public class ChangesDownloadTask extends AsyncTask<String, String, String> {
                                         if (change.getType() == 'c') {
                                             Category category = categoriesDBHelper.getByCategory(change.getCategory());
                                             if (category == null) {
-                                                Log.e(TAG, "Не удалось получить категорию из БД!");
+                                                Log.e(this.getClass().getSimpleName(), "Не удалось получить категорию из БД!");
                                                 return null;
                                             }
                                             if (change.getParentCategory() != null) category.setParentCategory(change.getParentCategory());
@@ -215,7 +214,7 @@ public class ChangesDownloadTask extends AsyncTask<String, String, String> {
                                         } else if (change.getType() == 'p') {
                                             Product product = productsDBHelper.getByArticle(change.getArticle());
                                             if (product == null) {
-                                                Log.e(TAG, "Не удалось получить продукт из БД!");
+                                                Log.e(this.getClass().getSimpleName(), "Не удалось получить продукт из БД!");
                                                 return null;
                                             }
                                             if (change.getParentCategory() != null) product.setParentCategory(change.getParentCategory());
@@ -257,13 +256,13 @@ public class ChangesDownloadTask extends AsyncTask<String, String, String> {
                                 } else if (change.getAction().equals("del")) {
                                     if (change.getType() == 'c') {
                                         if (!categoriesDBHelper.deleteByCategory(change.getCategory())) {
-                                            Log.e(TAG, "Ошибка при удалении категории из БД!");
+                                            Log.e(this.getClass().getSimpleName(), "Ошибка при удалении категории из БД!");
                                             return null;
                                         }
                                     } else if (change.getType() == 'p') {
                                         deleteFolderWithImages(change.getArticle());
                                         if (!productsDBHelper.deleteByArticle(change.getArticle())) {
-                                            Log.e(TAG, "Ошибка при удалении продукта из БД!");
+                                            Log.e(this.getClass().getSimpleName(), "Ошибка при удалении продукта из БД!");
                                             return null;
                                         }
                                     }
@@ -271,7 +270,7 @@ public class ChangesDownloadTask extends AsyncTask<String, String, String> {
 
                             } catch (NullPointerException ex) {
                                 ex.printStackTrace();
-                                Log.e(TAG, "Ошибка! Какое-то значение объектов null");
+                                Log.e(this.getClass().getSimpleName(), "Ошибка! Какое-то значение объектов null");
                             }
                         }
 
@@ -287,11 +286,11 @@ public class ChangesDownloadTask extends AsyncTask<String, String, String> {
 
                 } catch (IOException e) {
                     e.printStackTrace();
-                    Log.e(TAG, "Ошибка отправки/приема запроса, либо ошибка записи!");
+                    Log.e(this.getClass().getSimpleName(), "Ошибка отправки/приема запроса, либо ошибка записи!");
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
-                Log.e(TAG, "Ошибка парсинга JSON");
+                Log.e(this.getClass().getSimpleName(), "Ошибка парсинга JSON");
             }
         }
         return null;
@@ -300,7 +299,6 @@ public class ChangesDownloadTask extends AsyncTask<String, String, String> {
     @Override
     protected void onPostExecute(String result) {
         super.onPostExecute(result);
-        Log.e(TAG, "Список синхронизирован!");
         ((ISettingsActivity) context).showToastMessage("Список синхронизирован!");
         dialog.dismiss();
     }
@@ -333,7 +331,7 @@ public class ChangesDownloadTask extends AsyncTask<String, String, String> {
                 os.close();
             } catch (Exception e) {
                 e.printStackTrace();
-                Log.e(TAG, "Ошибка при сохранении изображений: \n" + e);
+                Log.e(this.getClass().getSimpleName(), "Ошибка при сохранении изображений: \n" + e);
             }
         }
     }
@@ -364,7 +362,7 @@ public class ChangesDownloadTask extends AsyncTask<String, String, String> {
                         os.close();
                     } catch (Exception e) {
                         e.printStackTrace();
-                        Log.e(TAG, "Ошибка при сохранении изображений: \n" + e);
+                        Log.e(this.getClass().getSimpleName(), "Ошибка при сохранении изображений: \n" + e);
                     }
                 } else if (imagesChangesInfo[0].equals("edit")) {
 

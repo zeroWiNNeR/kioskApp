@@ -1,6 +1,5 @@
 package com.adamanta.kioskapp.shopcart;
 
-import android.app.Activity;
 import android.graphics.Color;
 import android.os.Environment;
 import android.util.Log;
@@ -24,9 +23,6 @@ import java.io.IOException;
 import java.util.List;
 
 public class CartRVAdapter extends RecyclerView.Adapter<CartRVAdapter.ViewHolder> {
-    private final String TAG = this.getClass().getSimpleName();
-    private Activity activity;
-    View v;
 
     private List<CartList> cartList;
     private long mLastClickTime = System.currentTimeMillis();
@@ -61,7 +57,7 @@ public class CartRVAdapter extends RecyclerView.Adapter<CartRVAdapter.ViewHolder
             String[] sArr = s.split("\\.");
             if (sArr[1].equals("0") || sArr[1].equals("00")) {
                 s = sArr[0];
-            } else s = s;
+            }
             viewHolder.itemCountTV.setText(String.valueOf(s));
             viewHolder.itemCountMeasureTV.setText(String.valueOf(item.getAmountMeasure() + "."));
         } else {
@@ -132,8 +128,7 @@ public class CartRVAdapter extends RecyclerView.Adapter<CartRVAdapter.ViewHolder
             if (numOfLines == 1){ Utils.writeStringToFile(sdFileCart, sArrBufString, false);
             } else { Utils.writeStringsToFile(sdFileCart, sArr, false);
             }
-        }
-        catch(IOException e){e.printStackTrace();Log.e(TAG,"brException="+e);}
+        } catch(IOException e) { e.printStackTrace(); Log.e(this.getClass().getName(),"brException="+e); }
         notifyItemChanged(position);
     }
 

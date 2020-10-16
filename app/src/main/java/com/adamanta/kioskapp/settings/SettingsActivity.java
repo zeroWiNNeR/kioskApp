@@ -33,7 +33,6 @@ import java.util.List;
 public class SettingsActivity extends AppCompatActivity implements ISettingsActivity {
 
     private SettingsDBHelper settingsDBHelper;
-
     private EditText contractIdET, cityET, streetET, houseET, apartmentET;
     private ImageButton saveButton;
     private String imei = "";
@@ -64,47 +63,35 @@ public class SettingsActivity extends AppCompatActivity implements ISettingsActi
 //        Log.e(TAG, "androidId: " + getDeviceUniqueID(this));
     }
 
-    //***************************** Buttons *********************************
+
     public void onClick(@NonNull View v) {
-        switch (v.getId()) {
-            case R.id.activity_settings_main_menu_imgbtn:
-                Context context = v.getContext();
-                Intent intent = new Intent(context, MainActivity.class);
-                context.startActivity(intent);
-                break;
+        if (v.getId() == R.id.activity_settings_main_menu_imgbtn) {
+            Context context = v.getContext();
+            Intent intent = new Intent(context, MainActivity.class);
+            context.startActivity(intent);
+        } else if (v.getId() == R.id.activity_settings_save_imgbtn) {
+            String saved = settingsDBHelper.getStringValueByArgument("saved");
+            if (saved.equals("null") || saved.equals("false")) {
+                saveChanges();
+                TabletRegistrationTask savingTask = new TabletRegistrationTask(
+                        this, this, contractId, imei, androidId,
+                        city, street, house, apartment);
+                savingTask.execute();
+            }
+        } else if (v.getId() == R.id.activity_settings_getproductsupdate_btn) {
+            ChangesDownloadTask changesDownloadTask = new ChangesDownloadTask(this);
+            changesDownloadTask.execute();
+        } else if (v.getId() == R.id.activity_settings_clear_btn) {
+            v.getContext().deleteDatabase("CATEGORIES");
+            v.getContext().deleteDatabase("PRODUCTS");
+            v.getContext().deleteDatabase("SETTINGS");
 
-            case R.id.activity_settings_save_imgbtn:
-                String saved = settingsDBHelper.getStringValueByArgument("saved");
-                if (saved.equals("null") || saved.equals("false")) {
-                    saveChanges();
-                    TabletRegistrationTask savingTask = new TabletRegistrationTask(
-                            this, this, contractId, imei, androidId,
-                            city, street, house, apartment);
-                    savingTask.execute();
-                }
-                break;
+            deleteRecursive(v.getContext().getFilesDir());
 
-            case R.id.activity_settings_getproductsupdate_btn:
-                ChangesDownloadTask changesDownloadTask = new ChangesDownloadTask(this);
-                changesDownloadTask.execute();
-                break;
-
-            case R.id.activity_settings_clear_btn:
-                v.getContext().deleteDatabase("CATEGORIES");
-                v.getContext().deleteDatabase("PRODUCTS");
-                v.getContext().deleteDatabase("SETTINGS");
-
-                deleteRecursive(v.getContext().getFilesDir());
-
-                Toast.makeText(getApplicationContext(),"Удаление выполнено успешно!",Toast.LENGTH_SHORT).show();
-                v.getContext().startActivity(new Intent(v.getContext(), MainActivity.class));
-                break;
-
-            default:
-                break;
+            Toast.makeText(getApplicationContext(),"Удаление выполнено успешно!",Toast.LENGTH_SHORT).show();
+            v.getContext().startActivity(new Intent(v.getContext(), MainActivity.class));
         }
     }
-    //***************************** Buttons *********************************
 
     private void deleteRecursive(File folder) {
         if (folder.isDirectory()) {

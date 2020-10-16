@@ -4,7 +4,6 @@ import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -116,72 +115,56 @@ public class FavoritesFragment extends Fragment implements View.OnClickListener 
     }
 
     public void onClick(@NonNull View v) {
-        switch (v.getId()){
-            case R.id.fragment_favorites_closefragment_imgb:
-                try{
-                    getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
-                } catch (NullPointerException e) { Log.e(this.getClass().getName(),"NullPointExc" + e); }
-                break;
-
-            case R.id.fragment_favorites_minusproduct_imgbtn:
-                BigDecimal currentCountAll = new BigDecimal(countAllTV.getText().toString());
-                currentCountAll = currentCountAll.subtract(product.getSizeStep());
-                if (currentCountAll.compareTo(product.getMinSize()) >= 0) {
-                    if (currentCountAll.stripTrailingZeros().scale() <= 0) {
-                        countAllTV.setText(String.valueOf(currentCountAll.toBigIntegerExact()));
-                    } else {
-                        countAllTV.setText(String.valueOf(currentCountAll));
-                    }
-                    currentPriceAll = currentPriceAll.subtract(product.getPricePerSizeStep());
-                    priceAllTV.setText(String.valueOf(currentPriceAll));
-                    addProductToCartBtn.setText("Добавить");
+        if (v.getId() == R.id.fragment_favorites_closefragment_imgb) {
+            if (getActivity() != null) {
+                getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
+            }
+        } else if (v.getId() == R.id.fragment_favorites_minusproduct_imgbtn) {
+            BigDecimal currentCountAll = new BigDecimal(countAllTV.getText().toString());
+            currentCountAll = currentCountAll.subtract(product.getSizeStep());
+            if (currentCountAll.compareTo(product.getMinSize()) >= 0) {
+                if (currentCountAll.stripTrailingZeros().scale() <= 0) {
+                    countAllTV.setText(String.valueOf(currentCountAll.toBigIntegerExact()));
+                } else {
+                    countAllTV.setText(String.valueOf(currentCountAll));
                 }
+                currentPriceAll = currentPriceAll.subtract(product.getPricePerSizeStep());
+                priceAllTV.setText(String.valueOf(currentPriceAll));
                 addProductToCartBtn.setText("Добавить");
-                break;
-
-            case R.id.fragment_favorites_plusproduct_imgbtn:
-                currentCountAll = new BigDecimal(countAllTV.getText().toString());
-                currentCountAll = currentCountAll.add(product.getSizeStep());
-                if (currentCountAll.compareTo(product.getMaxSize()) <= 0) {
-                    if (currentCountAll.stripTrailingZeros().scale() <= 0) {
-                        countAllTV.setText(String.valueOf(currentCountAll.toBigIntegerExact()));
-                    } else {
-                        countAllTV.setText(String.valueOf(currentCountAll));
-                    }
-                    currentPriceAll = currentPriceAll.add(product.getPricePerSizeStep());
-                    priceAllTV.setText(String.valueOf(currentPriceAll));
-                    addProductToCartBtn.setText("Добавить");
+            }
+            addProductToCartBtn.setText("Добавить");
+        } else if (v.getId() == R.id.fragment_favorites_plusproduct_imgbtn) {
+            BigDecimal currentCountAll = new BigDecimal(countAllTV.getText().toString());
+            currentCountAll = currentCountAll.add(product.getSizeStep());
+            if (currentCountAll.compareTo(product.getMaxSize()) <= 0) {
+                if (currentCountAll.stripTrailingZeros().scale() <= 0) {
+                    countAllTV.setText(String.valueOf(currentCountAll.toBigIntegerExact()));
+                } else {
+                    countAllTV.setText(String.valueOf(currentCountAll));
                 }
+                currentPriceAll = currentPriceAll.add(product.getPricePerSizeStep());
+                priceAllTV.setText(String.valueOf(currentPriceAll));
                 addProductToCartBtn.setText("Добавить");
-                break;
-
-            case R.id.fragment_favorites_addtocart_btn:
-
-                addProductToCartBtn.setText(R.string.addtocart);
-                break;
-
-            case R.id.fragment_favorites_showcart_btn:
-//                Fragment cartFragment = ProductsCartFragment.newInstance(123);
-//                FragmentTransaction ft = getChildFragmentManager().beginTransaction();
-//                ft.replace(R.id.fragment_favorites_mainlayout, cartFragment, "cartFragment");
-//                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-//                ft.addToBackStack(null);
-//                ft.commit();
-                break;
-
-            case R.id.fragment_favorites_product_imgv:
+            }
+            addProductToCartBtn.setText("Добавить");
+        } else if (v.getId() == R.id.fragment_favorites_addtocart_btn) {
+            addProductToCartBtn.setText(R.string.addtocart);
+        } else if (v.getId() == R.id.fragment_favorites_showcart_btn) {
+//            Fragment cartFragment = ProductsCartFragment.newInstance(123);
+//            FragmentTransaction ft = getChildFragmentManager().beginTransaction();
+//            ft.replace(R.id.fragment_favorites_mainlayout, cartFragment, "cartFragment");
+//            ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+//            ft.addToBackStack(null);
+//            ft.commit();
+        } else if (v.getId() == R.id.fragment_favorites_product_imgv) {
+            if (getActivity() != null) {
                 Fragment productImagesFragment = ProductImagesFragment.newInstance(product.getArticle(), product.getImagesInfo());
-                if (getActivity() != null) {
-                    FragmentTransaction ftr = getActivity().getSupportFragmentManager().beginTransaction();
-                    ftr.add(R.id.mainactivity_fragment_layout, productImagesFragment, "ProductImagesFragment");
-                    ftr.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-                    ftr.addToBackStack(null);
-                    ftr.commit();
-                }
-                break;
-
-            default:
-                break;
+                FragmentTransaction ftr = getActivity().getSupportFragmentManager().beginTransaction();
+                ftr.add(R.id.mainactivity_fragment_layout, productImagesFragment, "ProductImagesFragment");
+                ftr.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+                ftr.addToBackStack(null);
+                ftr.commit();
+            }
         }
     }
 

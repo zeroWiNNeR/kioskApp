@@ -1,6 +1,5 @@
 package com.adamanta.kioskapp.threads;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
 
@@ -21,8 +20,6 @@ import okhttp3.Response;
 
 public class UIBarControllerThread extends Thread {
 
-    private final String TAG = this.getClass().getSimpleName();
-    @SuppressLint("StaticFieldLeak")
     private Context context;
     private long lastPollingTime = 0L;
     private boolean isOnline = false;
@@ -38,7 +35,7 @@ public class UIBarControllerThread extends Thread {
 
     @Override
     public void run() {
-        Log.e(TAG, "uiBarControllerThread started");
+        Log.e(this.getClass().getName(), "uiBarControllerThread started");
         while(!Thread.currentThread().isInterrupted()) {
             try {
                 long now = System.currentTimeMillis();
@@ -47,7 +44,7 @@ public class UIBarControllerThread extends Thread {
                 if (now - lastPollingTime > SERVER_POLLING_INTERVAL) {
                     String  dbId = "";
                     if (context == null) {
-                        Log.e(TAG, "Context error" );
+                        Log.e(this.getClass().getName(), "Context error" );
                     } else {
                         SettingsDBHelper settingsDBHelper = new SettingsDBHelper(context);
                         dbId = settingsDBHelper.getStringValueByArgument("dbId");
@@ -81,7 +78,7 @@ public class UIBarControllerThread extends Thread {
                         } catch (Exception e) {
                             e.printStackTrace();
                             isOnline = false;
-                            Log.e(TAG,"Exception: " + e);
+                            Log.e(this.getClass().getName(),"Exception: " + e);
                         }
 
                         lastPollingTime = now;
@@ -90,7 +87,7 @@ public class UIBarControllerThread extends Thread {
                 ((IMainActivity) context).updateUI(isOnline);
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
-                Log.e(TAG, "UIBarRunner stop");
+                Log.e(this.getClass().getName(), "UIBarRunner stop");
                 Thread.currentThread().interrupt();
             }
         }

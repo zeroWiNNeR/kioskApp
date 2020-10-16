@@ -27,12 +27,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ProductsCartFragment extends Fragment implements View.OnClickListener {
-    private View v;
+
+    private View view;
     private List<CartList> cartList = new ArrayList<>();
-    private final String TAG = this.getClass().getSimpleName();
-
     private TextView totalpriceTV;
-
     private CartRVAdapter cartRVAdapter = new CartRVAdapter(cartList);
 
     public static ProductsCartFragment newInstance(int num) {
@@ -55,7 +53,7 @@ public class ProductsCartFragment extends Fragment implements View.OnClickListen
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        v = inflater.inflate(R.layout.prodactivity_cart_fragment, container, false);
+        view = inflater.inflate(R.layout.prodactivity_cart_fragment, container, false);
 
         try {
             File sdFileCart = new File(Environment.getExternalStorageDirectory().getAbsolutePath()
@@ -97,43 +95,34 @@ public class ProductsCartFragment extends Fragment implements View.OnClickListen
                     s = sArr[0] + "," + sArr[1] + "0";
                 }
             }
-            totalpriceTV = v.findViewById(R.id.totalprice_tv);
+            totalpriceTV = view.findViewById(R.id.totalprice_tv);
             totalpriceTV.setText(s);
         } catch(IOException e) {
             e.printStackTrace();
-            Log.e(TAG, "IOException= " + e);
+            Log.e(this.getClass().getName(), "IOException= " + e);
         }
 
-        //****************************** Buttons ***********************************
-        ImageButton closeFragmentBtn = v.findViewById(R.id.closefragment_btn);
+        ImageButton closeFragmentBtn = view.findViewById(R.id.closefragment_btn);
         closeFragmentBtn.setOnClickListener(this);
-        //****************************** Buttons ***********************************
 
-        //****************************** Items Adapter *****************************
-        final RecyclerView cartRecyclerView = v.findViewById(R.id.cart_rv);
+        final RecyclerView cartRecyclerView = view.findViewById(R.id.cart_rv);
         cartRecyclerView.setHasFixedSize(false);
         cartRecyclerView.setMotionEventSplittingEnabled(false);
         cartRecyclerView.setAdapter(cartRVAdapter);
-        final LinearLayoutManager layoutManager = new LinearLayoutManager(v.getContext());
+        final LinearLayoutManager layoutManager = new LinearLayoutManager(view.getContext());
         cartRecyclerView.setLayoutManager(layoutManager);
         final RecyclerView.ItemAnimator itemAnimator = new DefaultItemAnimator();
         cartRecyclerView.setItemAnimator(itemAnimator);
-        //****************************** Items Adapter *****************************
 
-        return v;
+        return view;
     }
 
     @Override
     public void onClick(@NonNull View v) {
-        switch (v.getId()){
-            case R.id.closefragment_btn:
-                try{
-                    getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
-                } catch (NullPointerException e){ Log.e(TAG,"NullPointExc" + e); }
-                break;
-
-            default:
-                break;
+        if (v.getId() == R.id.closefragment_btn) {
+            if (getActivity() != null) {
+                getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
+            }
         }
     }
 
@@ -141,7 +130,7 @@ public class ProductsCartFragment extends Fragment implements View.OnClickListen
         File sdFileCart = new File(Environment.getExternalStorageDirectory().getAbsolutePath()
                 + "/" + "Retail/", "корзина");
         try {
-            if(cartList.size() == 0){
+            if (cartList.size() == 0) {
                 totalpriceTV.setText("0,00");
             } else {
                 String str;
@@ -164,7 +153,6 @@ public class ProductsCartFragment extends Fragment implements View.OnClickListen
                 }
                 totalpriceTV.setText(s);
             }
-        }
-        catch (IOException e) { Log.e(TAG,"IOException= " + e); }
+        } catch (IOException e) { Log.e(this.getClass().getName(),"IOException= " + e); }
     }
 }

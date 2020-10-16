@@ -46,7 +46,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/fragment_products_constraintlayout"
+        app:layout_constraintEnd_toEndOf="@+id/fragment_products_productcard_constraintlayout"
         app:layout_constraintStart_toEndOf="@+id/fragment_products_first_rv"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/products_activity_main_image"
@@ -94,7 +94,7 @@
         android:contentDescription="@string/app_name"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/fragment_products_constraintlayout"
+        app:layout_constraintEnd_toStartOf="@+id/fragment_products_productcard_constraintlayout"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@color/prodactivity_columncolor" />
 
@@ -129,13 +129,13 @@
     </androidx.recyclerview.widget.RecyclerView>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/fragment_products_constraintlayout"
+        android:id="@+id/fragment_products_productcard_constraintlayout"
         android:layout_width="550dp"
         android:layout_height="0dp"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="visible">
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:id="@+id/fragment_products_productfullname_tv"
@@ -180,8 +180,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp"
                 android:text=""
-                android:textSize="27sp"
-                android:visibility="invisible" />
+                android:textSize="27sp" />
 
             <TextView
                 android:id="@+id/fragment_products_productpriceallrub_tv"
@@ -190,8 +189,7 @@
                 android:layout_marginStart="5dp"
                 android:layout_marginBottom="20dp"
                 android:text="руб."
-                android:textSize="27sp"
-                android:visibility="invisible" />
+                android:textSize="27sp" />
         </LinearLayout>
 
         <ImageButton
@@ -201,7 +199,6 @@
             android:layout_marginBottom="30dp"
             android:backgroundTint="#6495ED"
             android:tint="#FFFFFF"
-            android:visibility="invisible"
             app:layout_constraintBottom_toTopOf="@+id/fragment_products_addtocart_btn"
             app:layout_constraintStart_toStartOf="@+id/fragment_products_addtocart_btn"
             app:srcCompat="@drawable/ic_remove" />
@@ -212,7 +209,6 @@
             android:layout_height="40dp"
             android:layout_marginBottom="40dp"
             android:textSize="24sp"
-            android:visibility="invisible"
             app:layout_constraintBottom_toTopOf="@+id/fragment_products_addtocart_btn"
             app:layout_constraintEnd_toStartOf="@+id/fragment_products_plusproduct_imgbtn"
             app:layout_constraintStart_toEndOf="@+id/fragment_products_minusproduct_imgbtn" />
@@ -236,7 +232,6 @@
             android:layout_marginBottom="30dp"
             android:backgroundTint="#6495ED"
             android:tint="#FFFFFF"
-            android:visibility="invisible"
             app:layout_constraintBottom_toTopOf="@+id/fragment_products_addtocart_btn"
             app:layout_constraintEnd_toStartOf="@+id/fragment_products_product_imgv"
             app:srcCompat="@android:drawable/ic_input_add" />
@@ -251,7 +246,6 @@
             android:backgroundTint="#8BC34A"
             android:text="Добавить"
             android:textSize="24sp"
-            android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="@+id/fragment_products_product_imgv"
             app:layout_constraintEnd_toStartOf="@+id/fragment_products_product_imgv"
             app:layout_constraintStart_toStartOf="parent" />
@@ -264,7 +258,6 @@
             android:backgroundTint="#6495ED"
             android:onClick="onClick"
             android:scaleType="center"
-            android:visibility="invisible"
             app:layout_constraintEnd_toStartOf="@+id/fragment_products_product_imgv"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/fragment_products_addtocart_btn"
@@ -276,7 +269,6 @@
             android:layout_height="350dp"
             android:layout_marginTop="65dp"
             android:background="@drawable/light_black_border"
-            android:visibility="invisible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -285,7 +277,6 @@
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:scaleType="centerCrop"
-            android:visibility="invisible"
             app:layout_constraintStart_toStartOf="@+id/fragment_products_product_imgv"
             app:layout_constraintTop_toTopOf="@+id/fragment_products_product_imgv"
             app:srcCompat="@drawable/ic_notfavorites" />
@@ -315,7 +306,6 @@
             android:id="@+id/fragment_products_composition_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="invisible"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/fragment_products_productarticle_tv" />
 

@@ -25,10 +25,9 @@ import okhttp3.Response;
 
 public class TabletRegistrationTask extends AsyncTask<String, String, String> {
 
-    private final String TAG = this.getClass().getSimpleName();
     @SuppressLint("StaticFieldLeak")
-    private Context context;
-    private ProgressDialog dialog;
+    private final Context context;
+    private final ProgressDialog dialog;
     private String responseText = "";
     private String contractId = "";
     private String imei = "";
@@ -86,7 +85,7 @@ public class TabletRegistrationTask extends AsyncTask<String, String, String> {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            Log.e(TAG, "Exc= " + e);
+            Log.e(this.getClass().getSimpleName(), "Exc= " + e);
         }
         return null;
     }
@@ -97,7 +96,7 @@ public class TabletRegistrationTask extends AsyncTask<String, String, String> {
         dialog.dismiss();
 
         if (context == null) {
-            Log.e(TAG, "Context error");
+            Log.e(this.getClass().getSimpleName(), "Context error");
         } else {
             String status = "";
             String message = "";
@@ -109,10 +108,10 @@ public class TabletRegistrationTask extends AsyncTask<String, String, String> {
                 dbId = jsonResponseObject.getLong("dbId");
 
                 if (status.contains("ERROR") || status.equals("")) {
-                    Log.e(TAG, "Ошибка регистрации");
+                    Log.e(this.getClass().getSimpleName(), "Ошибка регистрации");
                     ((ISettingsActivity) context).showToastMessage(message);
                 } else if (status.equals("OK")) {
-                    Log.e(TAG, "Планшет зарегистрирован");
+                    Log.e(this.getClass().getSimpleName(), "Планшет зарегистрирован");
                     ((ISettingsActivity) context).showToastMessage(message);
 
                     SettingsDBHelper settingsDBHelper = new SettingsDBHelper(context);

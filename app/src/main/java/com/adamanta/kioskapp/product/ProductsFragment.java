@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -44,13 +45,14 @@ public class ProductsFragment extends Fragment implements View.OnClickListener {
     private CategoriesDBHelper categoriesDBHelper;
     private FavoritesDBHelper favoritesDBHelper;
     private CategoryAndProduct product;
+    private ConstraintLayout productCardCL;
     private ImageView productsFragmentMainImgV, productsColumnImgV, productMainImgV, addToFavoritesImgBtn;
     private TextView productFullNameTV, manufacturerTV, weightTV, priceAllTV, priceAllRubTV, countAllTV, sizeTypeTV, articleTV, barcodeTV, compositionTV;
     private ImageButton minusProductImgBtn, plusProductImgBtn, showCartBtn;
     private Button addProductToCartBtn;
     private FirstRVAdapter firstRVAdapter;
     private SecondRVAdapter secondRVAdapter;
-    private Stack<Long> pickedCategories = new Stack<>();
+    private final Stack<Long> pickedCategories = new Stack<>();
     private BigDecimal currentPriceAll;
 
     public static ProductsFragment newInstance(int num) {
@@ -76,6 +78,7 @@ public class ProductsFragment extends Fragment implements View.OnClickListener {
         ImageButton backFragmentBtn = view.findViewById(R.id.fragment_products_back_menu_imgbtn);
         backFragmentBtn.setOnClickListener(this);
 
+        productCardCL = view.findViewById(R.id.fragment_products_productcard_constraintlayout);
         productsFragmentMainImgV = view.findViewById(R.id.fragment_products_main_imgv);
         productsColumnImgV = view.findViewById(R.id.fragment_products_productscolumn_imgv);
         productMainImgV = view.findViewById(R.id.fragment_products_product_imgv);
@@ -128,94 +131,77 @@ public class ProductsFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.fragment_products_mainmenu_imgbtn:
+        if (v.getId() == R.id.fragment_products_mainmenu_imgbtn) {
+            if (getActivity() != null)
+                getActivity().getSupportFragmentManager().beginTransaction().remove(ProductsFragment.this).commit();
+        } else if (v.getId() == R.id.fragment_products_back_menu_imgbtn) {
+            if (pickedCategories.size() > 1) {
+                productsFragmentMainImgV.setVisibility(View.INVISIBLE);
+                productsColumnImgV.setVisibility(View.VISIBLE);
+                productCardCL.setVisibility(View.INVISIBLE);
+                pickedCategories.pop();
+                List<CategoryAndProduct> categories = categoriesDBHelper.getListCategoryAndProductByParentCategory(pickedCategories.peek());
+                List<CategoryAndProduct> products = productsDBHelper.getListCategoryAndProductByParentCategory(pickedCategories.peek());
+                List<CategoryAndProduct> categoryAndProductList = new ArrayList<>();
+                categoryAndProductList.addAll(categories);
+                categoryAndProductList.addAll(products);
+                secondRVAdapter.updateListData(categoryAndProductList);
+            } else if (pickedCategories.size() == 1) {
+                productsFragmentMainImgV.setVisibility(View.VISIBLE);
+                productsColumnImgV.setVisibility(View.INVISIBLE);
+                productCardCL.setVisibility(View.INVISIBLE);
+                secondRVAdapter.updateListData(new ArrayList<>());
+                firstRVAdapter.resetRVData();
+                pickedCategories.pop();
+            } else {
                 if (getActivity() != null)
                     getActivity().getSupportFragmentManager().beginTransaction().remove(ProductsFragment.this).commit();
-                break;
-
-            case R.id.fragment_products_back_menu_imgbtn:
-                if (pickedCategories.size() > 1) {
-                    productsFragmentMainImgV.setVisibility(View.INVISIBLE);
-                    productsColumnImgV.setVisibility(View.VISIBLE);
-                    pickedCategories.pop();
-                    clearProductCard();
-                    List<CategoryAndProduct> categories = categoriesDBHelper.getListCategoryAndProductByParentCategory(pickedCategories.peek());
-                    List<CategoryAndProduct> products = productsDBHelper.getListCategoryAndProductByParentCategory(pickedCategories.peek());
-                    List<CategoryAndProduct> categoryAndProductList = new ArrayList<>();
-                    categoryAndProductList.addAll(categories);
-                    categoryAndProductList.addAll(products);
-                    secondRVAdapter.updateListData(categoryAndProductList);
-                } else if (pickedCategories.size() == 1) {
-                    productsFragmentMainImgV.setVisibility(View.VISIBLE);
-                    productsColumnImgV.setVisibility(View.INVISIBLE);
-                    clearProductCard();
-                    secondRVAdapter.updateListData(new ArrayList<>());
-                    firstRVAdapter.resetRVData();
-                    pickedCategories.pop();
+            }
+        } else if (v.getId() == R.id.fragment_products_minusproduct_imgbtn) {
+            BigDecimal currentCountAll = new BigDecimal(countAllTV.getText().toString());
+            currentCountAll = currentCountAll.subtract(product.getSizeStep());
+            if (currentCountAll.compareTo(product.getMinSize()) >= 0) {
+                if (currentCountAll.stripTrailingZeros().scale() <= 0) {
+                    countAllTV.setText(String.valueOf(currentCountAll.toBigIntegerExact()));
                 } else {
-                    if (getActivity() != null)
-                        getActivity().getSupportFragmentManager().beginTransaction().remove(ProductsFragment.this).commit();
+                    countAllTV.setText(String.valueOf(currentCountAll));
                 }
-                break;
-
-            case R.id.fragment_products_minusproduct_imgbtn:
-                BigDecimal currentCountAll = new BigDecimal(countAllTV.getText().toString());
-                currentCountAll = currentCountAll.subtract(product.getSizeStep());
-                if (currentCountAll.compareTo(product.getMinSize()) >= 0) {
-                    if (currentCountAll.stripTrailingZeros().scale() <= 0) {
-                        countAllTV.setText(String.valueOf(currentCountAll.toBigIntegerExact()));
-                    } else {
-                        countAllTV.setText(String.valueOf(currentCountAll));
-                    }
-                    currentPriceAll = currentPriceAll.subtract(product.getPricePerSizeStep());
-                    priceAllTV.setText(String.valueOf(currentPriceAll));
-                    addProductToCartBtn.setText("Добавить");
+                currentPriceAll = currentPriceAll.subtract(product.getPricePerSizeStep());
+                priceAllTV.setText(String.valueOf(currentPriceAll));
+                addProductToCartBtn.setText("Добавить");
+            }
+        } else if (v.getId() == R.id.fragment_products_plusproduct_imgbtn) {
+            BigDecimal currentCountAll = new BigDecimal(countAllTV.getText().toString());
+            currentCountAll = currentCountAll.add(product.getSizeStep());
+            if (currentCountAll.compareTo(product.getMaxSize()) <= 0) {
+                if (currentCountAll.stripTrailingZeros().scale() <= 0) {
+                    countAllTV.setText(String.valueOf(currentCountAll.toBigIntegerExact()));
+                } else {
+                    countAllTV.setText(String.valueOf(currentCountAll));
                 }
-                break;
-
-            case R.id.fragment_products_plusproduct_imgbtn:
-                currentCountAll = new BigDecimal(countAllTV.getText().toString());
-                currentCountAll = currentCountAll.add(product.getSizeStep());
-                if (currentCountAll.compareTo(product.getMaxSize()) <= 0) {
-                    if (currentCountAll.stripTrailingZeros().scale() <= 0) {
-                        countAllTV.setText(String.valueOf(currentCountAll.toBigIntegerExact()));
-                    } else {
-                        countAllTV.setText(String.valueOf(currentCountAll));
-                    }
-                    currentPriceAll = currentPriceAll.add(product.getPricePerSizeStep());
-                    priceAllTV.setText(String.valueOf(currentPriceAll));
-                    addProductToCartBtn.setText("Добавить");
-                }
-                break;
-
-            case R.id.fragment_products_addtocart_btn:
-                addProductToCartBtn.setText(R.string.addtocart);
-                break;
-
-
-            case R.id.fragment_products_addtofavorites_imgbtn:
-                if (favoritesDBHelper.findByArticle(product.getArticle())) {
-                    favoritesDBHelper.deleteByArticle(product.getArticle());
-                    addToFavoritesImgBtn.setImageResource(R.drawable.ic_notfavorites);
-                } else if (!favoritesDBHelper.findByArticle(product.getArticle())) {
-                    favoritesDBHelper.saveProduct(product.getArticle());
-                    addToFavoritesImgBtn.setImageResource(R.drawable.ic_favorites);
-                }
-                break;
-
-            case R.id.fragment_products_product_imgv:
+                currentPriceAll = currentPriceAll.add(product.getPricePerSizeStep());
+                priceAllTV.setText(String.valueOf(currentPriceAll));
+                addProductToCartBtn.setText("Добавить");
+            }
+        } else if (v.getId() == R.id.fragment_products_addtocart_btn) {
+            addProductToCartBtn.setText(R.string.addtocart);
+        } else if (v.getId() == R.id.fragment_products_addtofavorites_imgbtn) {
+            if (favoritesDBHelper.findByArticle(product.getArticle())) {
+                favoritesDBHelper.deleteByArticle(product.getArticle());
+                addToFavoritesImgBtn.setImageResource(R.drawable.ic_notfavorites);
+            } else if (!favoritesDBHelper.findByArticle(product.getArticle())) {
+                favoritesDBHelper.saveProduct(product.getArticle());
+                addToFavoritesImgBtn.setImageResource(R.drawable.ic_favorites);
+            }
+        } else if (v.getId() == R.id.fragment_products_product_imgv) {
+            if (getActivity() != null) {
                 Fragment productImagesFragment = ProductImagesFragment.newInstance(product.getArticle(), product.getImagesInfo());
-                if (getActivity() != null) {
-                    FragmentTransaction ftr = getActivity().getSupportFragmentManager().beginTransaction();
-                    ftr.add(R.id.mainactivity_fragment_layout, productImagesFragment, "ProductImagesFragment");
-                    ftr.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-                    ftr.addToBackStack(null);
-                    ftr.commit();
-                }
-                break;
-
-            default: break;
+                FragmentTransaction ftr = getActivity().getSupportFragmentManager().beginTransaction();
+                ftr.add(R.id.mainactivity_fragment_layout, productImagesFragment, "ProductImagesFragment");
+                ftr.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+                ftr.addToBackStack(null);
+                ftr.commit();
+            }
         }
     }
 
@@ -237,29 +223,17 @@ public class ProductsFragment extends Fragment implements View.OnClickListener {
         pickedCategories.clear();
         productsFragmentMainImgV.setVisibility(View.VISIBLE);
         productsColumnImgV.setVisibility(View.INVISIBLE);
+        productCardCL.setVisibility(View.INVISIBLE);
         secondRVAdapter.updateListData(new ArrayList<>());
-        clearProductCard();
     }
 
     public void setProductCard(CategoryAndProduct product) {
         this.product = product;
 
-        TextView priceAllRubProductTV = view.findViewById(R.id.fragment_products_productpriceallrub_tv);
-        priceAllRubProductTV.setVisibility(View.VISIBLE);
-        minusProductImgBtn.setVisibility(View.VISIBLE);
+        productCardCL.setVisibility(View.VISIBLE);
         minusProductImgBtn.setClickable(true);
-        minusProductImgBtn.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#8BC34A")));
-        plusProductImgBtn.setVisibility(View.VISIBLE);
         plusProductImgBtn.setClickable(true);
-        plusProductImgBtn.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#8BC34A")));
-        priceAllTV.setVisibility(View.VISIBLE);
-        priceAllRubTV.setVisibility(View.VISIBLE);
-        countAllTV.setVisibility(View.VISIBLE);
-        addProductToCartBtn.setVisibility(View.VISIBLE);
         addProductToCartBtn.setClickable(true);
-        addProductToCartBtn.setText("Добавить");
-        addProductToCartBtn.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#8BC34A")));
-        showCartBtn.setVisibility(View.VISIBLE);
 
         String[] imagesInfo = product.getImagesInfo().split("\\|");
         String[] images = new String[0];
@@ -281,7 +255,6 @@ public class ProductsFragment extends Fragment implements View.OnClickListener {
         File productMainImg = new File(productImagesDir, mainProductImgName);
         Bitmap bitmap = Utils.getScaledBitmap(productMainImg.getAbsolutePath(), 250, 350);
         productMainImgV.setImageBitmap(bitmap);
-        productMainImgV.setVisibility(View.VISIBLE);
 
         productFullNameTV.setText(product.getFullName());
         manufacturerTV.setText(product.getManufacturer());
@@ -335,34 +308,6 @@ public class ProductsFragment extends Fragment implements View.OnClickListener {
         } else {
             addToFavoritesImgBtn.setImageResource(R.drawable.ic_notfavorites);
         }
-        addToFavoritesImgBtn.setVisibility(View.VISIBLE);
-    }
-
-    private void clearProductCard() {
-        minusProductImgBtn.setVisibility(View.INVISIBLE);
-        plusProductImgBtn.setVisibility(View.INVISIBLE);
-        productFullNameTV.setText(null);
-        manufacturerTV.setText(null);
-        weightTV.setText(null);
-        priceAllTV.setText(null);
-        priceAllRubTV.setVisibility(View.INVISIBLE);
-        countAllTV.setText(null);
-        sizeTypeTV.setText(null);
-        articleTV.setText(null);
-        barcodeTV.setText(null);
-        compositionTV.setText(null);
-        addProductToCartBtn.setVisibility(View.INVISIBLE);
-        showCartBtn.setVisibility(View.INVISIBLE);
-        productMainImgV.setImageBitmap(null);
-        productMainImgV.setVisibility(View.INVISIBLE);
-        addToFavoritesImgBtn.setVisibility(View.INVISIBLE);
-        productFullNameTV.setText(null);
-        manufacturerTV.setText(null);
-        weightTV.setText(null);
-        priceAllTV.setText(null);
-        articleTV.setText(null);
-        barcodeTV.setText(null);
-        productsColumnImgV.setVisibility(View.INVISIBLE);
     }
 
 }
