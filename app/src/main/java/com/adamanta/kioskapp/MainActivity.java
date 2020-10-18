@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,7 +22,7 @@ import com.adamanta.kioskapp.product.fragments.productImagesFragment.ProductImag
 import com.adamanta.kioskapp.product.model.CategoryAndProduct;
 import com.adamanta.kioskapp.product.model.Product;
 import com.adamanta.kioskapp.settings.SettingsActivity;
-import com.adamanta.kioskapp.shopcart.ProductsCartFragment;
+import com.adamanta.kioskapp.shopcart.ShopCartFragment;
 import com.adamanta.kioskapp.threads.UIBarControllerThread;
 import com.adamanta.kioskapp.utils.FoldersCreator;
 
@@ -85,9 +86,9 @@ public class MainActivity extends AppCompatActivity implements IFavoritesFragmen
             ftFavoritesFragment.addToBackStack(null);
             ftFavoritesFragment.commit();
         } else if (v.getId() == R.id.CartButton) {
-            Fragment cartFragment = ProductsCartFragment.newInstance(123);
+            Fragment cartFragment = ShopCartFragment.newInstance(123);
             FragmentTransaction ftCartFragment = getSupportFragmentManager().beginTransaction();
-            ftCartFragment.replace(R.id.mainactivity_fragment_layout, cartFragment, "CartFragment");
+            ftCartFragment.replace(R.id.mainactivity_fragment_layout, cartFragment, "ShopCartFragment");
             ftCartFragment.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
             ftCartFragment.addToBackStack(null);
             ftCartFragment.commit();
@@ -174,6 +175,20 @@ public class MainActivity extends AppCompatActivity implements IFavoritesFragmen
         if (fragment != null)
             fragment.changeMainImage(imageAbsolutePath);
     }
+
+    @Override
+    public void shopCartFragmentCalculationTotalPrice() {
+        ShopCartFragment fragment = (ShopCartFragment) getSupportFragmentManager().findFragmentByTag("ShopCartFragment");
+        if (fragment != null)
+            fragment.calculation();
+    }
+
+    @Override
+    public void showToastMessage(String message) {
+        Toast.makeText(this.getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+    }
+
+
 
 
 //    @Override

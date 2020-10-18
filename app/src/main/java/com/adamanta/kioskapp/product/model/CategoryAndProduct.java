@@ -56,6 +56,8 @@ public class CategoryAndProduct {
 
     private String information;
 
+    private String imagesNamesAndPositions;
+
     private String imagesInfo;
 
     public Long getId() {
@@ -266,6 +268,14 @@ public class CategoryAndProduct {
         this.information = information;
     }
 
+    public String getImagesNamesAndPositions() {
+        return imagesNamesAndPositions;
+    }
+
+    public void setImagesNamesAndPositions(String imagesNamesAndPositions) {
+        this.imagesNamesAndPositions = imagesNamesAndPositions;
+    }
+
     public String getImagesInfo() {
         return imagesInfo;
     }
@@ -273,4 +283,10 @@ public class CategoryAndProduct {
     public void setImagesInfo(String imagesInfo) {
         this.imagesInfo = imagesInfo;
     }
+
+
+    public int compareToByPosition (CategoryAndProduct categoryAndProduct) {
+        return this.position - categoryAndProduct.getPosition();
+    }
+
 }

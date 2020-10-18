@@ -62,17 +62,17 @@ public class FirstRVAdapter extends RecyclerView.Adapter<FirstRVAdapter.ViewHold
 
     class ViewHolder extends RecyclerView.ViewHolder {
         private Button firstRVItemButton;
-        private firstRVButtonListener firstRVButtonListener;
+        private FirstRVButtonListener firstRVButtonListener;
 
         private ViewHolder(View itemView) {
             super(itemView);
+            firstRVButtonListener = new FirstRVButtonListener();
             firstRVItemButton = itemView.findViewById(R.id.recyclerViewItemCategoriesButton);
-            firstRVButtonListener = new firstRVButtonListener();
             firstRVItemButton.setOnClickListener(firstRVButtonListener);
         }
     }
 
-    private class firstRVButtonListener implements View.OnClickListener {
+    private class FirstRVButtonListener implements View.OnClickListener {
         private Category category;
 
         private void setCategory(Category category) { this.category = category; }

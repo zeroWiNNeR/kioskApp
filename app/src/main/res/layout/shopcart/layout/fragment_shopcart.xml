@@ -1,33 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/fragment_shopcart_mainlayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFFFFF"
-    android:orientation="vertical">
+    android:orientation="horizontal">
 
     <TextView
-        android:id="@+id/fragmentname_tv"
+        android:id="@+id/fragment_shopcart_fragmentname_tv"
         android:layout_width="1097dp"
         android:layout_height="50dp"
         android:layout_marginStart="50dp"
         android:text="Корзина:"
         android:textSize="36sp"
-        app:layout_constraintBottom_toTopOf="@+id/mainline"
+        app:layout_constraintBottom_toTopOf="@+id/fragment_shopcart_mainline"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/cart_rv"
+        android:id="@+id/fragment_shopcart_rv"
         android:layout_width="900dp"
         android:layout_height="0dp"
+        android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/mainline" />
+        app:layout_constraintTop_toBottomOf="@+id/fragment_shopcart_mainline" />
 
     <ImageView
-        android:id="@+id/mainline"
+        android:id="@+id/fragment_shopcart_mainline"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="50dp"
@@ -39,16 +42,16 @@
         app:srcCompat="@android:color/darker_gray" />
 
     <ImageView
-        android:id="@+id/maincolumn"
+        android:id="@+id/fragment_shopcart_maincolumn"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/cart_rv"
-        app:layout_constraintTop_toBottomOf="@+id/mainline"
+        app:layout_constraintStart_toEndOf="@+id/fragment_shopcart_rv"
+        app:layout_constraintTop_toBottomOf="@+id/fragment_shopcart_mainline"
         app:srcCompat="@android:color/darker_gray" />
 
     <ImageButton
-        android:id="@+id/closefragment_btn"
+        android:id="@+id/fragment_shopcart_closefragment_btn"
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:layout_marginTop="10dp"
@@ -61,43 +64,43 @@
         app:srcCompat="@drawable/ic_close" />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/fragment_shopcart_textView"
         android:layout_width="wrap_content"
         android:layout_height="50dp"
         android:layout_marginStart="50dp"
         android:layout_marginTop="50dp"
         android:text="Итог:"
         android:textSize="30sp"
-        app:layout_constraintStart_toEndOf="@+id/maincolumn"
-        app:layout_constraintTop_toBottomOf="@+id/mainline" />
+        app:layout_constraintStart_toEndOf="@+id/fragment_shopcart_maincolumn"
+        app:layout_constraintTop_toBottomOf="@+id/fragment_shopcart_mainline" />
 
     <TextView
-        android:id="@+id/totalprice_tv"
+        android:id="@+id/fragment_shopcart_totalprice_tv"
         android:layout_width="wrap_content"
         android:layout_height="50dp"
         android:text="000 000"
         android:textSize="30sp"
-        app:layout_constraintStart_toStartOf="@+id/textView"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+        app:layout_constraintStart_toStartOf="@+id/fragment_shopcart_textView"
+        app:layout_constraintTop_toBottomOf="@+id/fragment_shopcart_textView" />
 
     <Button
-        android:id="@+id/order_btn"
+        android:id="@+id/fragment_shopcart_order_btn"
         android:layout_width="200dp"
         android:layout_height="100dp"
         android:backgroundTint="#8BC34A"
         android:text="@string/order"
         android:textSize="30sp"
         android:visibility="visible"
-        app:layout_constraintStart_toStartOf="@+id/totalprice_tv"
-        app:layout_constraintTop_toBottomOf="@+id/totalprice_tv" />
+        app:layout_constraintStart_toStartOf="@+id/fragment_shopcart_totalprice_tv"
+        app:layout_constraintTop_toBottomOf="@+id/fragment_shopcart_totalprice_tv" />
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/fragment_shopcart_textView2"
         android:layout_width="wrap_content"
         android:layout_height="50dp"
         android:layout_marginStart="5dp"
         android:text="руб."
         android:textSize="30sp"
-        app:layout_constraintStart_toEndOf="@+id/totalprice_tv"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+        app:layout_constraintStart_toEndOf="@+id/fragment_shopcart_totalprice_tv"
+        app:layout_constraintTop_toBottomOf="@+id/fragment_shopcart_textView" />
 </androidx.constraintlayout.widget.ConstraintLayout>

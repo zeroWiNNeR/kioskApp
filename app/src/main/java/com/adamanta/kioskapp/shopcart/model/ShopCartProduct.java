@@ -1,12 +1,12 @@
-package com.adamanta.kioskapp.product.model;
+package com.adamanta.kioskapp.shopcart.model;
+
+import com.adamanta.kioskapp.product.model.CategoryAndProduct;
 
 import java.math.BigDecimal;
 
-public class Product {
+public class ShopCartProduct extends CategoryAndProduct {
 
     private long id;
-
-    private char type;
 
     private Long parentCategory;
 
@@ -34,6 +34,8 @@ public class Product {
 
     private BigDecimal maxSize;
 
+    private BigDecimal allCount;
+
     private String sizeType;
 
     private BigDecimal stockQuantity;
@@ -54,8 +56,6 @@ public class Product {
 
     private String information;
 
-    private String imagesNamesAndPositions;
-
     private String imagesInfo;
 
     public Long getId() {
@@ -64,14 +64,6 @@ public class Product {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public char getType() {
-        return type;
-    }
-
-    public void setType(char type) {
-        this.type = type;
     }
 
     public Long getParentCategory() {
@@ -178,6 +170,14 @@ public class Product {
         this.maxSize = maxSize;
     }
 
+    public BigDecimal getAllCount() {
+        return allCount;
+    }
+
+    public void setAllCount(BigDecimal allCount) {
+        this.allCount = allCount;
+    }
+
     public String getSizeType() {
         return sizeType;
     }
@@ -258,14 +258,6 @@ public class Product {
         this.information = information;
     }
 
-    public String getImagesNamesAndPositions() {
-        return imagesNamesAndPositions;
-    }
-
-    public void setImagesNamesAndPositions(String imagesNamesAndPositions) {
-        this.imagesNamesAndPositions = imagesNamesAndPositions;
-    }
-
     public String getImagesInfo() {
         return imagesInfo;
     }
@@ -273,6 +265,5 @@ public class Product {
     public void setImagesInfo(String imagesInfo) {
         this.imagesInfo = imagesInfo;
     }
-
 
 }

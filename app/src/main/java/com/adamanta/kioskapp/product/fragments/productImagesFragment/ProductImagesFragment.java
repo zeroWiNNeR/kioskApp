@@ -25,15 +25,13 @@ import java.util.List;
 public class ProductImagesFragment extends Fragment implements View.OnClickListener {
 
     private ImageView mainImgV;
+    private final List<ProductImage> productImagesList = new ArrayList<>();
 
-    private List<ProductImage> productImagesList = new ArrayList<>();
-    private ProductImagesRVAdapter productImagesRVAdapter = new ProductImagesRVAdapter(productImagesList);
-
-    public static ProductImagesFragment newInstance(Long article, String imagesInfo) {
+    public static ProductImagesFragment newInstance(Long article, String imagesNamesAndPositions) {
         ProductImagesFragment f = new ProductImagesFragment();
         Bundle args = new Bundle();
         args.putLong("article", article);
-        args.putString("imagesInfo", imagesInfo);
+        args.putString("imagesNamesAndPositions", imagesNamesAndPositions);
         f.setArguments(args);
         return f;
     }
@@ -55,20 +53,15 @@ public class ProductImagesFragment extends Fragment implements View.OnClickListe
         mainImgV = view.findViewById(R.id.fragment_productimages_main_imgv);
 
         long article = 0L;
-        String imagesInfo = "";
+        String imagesNamesAndPositions = "";
         if (this.getArguments() != null) {
             article = this.getArguments().getLong("article");
-            imagesInfo = this.getArguments().getString("imagesInfo");
+            imagesNamesAndPositions = this.getArguments().getString("imagesNamesAndPositions");
         }
 
-        String[] imagesInfoBuf = {};
-        if (imagesInfo != null)
-            imagesInfoBuf = imagesInfo.split("\\|");
         String[] images = {};
-        if (imagesInfoBuf.length == 1) {
-            images = imagesInfoBuf[0].split(";");
-        } else if (imagesInfoBuf.length > 1) {
-            images = imagesInfoBuf[1].split(";");
+        if (imagesNamesAndPositions != null) {
+            images = imagesNamesAndPositions.split(";");
         }
 
         for (int i=0; i<images.length; i++) {
@@ -81,6 +74,7 @@ public class ProductImagesFragment extends Fragment implements View.OnClickListe
             }
         }
 
+        ProductImagesRVAdapter productImagesRVAdapter = new ProductImagesRVAdapter(productImagesList);
         final RecyclerView productImagesRecyclerView = view.findViewById(R.id.fragment_productimages_rv);
         productImagesRecyclerView.setHasFixedSize(false);
         productImagesRecyclerView.setAdapter(productImagesRVAdapter);

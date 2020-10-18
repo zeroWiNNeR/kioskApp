@@ -20,12 +20,17 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.adamanta.kioskapp.IMainActivity;
 import com.adamanta.kioskapp.R;
 import com.adamanta.kioskapp.favorites.utils.FavoritesDBHelper;
 import com.adamanta.kioskapp.product.fragments.productImagesFragment.ProductImagesFragment;
+import com.adamanta.kioskapp.product.model.CategoryAndProduct;
 import com.adamanta.kioskapp.product.model.Product;
 import com.adamanta.kioskapp.product.utils.ProductsDBHelper;
 import com.adamanta.kioskapp.product.utils.Utils;
+import com.adamanta.kioskapp.shopcart.ShopCartFragment;
+import com.adamanta.kioskapp.shopcart.model.ShopCartProduct;
+import com.adamanta.kioskapp.shopcart.utils.ShopCartDBHelper;
 
 import java.io.File;
 import java.math.BigDecimal;
@@ -34,27 +39,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FavoritesFragment extends Fragment implements View.OnClickListener {
-    private View view;
-    private FavoritesDBHelper favoritesDBHelper;
-    private ProductsDBHelper productsDBHelper;
-    private List<FavoritesList> favoritesList = new ArrayList<>();
 
+    private View view;
     private ImageView productMainImgV;
     private TextView productFullNameTV, manufacturerTV, weightTV, priceAllTV, priceAllRubTV, countAllTV, sizeTypeTV, articleTV, barcodeTV, compositionTV;
     private ImageButton minusProductImgBtn, plusProductImgBtn, showCartBtn;
     private Button addProductToCartBtn;
-
-    private FavoritesRVAdapter favoritesRVAdapter;
     private Product product;
     private BigDecimal currentPriceAll;
+    private BigDecimal currentAllCount;
 
     public static FavoritesFragment newInstance(int num) {
         FavoritesFragment f = new FavoritesFragment();
-        // Supply num input as an argument.
         Bundle args = new Bundle();
         args.putInt("num", num);
         f.setArguments(args);
-
         return f;
     }
 
@@ -70,8 +69,8 @@ public class FavoritesFragment extends Fragment implements View.OnClickListener 
                              @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.favorites_fragment, container, false);
 
-        favoritesDBHelper = new FavoritesDBHelper(view.getContext());
-        productsDBHelper = new ProductsDBHelper(view.getContext());
+        FavoritesDBHelper favoritesDBHelper = new FavoritesDBHelper(view.getContext());
+        ProductsDBHelper productsDBHelper = new ProductsDBHelper(view.getContext());
         long[] favoriteProductArticles = favoritesDBHelper.getAllValues();
         List<Product> favoriteProductsList = new ArrayList<>();
         for (long article : favoriteProductArticles) {
@@ -98,11 +97,12 @@ public class FavoritesFragment extends Fragment implements View.OnClickListener 
         addProductToCartBtn = view.findViewById(R.id.fragment_favorites_addtocart_btn);
         addProductToCartBtn.setOnClickListener(this);
         showCartBtn = view.findViewById(R.id.fragment_favorites_showcart_btn);
+        showCartBtn.setOnClickListener(this);
         articleTV = view.findViewById(R.id.fragment_favorites_productarticle_tv);
         barcodeTV = view.findViewById(R.id.fragment_favorites_productbarcode_tv);
         compositionTV = view.findViewById(R.id.fragment_favorites_composition_tv);
 
-        favoritesRVAdapter = new FavoritesRVAdapter(favoriteProductsList);
+        FavoritesRVAdapter favoritesRVAdapter = new FavoritesRVAdapter(favoriteProductsList);
         final RecyclerView favoritesRecyclerView = view.findViewById(R.id.fragment_favorites_rv);
         favoritesRecyclerView.setHasFixedSize(false);
         favoritesRecyclerView.setAdapter(favoritesRVAdapter);
@@ -120,9 +120,10 @@ public class FavoritesFragment extends Fragment implements View.OnClickListener 
                 getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
             }
         } else if (v.getId() == R.id.fragment_favorites_minusproduct_imgbtn) {
-            BigDecimal currentCountAll = new BigDecimal(countAllTV.getText().toString());
+            BigDecimal currentCountAll = currentAllCount;
             currentCountAll = currentCountAll.subtract(product.getSizeStep());
             if (currentCountAll.compareTo(product.getMinSize()) >= 0) {
+                currentAllCount = currentAllCount.subtract(product.getSizeStep());
                 if (currentCountAll.stripTrailingZeros().scale() <= 0) {
                     countAllTV.setText(String.valueOf(currentCountAll.toBigIntegerExact()));
                 } else {
@@ -132,11 +133,11 @@ public class FavoritesFragment extends Fragment implements View.OnClickListener 
                 priceAllTV.setText(String.valueOf(currentPriceAll));
                 addProductToCartBtn.setText("Добавить");
             }
-            addProductToCartBtn.setText("Добавить");
         } else if (v.getId() == R.id.fragment_favorites_plusproduct_imgbtn) {
-            BigDecimal currentCountAll = new BigDecimal(countAllTV.getText().toString());
+            BigDecimal currentCountAll = currentAllCount;
             currentCountAll = currentCountAll.add(product.getSizeStep());
             if (currentCountAll.compareTo(product.getMaxSize()) <= 0) {
+                currentAllCount = currentAllCount.add(product.getSizeStep());
                 if (currentCountAll.stripTrailingZeros().scale() <= 0) {
                     countAllTV.setText(String.valueOf(currentCountAll.toBigIntegerExact()));
                 } else {
@@ -146,19 +147,62 @@ public class FavoritesFragment extends Fragment implements View.OnClickListener 
                 priceAllTV.setText(String.valueOf(currentPriceAll));
                 addProductToCartBtn.setText("Добавить");
             }
-            addProductToCartBtn.setText("Добавить");
         } else if (v.getId() == R.id.fragment_favorites_addtocart_btn) {
-            addProductToCartBtn.setText(R.string.addtocart);
+            ShopCartDBHelper shopCartDBHelper = new ShopCartDBHelper(view.getContext());
+            ShopCartProduct shopCartProduct = shopCartDBHelper.getByArticle(product.getArticle());
+            if (shopCartProduct == null) {
+                if (currentAllCount.compareTo(product.getMaxSize()) <= 0) {
+                    CategoryAndProduct categoryAndProduct = new CategoryAndProduct();
+                    categoryAndProduct.setId(product.getId());
+                    categoryAndProduct.setType(product.getType());
+                    categoryAndProduct.setParentCategory(product.getParentCategory());
+                    categoryAndProduct.setPosition(product.getPosition());
+                    categoryAndProduct.setIsEnable(product.getIsEnable());
+                    categoryAndProduct.setName(product.getName());
+                    categoryAndProduct.setFullName(product.getFullName());
+                    categoryAndProduct.setArticle(product.getArticle());
+                    categoryAndProduct.setBarcode(product.getBarcode());
+                    categoryAndProduct.setWeight(product.getWeight());
+                    categoryAndProduct.setMinSize(product.getMinSize());
+                    categoryAndProduct.setSizeStep(product.getSizeStep());
+                    categoryAndProduct.setPricePerSizeStep(product.getPricePerSizeStep());
+                    categoryAndProduct.setWeightPerSizeStep(product.getWeightPerSizeStep());
+                    categoryAndProduct.setMaxSize(product.getMaxSize());
+                    categoryAndProduct.setSizeType(product.getSizeType());
+                    shopCartDBHelper.addNewShopCartProduct(categoryAndProduct, currentAllCount);
+                    addProductToCartBtn.setText(R.string.addtocart);
+                } else {
+                    ((IMainActivity) view.getContext()).showToastMessage("Превышено допустимое кол-во товара для покупки!");
+                }
+            } else {
+                BigDecimal summaryAllCount = currentAllCount.add(shopCartProduct.getAllCount());
+                if (summaryAllCount.compareTo(product.getMaxSize()) <= 0) {
+                    shopCartDBHelper.addAdditionalCountToShopCartProduct(shopCartProduct, currentAllCount);
+                    addProductToCartBtn.setText(R.string.addtocart);
+                } else {
+                    String message;
+                    if (product.getSizeStep().stripTrailingZeros().scale() <= 0) {
+                        message = "Не удалось добавить данное количество товара, не хватает на складе! " +
+                                "\nМожно добавить: " + product.getMaxSize().subtract(shopCartProduct.getAllCount()).toBigIntegerExact();
+                    } else {
+                        message = "Не удалось добавить данное количество товара, не хватает на складе! " +
+                                "\nМожно добавить: " + product.getMaxSize().subtract(shopCartProduct.getAllCount());
+                    }
+                    ((IMainActivity) view.getContext()).showToastMessage(message);
+                }
+            }
         } else if (v.getId() == R.id.fragment_favorites_showcart_btn) {
-//            Fragment cartFragment = ProductsCartFragment.newInstance(123);
-//            FragmentTransaction ft = getChildFragmentManager().beginTransaction();
-//            ft.replace(R.id.fragment_favorites_mainlayout, cartFragment, "cartFragment");
-//            ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-//            ft.addToBackStack(null);
-//            ft.commit();
+            if (getActivity() != null) {
+                Fragment shopCartFragment = ShopCartFragment.newInstance(123);
+                FragmentTransaction ftr = getActivity().getSupportFragmentManager().beginTransaction();
+                ftr.add(R.id.mainactivity_fragment_layout, shopCartFragment, "ShopCartFragment");
+                ftr.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+                ftr.addToBackStack(null);
+                ftr.commit();
+            }
         } else if (v.getId() == R.id.fragment_favorites_product_imgv) {
             if (getActivity() != null) {
-                Fragment productImagesFragment = ProductImagesFragment.newInstance(product.getArticle(), product.getImagesInfo());
+                Fragment productImagesFragment = ProductImagesFragment.newInstance(product.getArticle(), product.getImagesNamesAndPositions());
                 FragmentTransaction ftr = getActivity().getSupportFragmentManager().beginTransaction();
                 ftr.add(R.id.mainactivity_fragment_layout, productImagesFragment, "ProductImagesFragment");
                 ftr.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
@@ -168,8 +212,7 @@ public class FavoritesFragment extends Fragment implements View.OnClickListener 
         }
     }
 
-
-
+    
     public void setProductCard(Product product) {
         this.product = product;
 
@@ -190,15 +233,8 @@ public class FavoritesFragment extends Fragment implements View.OnClickListener 
         addProductToCartBtn.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#8BC34A")));
         showCartBtn.setVisibility(View.VISIBLE);
 
-        String[] imagesInfo = product.getImagesInfo().split("\\|");
-        String[] images = new String[0];
-        if (imagesInfo.length == 1) {
-            images = imagesInfo[0].split(";");
-        } else if (imagesInfo.length > 1) {
-            images = imagesInfo[1].split(";");
-        }
         String mainProductImgName = "1.webp";
-        for (String image : images) {
+        for (String image : product.getImagesNamesAndPositions().split(";")) {
             String position = image.split("=")[1];
             if (position.equals("1")) {
                 mainProductImgName = image.split("=")[0];
@@ -217,6 +253,7 @@ public class FavoritesFragment extends Fragment implements View.OnClickListener 
         weightTV.setText(product.getWeight());
         DecimalFormat countFormat = new DecimalFormat("###.##");
         countAllTV.setText(countFormat.format(product.getMinSize()));
+        currentAllCount = product.getMinSize();
         sizeTypeTV.setText(product.getSizeType());
         BigDecimal priceAll = product.getMinSize().divide(product.getSizeStep()).multiply(product.getPricePerSizeStep());
         DecimalFormat priceFormat = new DecimalFormat("###.##");

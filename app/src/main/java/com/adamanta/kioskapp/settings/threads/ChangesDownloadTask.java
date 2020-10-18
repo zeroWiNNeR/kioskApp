@@ -140,7 +140,9 @@ public class ChangesDownloadTask extends AsyncTask<String, String, String> {
                                 if (jsonObjectChange.has("27"))
                                     change.setInformation(jsonObjectChange.getString("27"));
                                 if (jsonObjectChange.has("28"))
-                                    change.setImagesInfo(jsonObjectChange.getString("28"));
+                                    change.setImagesNamesAndPositions(jsonObjectChange.getString("28"));
+                                if (jsonObjectChange.has("29"))
+                                    change.setImagesInfo(jsonObjectChange.getString("29"));
                             }
                             changes.add(change);
                         }
@@ -186,9 +188,10 @@ public class ChangesDownloadTask extends AsyncTask<String, String, String> {
                                         product.setPrevPrevComposition(change.getPrevPrevComposition());
                                         product.setPrevPrevCompositionDate(change.getPrevPrevCompositionDate());
                                         product.setInformation(change.getInformation());
+                                        product.setImagesNamesAndPositions(change.getImagesNamesAndPositions());
                                         product.setImagesInfo(change.getImagesInfo());
 
-                                        saveImages(product.getArticle(), product.getImagesInfo());
+                                        saveImages(product.getArticle(), product.getImagesNamesAndPositions());
 
                                         if (!productsDBHelper.saveProduct(product)) {
                                             Log.e(this.getClass().getSimpleName(), "Ошибка сохранения продукта в БД!");
@@ -240,13 +243,9 @@ public class ChangesDownloadTask extends AsyncTask<String, String, String> {
                                             if (change.getPrevPrevComposition() != null) product.setPrevPrevComposition(change.getPrevPrevComposition());
                                             if (change.getPrevPrevCompositionDate() != null) product.setPrevPrevCompositionDate(change.getPrevPrevCompositionDate());
                                             if (change.getInformation() != null) product.setInformation(change.getInformation());
-                                            if (change.getImagesInfo() != null) {
-                                                if (change.getImagesInfo().split("\\|").length == 1) {
-                                                    product.setImagesInfo("|" + change.getImagesInfo().split("\\|")[0]);
-                                                } else {
-                                                    product.setImagesInfo("|" + change.getImagesInfo().split("\\|")[1]);
-                                                    updateImages(product.getArticle(), change.getImagesInfo());
-                                                }
+                                            if (change.getImagesNamesAndPositions() != null) product.setImagesNamesAndPositions(change.getImagesNamesAndPositions());
+                                            if (change.getImagesInfo() != null && change.getImagesInfo().length() > 0) {
+                                                updateImages(product.getArticle(), change.getImagesInfo());
                                             }
 
                                             if (!productsDBHelper.updateProduct(product))
@@ -303,15 +302,8 @@ public class ChangesDownloadTask extends AsyncTask<String, String, String> {
         dialog.dismiss();
     }
 
-    private void saveImages(Long article, String imagesInfo) {
-        String[] imgInfo = imagesInfo.split("\\|");
-        String[] images;
-        if (imgInfo.length == 1) {
-            images = imgInfo[0].split(";");
-        } else {
-            images = imgInfo[1].split(";");
-        }
-        for (String image : images) {
+    private void saveImages(Long article, String imagesNamesAndPositions) {
+        for (String image : imagesNamesAndPositions.split(";")) {
             try {
                 String imageFilename = image.split("=")[0];
                 URL imgURl = new URL("http://"+Constants.SERVER_IP+":"+Constants.SERVER_PORT+"/uploads/images/products/"+article+"/"+imageFilename);
@@ -337,41 +329,36 @@ public class ChangesDownloadTask extends AsyncTask<String, String, String> {
     }
 
     private void updateImages(Long article, String imagesInfo) {
-        String[] imgInfo = imagesInfo.split("\\|");
-        String[] imagesChanges;
-        if (imgInfo.length > 1) {
-            imagesChanges = imgInfo[0].split(";");
-            for (String imagesChange : imagesChanges) {
-                String[] imagesChangesInfo = imagesChange.split(" ");
-                if (imagesChangesInfo[0].equals("add")) {
-                    try {
-                        URL imgURl = new URL("http://"+Constants.SERVER_IP+":"+Constants.SERVER_PORT+"/uploads/images/products/"+article+"/"+imagesChangesInfo[1]);
-                        String articlePath = context.getFilesDir()+"/images/products/"+article;
-                        File articleFolder = new File(articlePath);
-                        if (!articleFolder.exists())
-                            articleFolder.mkdir();
-                        String destinationFile = context.getFilesDir()+"/images/products/"+article+"/"+imagesChangesInfo[1];
-                        InputStream is = imgURl.openStream();
-                        OutputStream os = new FileOutputStream(destinationFile);
-                        byte[] b = new byte[128000];
-                        int length;
-                        while ((length = is.read(b)) != -1) {
-                            os.write(b, 0, length);
-                        }
-                        is.close();
-                        os.close();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        Log.e(this.getClass().getSimpleName(), "Ошибка при сохранении изображений: \n" + e);
-                    }
-                } else if (imagesChangesInfo[0].equals("edit")) {
-
-                } else if (imagesChangesInfo[0].equals("del")) {
+        for (String imagesChange : imagesInfo.split(";")) {
+            String[] imagesChangesInfo = imagesChange.split(" ");
+            if (imagesChangesInfo[0].equals("add")) {
+                try {
+                    URL imgURl = new URL("http://"+Constants.SERVER_IP+":"+Constants.SERVER_PORT+"/uploads/images/products/"+article+"/"+imagesChangesInfo[1]);
+                    String articlePath = context.getFilesDir()+"/images/products/"+article;
+                    File articleFolder = new File(articlePath);
+                    if (!articleFolder.exists())
+                        articleFolder.mkdir();
                     String destinationFile = context.getFilesDir()+"/images/products/"+article+"/"+imagesChangesInfo[1];
-                    File file = new File(destinationFile);
-                    if (file.exists())
-                        file.delete();
+                    InputStream is = imgURl.openStream();
+                    OutputStream os = new FileOutputStream(destinationFile);
+                    byte[] b = new byte[128000];
+                    int length;
+                    while ((length = is.read(b)) != -1) {
+                        os.write(b, 0, length);
+                    }
+                    is.close();
+                    os.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Log.e(this.getClass().getSimpleName(), "Ошибка при сохранении изображений: \n" + e);
                 }
+            } else if (imagesChangesInfo[0].equals("edit")) {
+
+            } else if (imagesChangesInfo[0].equals("del")) {
+                String destinationFile = context.getFilesDir()+"/images/products/"+article+"/"+imagesChangesInfo[1];
+                File file = new File(destinationFile);
+                if (file.exists())
+                    file.delete();
             }
         }
     }

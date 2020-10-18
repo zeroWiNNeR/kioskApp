@@ -7,65 +7,65 @@
     android:background="#FFFFFF"
     android:orientation="vertical">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/fragment_productimages_rv"
-        android:layout_width="230dp"
-        android:layout_height="match_parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+  <androidx.recyclerview.widget.RecyclerView
+      android:id="@+id/fragment_productimages_rv"
+      android:layout_width="230dp"
+      android:layout_height="match_parent"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
-        android:id="@+id/productimages_maincolumn_imgv"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/fragment_productimages_rv"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@color/prodfrag_light_gray" />
+  <ImageView
+      android:id="@+id/productimages_maincolumn_imgv"
+      android:layout_width="wrap_content"
+      android:layout_height="0dp"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintStart_toEndOf="@+id/fragment_productimages_rv"
+      app:layout_constraintTop_toTopOf="parent"
+      app:srcCompat="@color/prodfrag_light_gray" />
 
-    <ScrollView
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+  <ScrollView
+      android:layout_width="0dp"
+      android:layout_height="0dp"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toEndOf="@+id/productimages_maincolumn_imgv"
+      app:layout_constraintTop_toTopOf="parent"
+      android:overScrollMode="never">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/productimages_maincolumn_imgv"
-        app:layout_constraintTop_toTopOf="parent"
-        android:overScrollMode="never">
+        app:layout_constraintStart_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="vertical"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+      <ImageView
+          android:id="@+id/fragment_productimages_main_imgv"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:scaleType="centerCrop"
+          app:layout_constraintBottom_toBottomOf="parent"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toEndOf="parent"
+          app:layout_constraintTop_toTopOf="parent"
+          app:srcCompat="@color/slate_gray" />
+    </LinearLayout>
 
-            <ImageView
-                android:id="@+id/fragment_productimages_main_imgv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:scaleType="centerCrop"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@color/slate_gray" />
-        </LinearLayout>
+  </ScrollView>
 
-    </ScrollView>
-
-    <ImageButton
-        android:id="@+id/fragment_productimages_closefragment_imgb"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:background="#00FFFFFF"
-        android:scaleType="centerCrop"
-        android:tint="@android:color/darker_gray"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_close" />
+  <ImageButton
+      android:id="@+id/fragment_productimages_closefragment_imgb"
+      android:layout_width="100dp"
+      android:layout_height="100dp"
+      android:background="#00FFFFFF"
+      android:scaleType="centerCrop"
+      android:tint="@android:color/darker_gray"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      app:srcCompat="@drawable/ic_close" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

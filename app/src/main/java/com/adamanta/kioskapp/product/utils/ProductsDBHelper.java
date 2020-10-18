@@ -41,7 +41,8 @@ public class ProductsDBHelper extends SQLiteOpenHelper {
     private static final String COL23 = "PREV_PREV_COMPOSITION";
     private static final String COL24 = "PREV_PREV_COMPOSITION_DATE";
     private static final String COL25 = "INFORMATION";
-    private static final String COL26 = "IMAGES_INFO";
+    private static final String COL26 = "IMAGES_NAMES_AND_POSITIONS";
+    private static final String COL27 = "IMAGES_INFO";
 
     public ProductsDBHelper(Context context) {
         super(context, TABLE_NAME, null, 1);
@@ -75,7 +76,8 @@ public class ProductsDBHelper extends SQLiteOpenHelper {
                 COL23 + " TEXT," +
                 COL24 + " TEXT," +
                 COL25 + " TEXT," +
-                COL26 + " TEXT)";
+                COL26 + " TEXT," +
+                COL27 + " TEXT)";
 
         db.execSQL(createTable);
     }
@@ -116,7 +118,8 @@ public class ProductsDBHelper extends SQLiteOpenHelper {
         contentValues.put(COL23, product.getPrevPrevComposition());
         contentValues.put(COL24, product.getPrevPrevCompositionDate());
         contentValues.put(COL25, product.getInformation());
-        contentValues.put(COL26, product.getImagesInfo());
+        contentValues.put(COL26, product.getImagesNamesAndPositions());
+        contentValues.put(COL27, product.getImagesInfo());
 
         SQLiteDatabase db = this.getWritableDatabase();
         if (db == null)
@@ -170,7 +173,8 @@ public class ProductsDBHelper extends SQLiteOpenHelper {
         product.setPrevPrevComposition(cursor.getString(22));
         product.setPrevPrevCompositionDate(cursor.getString(23));
         product.setInformation(cursor.getString(24));
-        product.setImagesInfo(cursor.getString(25));
+        product.setImagesNamesAndPositions(cursor.getString(25));
+        product.setImagesInfo(cursor.getString(26));
         cursor.close();
         db.close();
         return product;
@@ -217,7 +221,8 @@ public class ProductsDBHelper extends SQLiteOpenHelper {
             product.setPrevPrevComposition(cursor.getString(22));
             product.setPrevPrevCompositionDate(cursor.getString(23));
             product.setInformation(cursor.getString(24));
-            product.setImagesInfo(cursor.getString(25));
+            product.setImagesNamesAndPositions(cursor.getString(25));
+            product.setImagesInfo(cursor.getString(26));
             products.add(product);
         }
 
@@ -256,7 +261,8 @@ public class ProductsDBHelper extends SQLiteOpenHelper {
         contentValues.put(COL23, product.getPrevPrevComposition());
         contentValues.put(COL24, product.getPrevPrevCompositionDate());
         contentValues.put(COL25, product.getInformation());
-        contentValues.put(COL26, product.getImagesInfo());
+        contentValues.put(COL26, product.getImagesNamesAndPositions());
+        contentValues.put(COL27, product.getImagesInfo());
 
         SQLiteDatabase db = this.getWritableDatabase();
         if (db == null) {

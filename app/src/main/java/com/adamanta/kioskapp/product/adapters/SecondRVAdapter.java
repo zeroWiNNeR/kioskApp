@@ -62,18 +62,17 @@ public class SecondRVAdapter extends RecyclerView.Adapter<SecondRVAdapter.ViewHo
 
     class ViewHolder extends RecyclerView.ViewHolder{
         private Button secondRVItemButton;
-
-        private SecondRVAdapter.secondRVButtonListener secondRVButtonListener;
+        private SecondRVButtonListener secondRVButtonListener;
 
         private ViewHolder(@NonNull View itemView) {
             super(itemView);
+            secondRVButtonListener = new SecondRVButtonListener();
             secondRVItemButton = itemView.findViewById(R.id.recyclerViewItemProductsButton);
-            secondRVButtonListener = new secondRVButtonListener();
             secondRVItemButton.setOnClickListener(secondRVButtonListener);
         }
     }
 
-    private class secondRVButtonListener implements View.OnClickListener {
+    private class SecondRVButtonListener implements View.OnClickListener {
         private CategoryAndProduct categoryAndProduct;
 
         private void setProduct(CategoryAndProduct categoryAndProduct) {

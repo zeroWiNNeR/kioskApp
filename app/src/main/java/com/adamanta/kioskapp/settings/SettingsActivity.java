@@ -85,6 +85,7 @@ public class SettingsActivity extends AppCompatActivity implements ISettingsActi
             v.getContext().deleteDatabase("CATEGORIES");
             v.getContext().deleteDatabase("PRODUCTS");
             v.getContext().deleteDatabase("SETTINGS");
+            v.getContext().deleteDatabase("FAVORITES");
 
             deleteRecursive(v.getContext().getFilesDir());
 

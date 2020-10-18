@@ -1,46 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-<!--    <color name="green_colorPrimary">#94474747</color>-->
+    <!--    <color name="green_colorPrimary">#94474747</color>-->
     <color name="green_colorPrimary">#474747</color>
-<!--    <color name="green_colorPrimaryDark">#00574B</color>-->
+    <!--    <color name="green_colorPrimaryDark">#00574B</color>-->
     <color name="green_colorPrimaryDark">#00574B</color>
-<!--    <color name="green_colorAccent">#08000000</color>-->
+    <!--    <color name="green_colorAccent">#08000000</color>-->
     <color name="green_colorAccent">#000000</color>
     <color name="green_colorButton">#000000</color>
-<!--    <color name="green_colorMainText">#303030</color>-->
+    <!--    <color name="green_colorMainText">#303030</color>-->
     <color name="green_colorMainText">#303030</color>
-<!--    <color name="green_colorPrimaryText">#FFFFFF</color>-->
+    <!--    <color name="green_colorPrimaryText">#FFFFFF</color>-->
     <color name="green_colorPrimaryText">#FFFFFF</color>
-<!--    <color name="green_navigationBarColor">#A8A8A8</color>-->
+    <!--    <color name="green_navigationBarColor">#A8A8A8</color>-->
     <color name="green_navigationBarColor">#A8A8A8</color>
 
 
-<!--    <color name="blue_colorPrimary">#94474747</color>-->
+    <!--    <color name="blue_colorPrimary">#94474747</color>-->
     <color name="blue_colorPrimary">#474747</color>
     <color name="blue_colorPrimaryDark">#2196F3</color>
-<!--    <color name="blue_colorAccent">#08000000</color>-->
+    <!--    <color name="blue_colorAccent">#08000000</color>-->
     <color name="blue_colorAccent">#000000</color>
-<!--    <color name="blue_colorMainButtons">#002B2B2B</color>-->
+    <!--    <color name="blue_colorMainButtons">#002B2B2B</color>-->
     <color name="blue_colorMainButtons">#2B2B2B</color>
-<!--    <color name="blue_colorPrimaryButtons">#002B2B2B</color>-->
+    <!--    <color name="blue_colorPrimaryButtons">#002B2B2B</color>-->
     <color name="blue_colorPrimaryButtons">#2B2B2B</color>
     <color name="blue_colorMainText">#303030</color>
     <color name="blue_colorPrimaryText">#FFFFFF</color>
     <color name="blue_navigationBarColor">#A8A8A8</color>
 
 
-<!--    <color name="black_overlay">#66000000</color>-->
+    <!--    <color name="black_overlay">#66000000</color>-->
     <color name="black_overlay">#000000</color>
     <color name="darker_gray">#D1D1D1</color>
-<!--    <color name="prodfrag_light_gray">#2F000000</color>-->
+    <!--    <color name="prodfrag_light_gray">#2F000000</color>-->
     <color name="prodfrag_light_gray">#000000</color>
 
 
     <color name="black">#000000</color>
-<!--    <color name="light_gray">#08000000</color>-->
+    <!--    <color name="light_gray">#08000000</color>-->
     <color name="light_gray">#000000</color>
-<!--    <color name="prodactivity_columncolor">#08000000</color>-->
+    <!--    <color name="prodactivity_columncolor">#08000000</color>-->
     <color name="prodactivity_columncolor">#A5A5A5</color>
     <color name="slate_gray">#708090</color>
     <color name="yellow">#FFFF00</color>

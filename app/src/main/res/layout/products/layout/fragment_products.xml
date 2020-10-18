@@ -115,8 +115,8 @@
         android:id="@+id/fragment_products_second_rv"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="65dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="2dp"
         android:layout_marginEnd="2dp"
         android:layout_marginBottom="2dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -251,7 +251,7 @@
             app:layout_constraintStart_toStartOf="parent" />
 
         <ImageButton
-            android:id="@+id/fragment_products_showcart_btn"
+            android:id="@+id/fragment_products_showshopcart_btn"
             android:layout_width="0dp"
             android:layout_height="70dp"
             android:layout_marginEnd="2dp"

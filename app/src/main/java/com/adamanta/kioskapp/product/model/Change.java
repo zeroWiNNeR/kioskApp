@@ -58,6 +58,8 @@ public class Change {
 
     private String information;
 
+    private String imagesNamesAndPositions;
+
     private String imagesInfo;
 
     public String getAction() {
@@ -276,6 +278,14 @@ public class Change {
         this.information = information;
     }
 
+    public String getImagesNamesAndPositions() {
+        return imagesNamesAndPositions;
+    }
+
+    public void setImagesNamesAndPositions(String imagesNamesAndPositions) {
+        this.imagesNamesAndPositions = imagesNamesAndPositions;
+    }
+
     public String getImagesInfo() {
         return imagesInfo;
     }
@@ -283,4 +293,6 @@ public class Change {
     public void setImagesInfo(String imagesInfo) {
         this.imagesInfo = imagesInfo;
     }
+
+
 }
