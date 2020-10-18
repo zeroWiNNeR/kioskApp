@@ -14,11 +14,11 @@ android {
     sourceSets {
         main {
             res.srcDirs = [
-                    '/src/main/res/',
-                    '/src/main/res/layout/',
-                    '/src/main/res/layout/products',
-                    '/src/main/res/layout/favorites',
-                    '/src/main/res/layout/shopcart'
+                    'src/main/res/layouts/products',
+                    'src/main/res/layouts/favorites',
+                    'src/main/res/layouts/shopcart',
+                    'src/main/res/layouts/main_activities/',
+                    'src/main/res'
             ]
         }
     }
