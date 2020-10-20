@@ -67,7 +67,7 @@ public class FavoritesFragment extends Fragment implements View.OnClickListener 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.favorites_fragment, container, false);
+        view = inflater.inflate(R.layout.fragment_favorites, container, false);
 
         FavoritesDBHelper favoritesDBHelper = new FavoritesDBHelper(view.getContext());
         ProductsDBHelper productsDBHelper = new ProductsDBHelper(view.getContext());
@@ -195,7 +195,7 @@ public class FavoritesFragment extends Fragment implements View.OnClickListener 
             if (getActivity() != null) {
                 Fragment shopCartFragment = ShopCartFragment.newInstance(123);
                 FragmentTransaction ftr = getActivity().getSupportFragmentManager().beginTransaction();
-                ftr.add(R.id.mainactivity_fragment_layout, shopCartFragment, "ShopCartFragment");
+                ftr.add(R.id.activity_main_fragment_layout, shopCartFragment, "ShopCartFragment");
                 ftr.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                 ftr.addToBackStack(null);
                 ftr.commit();
@@ -204,7 +204,7 @@ public class FavoritesFragment extends Fragment implements View.OnClickListener 
             if (getActivity() != null) {
                 Fragment productImagesFragment = ProductImagesFragment.newInstance(product.getArticle(), product.getImagesNamesAndPositions());
                 FragmentTransaction ftr = getActivity().getSupportFragmentManager().beginTransaction();
-                ftr.add(R.id.mainactivity_fragment_layout, productImagesFragment, "ProductImagesFragment");
+                ftr.add(R.id.activity_main_fragment_layout, productImagesFragment, "ProductImagesFragment");
                 ftr.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                 ftr.addToBackStack(null);
                 ftr.commit();

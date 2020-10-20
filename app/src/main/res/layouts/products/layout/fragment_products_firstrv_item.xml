@@ -5,7 +5,7 @@
     android:orientation="horizontal">
 
     <Button
-        android:id="@+id/recyclerViewItemProductsButton"
+        android:id="@+id/fragment_products_firstrv_item_btn"
 
         style="@style/ProductsActivityCategoryButtonMain"
 
@@ -15,17 +15,16 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-
+        android:layout_marginStart="3dp"
         android:layout_marginTop="0dp"
-
-
+        android:layout_marginEnd="3dp"
         android:layout_marginBottom="3dp"
+
         android:fontFamily="sans-serif-medium"
-        android:maxHeight="40dp"
-        android:maxLines="1"
-        android:paddingStart="5dp"
+        android:minHeight="60dp"
+
         android:showAsAction="always"
-        android:textAlignment="textStart"
+        android:text=""
         android:textSize="24sp"
         app:showAsAction="never" />
 

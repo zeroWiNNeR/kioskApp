@@ -3,62 +3,63 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/mainactivity_layout"
+    android:id="@+id/activity_main_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
     <ImageView
-        android:id="@+id/search_iv"
+        android:id="@+id/activity_main_search_imgv"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_marginStart="50dp"
-        app:layout_constraintBottom_toTopOf="@+id/mainactivity_fragment_layout"
+        app:layout_constraintBottom_toTopOf="@+id/activity_main_fragment_layout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_baseline_search_24" />
 
     <EditText
-        android:id="@+id/search_et"
+        android:id="@+id/activity_main_search_et"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:layout_marginEnd="50dp"
+        android:background="@android:color/transparent"
+        android:cursorVisible="false"
         android:focusable="auto"
         android:hint="Поиск..."
         android:inputType="textMultiLine"
-        android:background="@android:color/transparent"
         android:textSize="30sp"
-        app:layout_constraintBottom_toTopOf="@+id/mainactivity_fragment_layout"
-        app:layout_constraintEnd_toStartOf="@+id/current_online_status_tv"
-        app:layout_constraintStart_toEndOf="@+id/search_iv"
+        app:layout_constraintBottom_toTopOf="@+id/activity_main_fragment_layout"
+        app:layout_constraintEnd_toStartOf="@+id/activity_main_current_online_status_tv"
+        app:layout_constraintStart_toEndOf="@+id/activity_main_search_imgv"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/current_online_status_tv"
+        android:id="@+id/activity_main_current_online_status_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="20dp"
         android:enabled="false"
         android:text="НЕТ СОЕДИНЕНИЯ"
         android:textSize="14sp"
-        app:layout_constraintBottom_toTopOf="@+id/mainactivity_fragment_layout"
-        app:layout_constraintEnd_toStartOf="@+id/current_time_tv"
+        app:layout_constraintBottom_toTopOf="@+id/activity_main_fragment_layout"
+        app:layout_constraintEnd_toStartOf="@+id/activity_main_current_time_tv"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/current_time_tv"
+        android:id="@+id/activity_main_current_time_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="10dp"
         android:text="--:--"
         android:textSize="18sp"
-        app:layout_constraintBottom_toTopOf="@+id/mainactivity_fragment_layout"
+        app:layout_constraintBottom_toTopOf="@+id/activity_main_fragment_layout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/br_imgv"
+        android:id="@+id/activity_main_br_imgv"
         android:layout_width="0dp"
         android:layout_height="1dp"
         android:layout_marginTop="49dp"
@@ -70,7 +71,7 @@
         app:srcCompat="@color/prodactivity_columncolor" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/mainactivity_fragment_layout"
+        android:id="@+id/activity_main_fragment_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="50dp"
@@ -80,7 +81,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageButton
-            android:id="@+id/SettingsButton"
+            android:id="@+id/activity_main_settings_btn"
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:layout_marginEnd="50dp"
@@ -89,11 +90,11 @@
             android:scaleType="fitCenter"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/FramedLayout"
+            app:layout_constraintTop_toBottomOf="@+id/activity_main_framedlayout"
             app:srcCompat="@android:drawable/ic_menu_preferences" />
 
         <ImageButton
-            android:id="@+id/CartButton"
+            android:id="@+id/activity_main_shopcart_btn"
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:layout_marginStart="50dp"
@@ -102,11 +103,11 @@
             android:scaleType="fitCenter"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/FramedLayout"
+            app:layout_constraintTop_toBottomOf="@+id/activity_main_framedlayout"
             app:srcCompat="@drawable/ic_shopping_cart" />
 
         <FrameLayout
-            android:id="@+id/FramedLayout"
+            android:id="@+id/activity_main_framedlayout"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginStart="50dp"
@@ -120,7 +121,7 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <Button
-                android:id="@+id/ProductsButton"
+                android:id="@+id/activity_main_products_btn"
                 android:layout_width="300dp"
                 android:layout_height="160dp"
                 android:layout_gravity="top|start"
@@ -133,7 +134,7 @@
                 android:visibility="visible" />
 
             <Button
-                android:id="@+id/AlcoholButton"
+                android:id="@+id/activity_main_alcohol_btn"
                 android:layout_width="300dp"
                 android:layout_height="160dp"
                 android:layout_gravity="top|center"
@@ -146,7 +147,7 @@
                 android:visibility="visible" />
 
             <Button
-                android:id="@+id/ServicesButton"
+                android:id="@+id/activity_main_services_btn"
                 android:layout_width="300dp"
                 android:layout_height="160dp"
                 android:layout_gravity="top|end"
@@ -159,7 +160,7 @@
                 android:visibility="visible" />
 
             <Button
-                android:id="@+id/FavoritesButton"
+                android:id="@+id/activity_main_favorites_btn"
                 android:layout_width="300dp"
                 android:layout_height="160dp"
                 android:layout_gravity="bottom|start"
@@ -171,7 +172,7 @@
 
 
             <Button
-                android:id="@+id/TaxiButton"
+                android:id="@+id/activity_main_taxi_btn"
                 android:layout_width="300dp"
                 android:layout_height="160dp"
                 android:layout_gravity="bottom|center"
@@ -183,7 +184,7 @@
 
 
             <Button
-                android:id="@+id/ForAnimalsButton"
+                android:id="@+id/activity_main_foranimals_btn"
                 android:layout_width="300dp"
                 android:layout_height="160dp"
                 android:layout_gravity="bottom|end"

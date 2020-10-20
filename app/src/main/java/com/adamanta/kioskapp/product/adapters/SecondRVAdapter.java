@@ -26,7 +26,7 @@ public class SecondRVAdapter extends RecyclerView.Adapter<SecondRVAdapter.ViewHo
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.prodactivity_prodrv_item,
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.fragment_products_secondrv_item,
                 viewGroup, false);
         return new ViewHolder(view);
     }
@@ -61,13 +61,13 @@ public class SecondRVAdapter extends RecyclerView.Adapter<SecondRVAdapter.ViewHo
     }
 
     class ViewHolder extends RecyclerView.ViewHolder{
-        private Button secondRVItemButton;
-        private SecondRVButtonListener secondRVButtonListener;
+        private final Button secondRVItemButton;
+        private final SecondRVButtonListener secondRVButtonListener;
 
         private ViewHolder(@NonNull View itemView) {
             super(itemView);
             secondRVButtonListener = new SecondRVButtonListener();
-            secondRVItemButton = itemView.findViewById(R.id.recyclerViewItemProductsButton);
+            secondRVItemButton = itemView.findViewById(R.id.fragment_products_secondrv_item_btn);
             secondRVItemButton.setOnClickListener(secondRVButtonListener);
         }
     }

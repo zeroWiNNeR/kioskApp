@@ -40,63 +40,49 @@ public class ShopCartRVAdapter extends RecyclerView.Adapter<ShopCartRVAdapter.Vi
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
         ShopCartProduct shopCartProduct = shopCartProductList.get(position);
         viewHolder.cartProductButtonListener.setShopCartProduct(shopCartProduct);
-        viewHolder.itemNameTV.setText(shopCartProduct.getName());
+        viewHolder.productNameTV.setText(shopCartProduct.getName());
         if (shopCartProduct.getStockQuantity().equals(BigDecimal.ZERO)) {
-            viewHolder.amountAtStorageIV.setBackgroundColor(Color.parseColor("#EE5C5C"));
+            viewHolder.productAmountAtStorageImgV.setBackgroundColor(Color.parseColor("#EE5C5C"));
         } else if (shopCartProduct.getStockQuantity().compareTo(new BigDecimal(10L)) <= 0) {
-            viewHolder.amountAtStorageIV.setBackgroundColor(Color.parseColor("#FDE446"));
+            viewHolder.productAmountAtStorageImgV.setBackgroundColor(Color.parseColor("#FDE446"));
         } else if (shopCartProduct.getStockQuantity().compareTo(new BigDecimal(10L)) >= 0){
-            viewHolder.amountAtStorageIV.setBackgroundColor(Color.parseColor("#58FF47"));
+            viewHolder.productAmountAtStorageImgV.setBackgroundColor(Color.parseColor("#58FF47"));
         }
 
         BigDecimal productCurrentPrice = shopCartProduct.getAllCount().divide(shopCartProduct.getSizeStep()).multiply(shopCartProduct.getPricePerSizeStep());
-        viewHolder.itemPriceTV.setText(String.valueOf(productCurrentPrice));
+        viewHolder.productPriceTV.setText(String.valueOf(productCurrentPrice));
 
         if (shopCartProduct.getAllCount().stripTrailingZeros().scale() <= 0) {
-            viewHolder.itemCountTV.setText(String.valueOf(shopCartProduct.getAllCount().toBigIntegerExact()));
+            viewHolder.productCountTV.setText(String.valueOf(shopCartProduct.getAllCount().toBigIntegerExact()));
         } else {
-            viewHolder.itemCountTV.setText(String.valueOf(shopCartProduct.getAllCount()));
+            viewHolder.productCountTV.setText(String.valueOf(shopCartProduct.getAllCount()));
         }
-        viewHolder.itemCountMeasureTV.setText(shopCartProduct.getSizeType());
+        viewHolder.productCountMeasureTV.setText(shopCartProduct.getSizeType());
     }
 
     @Override
     public int getItemCount() { return shopCartProductList.size(); }
 
-    private void changeAmount(ShopCartProduct item) {
-        int position = shopCartProductList.indexOf(item);
-
-        notifyItemChanged(position);
-    }
-
-    private void delete(ShopCartProduct shopCartProduct) {
-        int position = shopCartProductList.indexOf(shopCartProduct);
-        shopCartProductList.remove(position);
-        notifyItemRemoved(position);
-    }
-
     class ViewHolder extends RecyclerView.ViewHolder {
-        private TextView itemNameTV;
-        private ImageView amountAtStorageIV;
-        private TextView itemCountTV;
-        private TextView itemCountMeasureTV;
-        private TextView itemPriceTV;
-
-        private CartProductButtonListener cartProductButtonListener;
+        private final TextView productNameTV;
+        private final ImageView productAmountAtStorageImgV;
+        private final TextView productCountTV;
+        private final TextView productCountMeasureTV;
+        private final TextView productPriceTV;
+        private final CartProductButtonListener cartProductButtonListener;
 
         private ViewHolder(@NonNull View itemView) {
             super(itemView);
             cartProductButtonListener = new CartProductButtonListener();
-
-            itemNameTV = itemView.findViewById(R.id.fragment_shopcart_rv_name_tv);
-            amountAtStorageIV = itemView.findViewById(R.id.fragment_shopcart_rv_amountatstore_imgv);
+            productNameTV = itemView.findViewById(R.id.fragment_shopcart_rv_name_tv);
+            productAmountAtStorageImgV = itemView.findViewById(R.id.fragment_shopcart_rv_amountatstore_imgv);
             ImageButton itemRemoveIBtn = itemView.findViewById(R.id.fragment_shopcart_rv_minus_imgbtn);
             itemRemoveIBtn.setOnClickListener(cartProductButtonListener);
-            itemCountTV = itemView.findViewById(R.id.fragment_shopcart_rv_count_tv);
-            itemCountMeasureTV = itemView.findViewById(R.id.fragment_shopcart_rv_itemcountmeasure_tv);
+            productCountTV = itemView.findViewById(R.id.fragment_shopcart_rv_count_tv);
+            productCountMeasureTV = itemView.findViewById(R.id.fragment_shopcart_rv_itemcountmeasure_tv);
             ImageButton itemAddIBtn = itemView.findViewById(R.id.fragment_shopcart_rv_plus_imgbtn);
             itemAddIBtn.setOnClickListener(cartProductButtonListener);
-            itemPriceTV = itemView.findViewById(R.id.fragment_shopcart_rv_price_tv);
+            productPriceTV = itemView.findViewById(R.id.fragment_shopcart_rv_price_tv);
             ImageButton deleteItemIBtn = itemView.findViewById(R.id.fragment_shopcart_rv_delete_imgbtn);
             deleteItemIBtn.setOnClickListener(cartProductButtonListener);
         }

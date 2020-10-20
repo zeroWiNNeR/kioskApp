@@ -71,28 +71,28 @@ public class MainActivity extends AppCompatActivity implements IFavoritesFragmen
     }
 
     public void onClick(@NonNull View v) {
-        if (v.getId() == R.id.ProductsButton) {
+        if (v.getId() == R.id.activity_main_products_btn) {
             Fragment productsFragment = ProductsFragment.newInstance(123);
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-            fragmentTransaction.replace(R.id.mainactivity_fragment_layout, productsFragment, "ProductsFragment");
+            fragmentTransaction.replace(R.id.activity_main_fragment_layout, productsFragment, "ProductsFragment");
             fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
             fragmentTransaction.addToBackStack(null);
             fragmentTransaction.commit();
-        } else if (v.getId() == R.id.FavoritesButton) {
+        } else if (v.getId() == R.id.activity_main_favorites_btn) {
             Fragment favoritesFragment = FavoritesFragment.newInstance(123);
             FragmentTransaction ftFavoritesFragment = getSupportFragmentManager().beginTransaction();
-            ftFavoritesFragment.replace(R.id.mainactivity_fragment_layout, favoritesFragment, "FavoritesFragment");
+            ftFavoritesFragment.replace(R.id.activity_main_fragment_layout, favoritesFragment, "FavoritesFragment");
             ftFavoritesFragment.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
             ftFavoritesFragment.addToBackStack(null);
             ftFavoritesFragment.commit();
-        } else if (v.getId() == R.id.CartButton) {
+        } else if (v.getId() == R.id.activity_main_shopcart_btn) {
             Fragment cartFragment = ShopCartFragment.newInstance(123);
             FragmentTransaction ftCartFragment = getSupportFragmentManager().beginTransaction();
-            ftCartFragment.replace(R.id.mainactivity_fragment_layout, cartFragment, "ShopCartFragment");
+            ftCartFragment.replace(R.id.activity_main_fragment_layout, cartFragment, "ShopCartFragment");
             ftCartFragment.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
             ftCartFragment.addToBackStack(null);
             ftCartFragment.commit();
-        } else if (v.getId() == R.id.SettingsButton) {
+        } else if (v.getId() == R.id.activity_main_settings_btn) {
             Context context = v.getContext();
             Intent intent = new Intent(context, SettingsActivity.class);
             context.startActivity(intent);
@@ -137,9 +137,9 @@ public class MainActivity extends AppCompatActivity implements IFavoritesFragmen
             Date currentDate = new Date();
             DateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
             String curTime = timeFormat.format(currentDate);
-            TextView currentTimeTV = findViewById(R.id.current_time_tv);
+            TextView currentTimeTV = findViewById(R.id.activity_main_current_time_tv);
             currentTimeTV.setText(curTime);
-            TextView currentOnlineStatus = findViewById(R.id.current_online_status_tv);
+            TextView currentOnlineStatus = findViewById(R.id.activity_main_current_online_status_tv);
             if (isOnline) {
                 currentOnlineStatus.setText("ПОДКЛЮЧЕНО");
                 currentOnlineStatus.setTextColor(Color.rgb(127, 255, 0));

@@ -19,7 +19,7 @@ import java.util.List;
 public class FirstRVAdapter extends RecyclerView.Adapter<FirstRVAdapter.ViewHolder> {
 
     private View view;
-    private List<Category> categories;
+    private final List<Category> categories;
     private long pickedCategoryId = -1L;
 
     public FirstRVAdapter(List<Category> categories) { this.categories = categories; }
@@ -27,7 +27,7 @@ public class FirstRVAdapter extends RecyclerView.Adapter<FirstRVAdapter.ViewHold
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.prodactivity_categrv_item, viewGroup, false);
+        view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.fragment_products_firstrv_item, viewGroup, false);
         return new ViewHolder(view);
     }
 
@@ -61,13 +61,13 @@ public class FirstRVAdapter extends RecyclerView.Adapter<FirstRVAdapter.ViewHold
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        private Button firstRVItemButton;
-        private FirstRVButtonListener firstRVButtonListener;
+        private final Button firstRVItemButton;
+        private final FirstRVButtonListener firstRVButtonListener;
 
         private ViewHolder(View itemView) {
             super(itemView);
             firstRVButtonListener = new FirstRVButtonListener();
-            firstRVItemButton = itemView.findViewById(R.id.recyclerViewItemCategoriesButton);
+            firstRVItemButton = itemView.findViewById(R.id.fragment_products_firstrv_item_btn);
             firstRVItemButton.setOnClickListener(firstRVButtonListener);
         }
     }

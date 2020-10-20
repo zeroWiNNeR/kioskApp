@@ -27,7 +27,7 @@ public class ProductImagesRVAdapter extends RecyclerView.Adapter<ProductImagesRV
     @NonNull
     @Override
     public ProductImagesRVAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.productimages_rv_item,
+        View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.fragment_productimages_rv_item,
                 viewGroup, false);
         return new ViewHolder(v);
     }
@@ -60,12 +60,12 @@ public class ProductImagesRVAdapter extends RecyclerView.Adapter<ProductImagesRV
     public int getItemCount() { return productImagesList.size(); }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        private ImageView productImagesImgV;
-        private productImagesButtonListener productImagesButtonListener;
+        private final ImageView productImagesImgV;
+        private final productImagesButtonListener productImagesButtonListener;
 
         private ViewHolder(@NonNull View itemView) {
             super(itemView);
-            productImagesImgV = itemView.findViewById(R.id.productimages_rvitem_imgv);
+            productImagesImgV = itemView.findViewById(R.id.fragment_productimages_rv_item_imgv);
             productImagesButtonListener = new productImagesButtonListener();
             productImagesImgV.setOnClickListener(productImagesButtonListener);
         }

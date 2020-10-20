@@ -28,7 +28,7 @@ public class FavoritesRVAdapter extends RecyclerView.Adapter<FavoritesRVAdapter.
   @NonNull
   @Override
   public FavoritesRVAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-    view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.favoritesrv_item, viewGroup, false);
+    view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.fragment_favorites_rv_item, viewGroup, false);
     return new ViewHolder(view);
   }
 
@@ -51,19 +51,16 @@ public class FavoritesRVAdapter extends RecyclerView.Adapter<FavoritesRVAdapter.
   }
 
   class ViewHolder extends RecyclerView.ViewHolder {
-    private TextView favoritesItemNumberTV;
-
-    private favoritesButtonListener favoritesButtonListener;
+    private final TextView favoritesItemNumberTV;
+    private final favoritesButtonListener favoritesButtonListener;
 
     private ViewHolder(@NonNull View itemView) {
       super(itemView);
-      favoritesItemNumberTV = itemView.findViewById(R.id.fragment_favorites_rv_productname_tv);
-      ImageButton favoritesItemDeleteIBtn = itemView.findViewById(R.id.fragment_favorites_rv_deleteitem_imgbtn);
-
-
       favoritesButtonListener = new favoritesButtonListener();
-      favoritesItemDeleteIBtn.setOnClickListener(favoritesButtonListener);
+      favoritesItemNumberTV = itemView.findViewById(R.id.fragment_favorites_rv_productname_tv);
       favoritesItemNumberTV.setOnClickListener(favoritesButtonListener);
+      ImageButton favoritesItemDeleteIBtn = itemView.findViewById(R.id.fragment_favorites_rv_deleteitem_imgbtn);
+      favoritesItemDeleteIBtn.setOnClickListener(favoritesButtonListener);
     }
   }
 
@@ -82,19 +79,12 @@ public class FavoritesRVAdapter extends RecyclerView.Adapter<FavoritesRVAdapter.
       }
       mLastClickTime = now;
 
-      switch (v.getId()) {
-        case R.id.fragment_favorites_rv_deleteitem_imgbtn:
-          deleteFromFavoritesList(product);
-          break;
-
-        case R.id.fragment_favorites_rv_productname_tv:
-          if (v.getContext() instanceof Activity) {
-            ((IFavoritesFragment) v.getContext()).favoritesFragmentSetProductCard(product);
-          }
-          break;
-
-        default:
-          break;
+      if (v.getId() == R.id.fragment_favorites_rv_deleteitem_imgbtn) {
+        deleteFromFavoritesList(product);
+      } else if (v.getId() == R.id.fragment_favorites_rv_productname_tv) {
+        if (v.getContext() instanceof Activity) {
+          ((IFavoritesFragment) v.getContext()).favoritesFragmentSetProductCard(product);
+        }
       }
     }
 
