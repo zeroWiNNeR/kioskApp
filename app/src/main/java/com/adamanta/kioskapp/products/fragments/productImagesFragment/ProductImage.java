@@ -1,4 +1,4 @@
-package com.adamanta.kioskapp.product.fragments.productImagesFragment;
+package com.adamanta.kioskapp.products.fragments.productImagesFragment;
 
 import java.io.File;
 

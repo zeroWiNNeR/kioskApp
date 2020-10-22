@@ -1,6 +1,7 @@
 package com.adamanta.kioskapp;
 
-import com.adamanta.kioskapp.product.model.CategoryAndProduct;
+import com.adamanta.kioskapp.products.model.CategoryAndProduct;
+import com.adamanta.kioskapp.products.model.Product;
 
 public interface IMainActivity {
 
@@ -42,11 +43,18 @@ public interface IMainActivity {
   void productsFragmentSetProductCard(CategoryAndProduct product);
 
   /**
+   * Вызывает метод открытия фрагмента на продукте из поиска
+   */
+  void productsFragmentOpenProductFromSearch(Product product);
+
+
+  /**
    * Вызывает показ выбранного изображения в ProductsFragment
    *
    * @param imageAbsolutePath - Path к файлу с открываемым изображением
    */
   void productImagesFragmentChangeMainImage(String imageAbsolutePath);
+
 
   /**
    * Вызывает метод пересчета цены во фрагменте Корзина

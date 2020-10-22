@@ -96,15 +96,6 @@
                 android:value="com.adamanta.kioskapp.MainActivity" />
         </activity>
         <activity
-            android:name=".products.ProductsActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/title_activity_products"
-            android:parentActivityName=".MainActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.adamanta.kioskapp.MainActivity" />
-        </activity>
-        <activity
             android:name=".MainActivity"
             android:windowSoftInputMode="stateHidden"
             android:configChanges="orientation|keyboardHidden|screenSize"

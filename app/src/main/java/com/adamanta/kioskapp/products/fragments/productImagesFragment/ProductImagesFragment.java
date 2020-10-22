@@ -1,4 +1,4 @@
-package com.adamanta.kioskapp.product.fragments.productImagesFragment;
+package com.adamanta.kioskapp.products.fragments.productImagesFragment;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.adamanta.kioskapp.R;
-import com.adamanta.kioskapp.product.utils.Utils;
+import com.adamanta.kioskapp.products.utils.Utils;
 
 import java.io.File;
 import java.util.ArrayList;

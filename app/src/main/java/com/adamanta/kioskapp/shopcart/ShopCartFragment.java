@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.adamanta.kioskapp.R;
-import com.adamanta.kioskapp.product.utils.ProductsDBHelper;
+import com.adamanta.kioskapp.products.utils.ProductsDBHelper;
 import com.adamanta.kioskapp.shopcart.model.ShopCartProduct;
 import com.adamanta.kioskapp.shopcart.utils.ShopCartDBHelper;
 

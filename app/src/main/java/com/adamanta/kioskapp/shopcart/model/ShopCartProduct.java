@@ -1,6 +1,6 @@
 package com.adamanta.kioskapp.shopcart.model;
 
-import com.adamanta.kioskapp.product.model.CategoryAndProduct;
+import com.adamanta.kioskapp.products.model.CategoryAndProduct;
 
 import java.math.BigDecimal;
 

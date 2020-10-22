@@ -8,7 +8,7 @@
     android:layout_height="match_parent"
     android:background="#FFFFFF"
     android:orientation="horizontal"
-    tools:context=".product.ProductsFragment">
+    tools:context=".products.ProductsFragment">
 
     <ImageButton
         android:id="@+id/fragment_products_mainmenu_imgbtn"

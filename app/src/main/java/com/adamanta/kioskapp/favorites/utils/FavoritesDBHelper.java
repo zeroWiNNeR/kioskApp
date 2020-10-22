@@ -11,7 +11,7 @@ import android.util.Log;
 public class FavoritesDBHelper extends SQLiteOpenHelper {
 
     private static final String TABLE_NAME = "FAVORITES";
-    private static final String COL1 = "id";
+    private static final String COL1 = "_id";
     private static final String COL2 = "ARTICLE";
 
     public FavoritesDBHelper(Context context) {
@@ -21,7 +21,7 @@ public class FavoritesDBHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         String createTable = "CREATE TABLE " + TABLE_NAME +
-                " (id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                " (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 COL2 + " INTEGER)";
         db.execSQL(createTable);
     }

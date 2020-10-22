@@ -1,4 +1,4 @@
-package com.adamanta.kioskapp.product.model;
+package com.adamanta.kioskapp.products.model;
 
 public class Category {
 

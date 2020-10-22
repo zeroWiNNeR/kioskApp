@@ -1,4 +1,4 @@
-package com.adamanta.kioskapp.product.fragments.productImagesFragment;
+package com.adamanta.kioskapp.products.fragments.productImagesFragment;
 
 import android.graphics.Bitmap;
 import android.view.LayoutInflater;
@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.adamanta.kioskapp.IMainActivity;
 import com.adamanta.kioskapp.R;
-import com.adamanta.kioskapp.product.utils.Utils;
+import com.adamanta.kioskapp.products.utils.Utils;
 
 import java.util.List;
 

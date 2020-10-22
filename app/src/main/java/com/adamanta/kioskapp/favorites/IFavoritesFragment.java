@@ -1,6 +1,6 @@
 package com.adamanta.kioskapp.favorites;
 
-import com.adamanta.kioskapp.product.model.Product;
+import com.adamanta.kioskapp.products.model.Product;
 
 public interface IFavoritesFragment {
 

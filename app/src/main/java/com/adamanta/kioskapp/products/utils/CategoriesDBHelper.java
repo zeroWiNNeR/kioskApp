@@ -1,4 +1,4 @@
-package com.adamanta.kioskapp.product.utils;
+package com.adamanta.kioskapp.products.utils;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -6,8 +6,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.adamanta.kioskapp.product.model.Category;
-import com.adamanta.kioskapp.product.model.CategoryAndProduct;
+import com.adamanta.kioskapp.products.model.Category;
+import com.adamanta.kioskapp.products.model.CategoryAndProduct;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +15,7 @@ import java.util.List;
 public class CategoriesDBHelper extends SQLiteOpenHelper {
 
     private static final String TABLE_NAME = "CATEGORIES";
-    private static final String COL1 = "id";
+    private static final String COL1 = "_id";
     private static final String COL2 = "TYPE";
     private static final String COL3 = "CATEGORY";
     private static final String COL4 = "PARENT_CATEGORY";
@@ -30,7 +30,7 @@ public class CategoriesDBHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         String createTable = "CREATE TABLE " + TABLE_NAME +
-                " (id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                " (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 COL2 + " TEXT," +
                 COL3 + " INTEGER," +
                 COL4 + " INTEGER," +
@@ -91,6 +91,33 @@ public class CategoriesDBHelper extends SQLiteOpenHelper {
         cursor.close();
         db.close();
         return categories;
+    }
+
+    public CategoryAndProduct getFirstCategoryByCategory(long parentCategory) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT * FROM " + TABLE_NAME + " WHERE " + COL3 + " = '" + parentCategory + "'";
+        Cursor cursor = db.rawQuery(query, null);
+
+        if (cursor==null || cursor.getCount()==0) {
+            if (cursor != null)
+                cursor.close();
+            db.close();
+            return null;
+        }
+
+        cursor.moveToFirst();
+        CategoryAndProduct category = new CategoryAndProduct();
+        category.setId(cursor.getLong(0));
+        category.setType(cursor.getString(1).charAt(0));
+        category.setCategory(cursor.getLong(2));
+        category.setParentCategory(cursor.getLong(3));
+        category.setPosition(cursor.getInt(4));
+        category.setIsEnable( cursor.getInt(5) == 1 );
+        category.setName(cursor.getString(6));
+
+        cursor.close();
+        db.close();
+        return category;
     }
 
     public List<CategoryAndProduct> getListCategoryAndProductByParentCategory(long parentCategory) {

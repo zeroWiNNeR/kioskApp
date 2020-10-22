@@ -74,7 +74,8 @@ public class SettingsActivity extends AppCompatActivity implements ISettingsActi
             if (saved.equals("null") || saved.equals("false")) {
                 saveChanges();
                 TabletRegistrationTask savingTask = new TabletRegistrationTask(
-                        this, this, contractId, imei, androidId,
+                        this, this,
+                        contractId, imei, androidId,
                         city, street, house, apartment);
                 savingTask.execute();
             }
@@ -86,6 +87,7 @@ public class SettingsActivity extends AppCompatActivity implements ISettingsActi
             v.getContext().deleteDatabase("PRODUCTS");
             v.getContext().deleteDatabase("SETTINGS");
             v.getContext().deleteDatabase("FAVORITES");
+            v.getContext().deleteDatabase("SHOP_CART");
 
             deleteRecursive(v.getContext().getFilesDir());
 

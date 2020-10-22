@@ -1,4 +1,4 @@
-package com.adamanta.kioskapp.product.utils;
+package com.adamanta.kioskapp.products.utils;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;

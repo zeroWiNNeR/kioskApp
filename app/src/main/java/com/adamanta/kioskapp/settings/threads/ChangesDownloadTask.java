@@ -6,11 +6,11 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.adamanta.kioskapp.product.model.Category;
-import com.adamanta.kioskapp.product.model.Change;
-import com.adamanta.kioskapp.product.model.Product;
-import com.adamanta.kioskapp.product.utils.CategoriesDBHelper;
-import com.adamanta.kioskapp.product.utils.ProductsDBHelper;
+import com.adamanta.kioskapp.products.model.Category;
+import com.adamanta.kioskapp.products.model.Change;
+import com.adamanta.kioskapp.products.model.Product;
+import com.adamanta.kioskapp.products.utils.CategoriesDBHelper;
+import com.adamanta.kioskapp.products.utils.ProductsDBHelper;
 import com.adamanta.kioskapp.settings.ISettingsActivity;
 import com.adamanta.kioskapp.settings.utils.SettingsDBHelper;
 import com.adamanta.kioskapp.utils.Constants;

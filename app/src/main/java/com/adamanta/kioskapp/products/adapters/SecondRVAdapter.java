@@ -1,4 +1,4 @@
-package com.adamanta.kioskapp.product.adapters;
+package com.adamanta.kioskapp.products.adapters;
 
 import android.content.res.ColorStateList;
 import android.graphics.Color;
@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.adamanta.kioskapp.IMainActivity;
 import com.adamanta.kioskapp.R;
-import com.adamanta.kioskapp.product.model.CategoryAndProduct;
+import com.adamanta.kioskapp.products.model.CategoryAndProduct;
 
 import java.util.List;
 
@@ -58,6 +58,14 @@ public class SecondRVAdapter extends RecyclerView.Adapter<SecondRVAdapter.ViewHo
         this.categoryAndProductList = categoryAndProductList;
         pickedProductArticle = -1L;
         notifyDataSetChanged();
+    }
+
+    public Long getParentCategoryFirstItemInList() {
+        if (categoryAndProductList.size() == 0) {
+            return null;
+        } else {
+            return this.categoryAndProductList.get(0).getParentCategory();
+        }
     }
 
     class ViewHolder extends RecyclerView.ViewHolder{

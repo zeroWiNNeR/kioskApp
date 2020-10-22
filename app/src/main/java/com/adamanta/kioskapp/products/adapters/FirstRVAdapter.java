@@ -1,4 +1,4 @@
-package com.adamanta.kioskapp.product.adapters;
+package com.adamanta.kioskapp.products.adapters;
 
 import android.content.res.ColorStateList;
 import android.graphics.Color;
@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.adamanta.kioskapp.IMainActivity;
 import com.adamanta.kioskapp.R;
-import com.adamanta.kioskapp.product.model.Category;
+import com.adamanta.kioskapp.products.model.Category;
 
 import java.util.List;
 

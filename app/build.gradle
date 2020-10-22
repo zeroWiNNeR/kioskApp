@@ -17,7 +17,8 @@ android {
                     'src/main/res/layouts/products',
                     'src/main/res/layouts/favorites',
                     'src/main/res/layouts/shopcart',
-                    'src/main/res/layouts/main_activities/',
+                    'src/main/res/layouts/main_activities',
+                    'src/main/res/layouts/search',
                     'src/main/res'
             ]
         }

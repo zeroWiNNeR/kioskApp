@@ -83,6 +83,7 @@
 
   <EditText
       android:id="@+id/activity_settings_contractid_et"
+      android:imeOptions="flagNoExtractUi"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:ems="10"
@@ -105,6 +106,7 @@
 
   <EditText
       android:id="@+id/activity_settings_city_et"
+      android:imeOptions="flagNoExtractUi"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:ems="10"
@@ -115,6 +117,7 @@
 
   <EditText
       android:id="@+id/activity_settings_street_et"
+      android:imeOptions="flagNoExtractUi"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:ems="10"
@@ -125,6 +128,7 @@
 
   <EditText
       android:id="@+id/activity_settings_house_et"
+      android:imeOptions="flagNoExtractUi"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:ems="10"
@@ -135,6 +139,7 @@
 
   <EditText
       android:id="@+id/activity_settings_apartment_et"
+      android:imeOptions="flagNoExtractUi"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:ems="10"

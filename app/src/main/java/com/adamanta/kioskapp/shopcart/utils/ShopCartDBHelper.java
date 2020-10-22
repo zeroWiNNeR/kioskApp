@@ -6,7 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.adamanta.kioskapp.product.model.CategoryAndProduct;
+import com.adamanta.kioskapp.products.model.CategoryAndProduct;
 import com.adamanta.kioskapp.shopcart.model.ShopCartProduct;
 
 import java.math.BigDecimal;
@@ -16,7 +16,7 @@ import java.util.List;
 public class ShopCartDBHelper extends SQLiteOpenHelper {
 
     private static final String TABLE_NAME = "SHOP_CART";
-    private static final String COL1 = "id_";
+    private static final String COL1 = "_id";
     private static final String COL2 = "PARENT_CATEGORY";
     private static final String COL3 = "POSITION";
     private static final String COL4 = "IS_ENABLE";
@@ -40,7 +40,7 @@ public class ShopCartDBHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         String createTable = "CREATE TABLE " + TABLE_NAME +
-                " (id_ INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                " (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 COL2 + " INTEGER," +
                 COL3 + " INTEGER," +
                 COL4 + " INTEGER," +

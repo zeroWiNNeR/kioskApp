@@ -11,7 +11,7 @@ import android.util.Log;
 public class SettingsDBHelper extends SQLiteOpenHelper {
 
     private static final String TABLE_NAME = "SETTINGS";
-    private static final String COL1 = "id";
+    private static final String COL1 = "_id";
     private static final String COL2 = "ARGUMENT";
     private static final String COL3 = "VALUE";
 
@@ -22,7 +22,7 @@ public class SettingsDBHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         String createTable = "CREATE TABLE " + TABLE_NAME +
-                " (id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                " (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 COL2 + " TEXT," +
                 COL3 + " TEXT)";
         db.execSQL(createTable);

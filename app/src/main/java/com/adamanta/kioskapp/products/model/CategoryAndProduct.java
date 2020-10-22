@@ -1,12 +1,14 @@
-package com.adamanta.kioskapp.product.model;
+package com.adamanta.kioskapp.products.model;
 
 import java.math.BigDecimal;
 
-public class Product {
+public class CategoryAndProduct {
 
     private long id;
 
     private char type;
+
+    private Long category;
 
     private Long parentCategory;
 
@@ -72,6 +74,14 @@ public class Product {
 
     public void setType(char type) {
         this.type = type;
+    }
+
+    public Long getCategory() {
+        return category;
+    }
+
+    public void setCategory(Long category) {
+        this.category = category;
     }
 
     public Long getParentCategory() {
@@ -274,5 +284,9 @@ public class Product {
         this.imagesInfo = imagesInfo;
     }
 
+
+    public int compareToByPosition (CategoryAndProduct categoryAndProduct) {
+        return this.position - categoryAndProduct.getPosition();
+    }
 
 }

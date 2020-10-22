@@ -1,16 +1,12 @@
-package com.adamanta.kioskapp.product.model;
+package com.adamanta.kioskapp.products.model;
 
 import java.math.BigDecimal;
 
-public class Change {
+public class Product {
 
-    private String action;
+    private long id;
 
     private char type;
-
-    private Long dbid;
-
-    private Long category;
 
     private Long parentCategory;
 
@@ -62,12 +58,12 @@ public class Change {
 
     private String imagesInfo;
 
-    public String getAction() {
-        return action;
+    public Long getId() {
+        return id;
     }
 
-    public void setAction(String action) {
-        this.action = action;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public char getType() {
@@ -76,22 +72,6 @@ public class Change {
 
     public void setType(char type) {
         this.type = type;
-    }
-
-    public Long getDbid() {
-        return dbid;
-    }
-
-    public void setDbid(Long dbid) {
-        this.dbid = dbid;
-    }
-
-    public Long getCategory() {
-        return category;
-    }
-
-    public void setCategory(Long category) {
-        this.category = category;
     }
 
     public Long getParentCategory() {

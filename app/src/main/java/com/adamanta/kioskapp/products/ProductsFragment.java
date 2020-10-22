@@ -1,4 +1,4 @@
-package com.adamanta.kioskapp.product;
+package com.adamanta.kioskapp.products;
 
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
@@ -24,14 +24,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.adamanta.kioskapp.IMainActivity;
 import com.adamanta.kioskapp.R;
 import com.adamanta.kioskapp.favorites.utils.FavoritesDBHelper;
-import com.adamanta.kioskapp.product.adapters.FirstRVAdapter;
-import com.adamanta.kioskapp.product.adapters.SecondRVAdapter;
-import com.adamanta.kioskapp.product.fragments.productImagesFragment.ProductImagesFragment;
-import com.adamanta.kioskapp.product.model.Category;
-import com.adamanta.kioskapp.product.model.CategoryAndProduct;
-import com.adamanta.kioskapp.product.utils.CategoriesDBHelper;
-import com.adamanta.kioskapp.product.utils.ProductsDBHelper;
-import com.adamanta.kioskapp.product.utils.Utils;
+import com.adamanta.kioskapp.products.adapters.FirstRVAdapter;
+import com.adamanta.kioskapp.products.adapters.SecondRVAdapter;
+import com.adamanta.kioskapp.products.fragments.productImagesFragment.ProductImagesFragment;
+import com.adamanta.kioskapp.products.model.Category;
+import com.adamanta.kioskapp.products.model.CategoryAndProduct;
+import com.adamanta.kioskapp.products.model.Product;
+import com.adamanta.kioskapp.products.utils.CategoriesDBHelper;
+import com.adamanta.kioskapp.products.utils.ProductsDBHelper;
+import com.adamanta.kioskapp.products.utils.Utils;
 import com.adamanta.kioskapp.shopcart.ShopCartFragment;
 import com.adamanta.kioskapp.shopcart.model.ShopCartProduct;
 import com.adamanta.kioskapp.shopcart.utils.ShopCartDBHelper;
@@ -42,7 +43,6 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Stack;
 
 public class ProductsFragment extends Fragment implements View.OnClickListener {
     private View view;
@@ -53,18 +53,18 @@ public class ProductsFragment extends Fragment implements View.OnClickListener {
     private ConstraintLayout productCardCL;
     private ImageView productsFragmentMainImgV, productsColumnImgV, productMainImgV, addToFavoritesImgBtn;
     private TextView productFullNameTV, manufacturerTV, weightTV, priceAllTV, priceAllRubTV, countAllTV, sizeTypeTV, articleTV, barcodeTV, compositionTV;
-    private ImageButton minusProductImgBtn, plusProductImgBtn, showShopCartBtn;
+    private ImageButton minusProductImgBtn, plusProductImgBtn;
     private Button addProductToCartBtn;
     private FirstRVAdapter firstRVAdapter;
     private SecondRVAdapter secondRVAdapter;
-    private final Stack<Long> pickedCategories = new Stack<>();
     private BigDecimal currentPriceAll;
     private BigDecimal currentAllCount;
 
-    public static ProductsFragment newInstance(int num) {
+    public static ProductsFragment newInstance(long article, long parentCategory) {
         ProductsFragment productsFragment = new ProductsFragment();
         Bundle args = new Bundle();
-        args.putInt("num", num);
+        args.putLong("article", article);
+        args.putLong("parentCategory", parentCategory);
         productsFragment.setArguments(args);
         return productsFragment;
     }
@@ -104,7 +104,7 @@ public class ProductsFragment extends Fragment implements View.OnClickListener {
         plusProductImgBtn.setOnClickListener(this);
         addProductToCartBtn = view.findViewById(R.id.fragment_products_addtocart_btn);
         addProductToCartBtn.setOnClickListener(this);
-        showShopCartBtn = view.findViewById(R.id.fragment_products_showshopcart_btn);
+        ImageButton showShopCartBtn = view.findViewById(R.id.fragment_products_showshopcart_btn);
         showShopCartBtn.setOnClickListener(this);
         articleTV = view.findViewById(R.id.fragment_products_productarticle_tv);
         barcodeTV = view.findViewById(R.id.fragment_products_productbarcode_tv);
@@ -115,7 +115,7 @@ public class ProductsFragment extends Fragment implements View.OnClickListener {
         favoritesDBHelper = new FavoritesDBHelper(view.getContext());
 
         List<Category> categories = categoriesDBHelper.getCategoriesByParentCategory(0L);
-        Collections.sort(categories, (c1, c2) -> c1.compareToByPosition(c2));
+        Collections.sort(categories, Category::compareToByPosition);
         firstRVAdapter = new FirstRVAdapter(categories);
         final RecyclerView firstRecyclerView = view.findViewById(R.id.fragment_products_first_rv);
         firstRecyclerView.setHasFixedSize(false);
@@ -134,6 +134,13 @@ public class ProductsFragment extends Fragment implements View.OnClickListener {
         final RecyclerView.ItemAnimator itemAnimator2 = new DefaultItemAnimator();
         secondRecyclerView.setItemAnimator(itemAnimator2);
 
+        if (getArguments() != null) {
+            if (getArguments().getLong("parentCategory") != 0L) {
+                Product product = productsDBHelper.getByArticle(getArguments().getLong("article"));
+                openProductFromSearch(product);
+            }
+        }
+
         return view;
     }
 
@@ -142,30 +149,35 @@ public class ProductsFragment extends Fragment implements View.OnClickListener {
         if (v.getId() == R.id.fragment_products_mainmenu_imgbtn) {
             if (getActivity() != null)
                 getActivity().getSupportFragmentManager().beginTransaction().remove(ProductsFragment.this).commit();
+
         } else if (v.getId() == R.id.fragment_products_back_menu_imgbtn) {
-            if (pickedCategories.size() > 1) {
-                productsFragmentMainImgV.setVisibility(View.INVISIBLE);
-                productsColumnImgV.setVisibility(View.VISIBLE);
-                productCardCL.setVisibility(View.INVISIBLE);
-                pickedCategories.pop();
-                List<CategoryAndProduct> categories = categoriesDBHelper.getListCategoryAndProductByParentCategory(pickedCategories.peek());
-                List<CategoryAndProduct> products = productsDBHelper.getListCategoryAndProductByParentCategory(pickedCategories.peek());
-                List<CategoryAndProduct> categoryAndProductList = new ArrayList<>();
-                categoryAndProductList.addAll(categories);
-                categoryAndProductList.addAll(products);
-                Collections.sort(categoryAndProductList, (cp1, cp2) -> cp1.compareToByPosition(cp2));
-                secondRVAdapter.updateListData(categoryAndProductList);
-            } else if (pickedCategories.size() == 1) {
-                productsFragmentMainImgV.setVisibility(View.VISIBLE);
-                productsColumnImgV.setVisibility(View.INVISIBLE);
-                productCardCL.setVisibility(View.INVISIBLE);
-                secondRVAdapter.updateListData(new ArrayList<>());
-                firstRVAdapter.resetRVData();
-                pickedCategories.pop();
-            } else {
+            Long parentCategoryLong = secondRVAdapter.getParentCategoryFirstItemInList();
+            if (parentCategoryLong == null) {
                 if (getActivity() != null)
                     getActivity().getSupportFragmentManager().beginTransaction().remove(ProductsFragment.this).commit();
+            } else {
+                CategoryAndProduct parentCategory = categoriesDBHelper.getFirstCategoryByCategory(parentCategoryLong);
+                if (parentCategory.getParentCategory() == 0L) {
+                    productsFragmentMainImgV.setVisibility(View.VISIBLE);
+                    productsColumnImgV.setVisibility(View.INVISIBLE);
+                    productCardCL.setVisibility(View.INVISIBLE);
+                    resetPickedCategories();
+                    firstRVAdapter.resetRVData();
+                    secondRVAdapter.updateListData(new ArrayList<>());
+                } else {
+                    productsFragmentMainImgV.setVisibility(View.INVISIBLE);
+                    productsColumnImgV.setVisibility(View.VISIBLE);
+                    productCardCL.setVisibility(View.INVISIBLE);
+                    List<CategoryAndProduct> categories = categoriesDBHelper.getListCategoryAndProductByParentCategory(parentCategory.getParentCategory());
+                    List<CategoryAndProduct> products = productsDBHelper.getListCategoryAndProductByParentCategory(parentCategory.getParentCategory());
+                    List<CategoryAndProduct> categoryAndProductList = new ArrayList<>();
+                    categoryAndProductList.addAll(categories);
+                    categoryAndProductList.addAll(products);
+                    Collections.sort(categoryAndProductList, CategoryAndProduct::compareToByPosition);
+                    secondRVAdapter.updateListData(categoryAndProductList);
+                }
             }
+
         } else if (v.getId() == R.id.fragment_products_product_imgv) {
             if (getActivity() != null) {
                 Fragment productImagesFragment = ProductImagesFragment.newInstance(product.getArticle(), product.getImagesNamesAndPositions());
@@ -175,6 +187,7 @@ public class ProductsFragment extends Fragment implements View.OnClickListener {
                 ftr.addToBackStack(null);
                 ftr.commit();
             }
+
         } else if (v.getId() == R.id.fragment_products_addtofavorites_imgbtn) {
             if (favoritesDBHelper.findByArticle(product.getArticle())) {
                 favoritesDBHelper.deleteByArticle(product.getArticle());
@@ -183,6 +196,7 @@ public class ProductsFragment extends Fragment implements View.OnClickListener {
                 favoritesDBHelper.saveProduct(product.getArticle());
                 addToFavoritesImgBtn.setImageResource(R.drawable.ic_favorites);
             }
+
         } else if (v.getId() == R.id.fragment_products_minusproduct_imgbtn) {
             BigDecimal currentCountAll = currentAllCount;
             currentCountAll = currentCountAll.subtract(product.getSizeStep());
@@ -197,6 +211,7 @@ public class ProductsFragment extends Fragment implements View.OnClickListener {
                 priceAllTV.setText(String.valueOf(currentPriceAll));
                 addProductToCartBtn.setText("Добавить");
             }
+
         } else if (v.getId() == R.id.fragment_products_plusproduct_imgbtn) {
             BigDecimal currentCountAll = currentAllCount;
             currentCountAll = currentCountAll.add(product.getSizeStep());
@@ -211,6 +226,7 @@ public class ProductsFragment extends Fragment implements View.OnClickListener {
                 priceAllTV.setText(String.valueOf(currentPriceAll));
                 addProductToCartBtn.setText("Добавить");
             }
+
         } else if (v.getId() == R.id.fragment_products_addtocart_btn) {
             ShopCartDBHelper shopCartDBHelper = new ShopCartDBHelper(view.getContext());
             ShopCartProduct shopCartProduct = shopCartDBHelper.getByArticle(product.getArticle());
@@ -238,6 +254,7 @@ public class ProductsFragment extends Fragment implements View.OnClickListener {
                     ((IMainActivity) view.getContext()).showToastMessage(message);
                 }
             }
+
         } else if (v.getId() == R.id.fragment_products_showshopcart_btn) {
             if (getActivity() != null) {
                 Fragment shopCartFragment = ShopCartFragment.newInstance(123);
@@ -259,14 +276,12 @@ public class ProductsFragment extends Fragment implements View.OnClickListener {
         List<CategoryAndProduct> categoryAndProductList = new ArrayList<>();
         categoryAndProductList.addAll(categories);
         categoryAndProductList.addAll(products);
-        Collections.sort(categoryAndProductList, (cp1, cp2) -> cp1.compareToByPosition(cp2));
+        Collections.sort(categoryAndProductList, CategoryAndProduct::compareToByPosition);
         secondRVAdapter.updateListData(categoryAndProductList);
 
-        pickedCategories.push(parentCategory);
     }
 
     public void resetPickedCategories() {
-        pickedCategories.clear();
         productsFragmentMainImgV.setVisibility(View.VISIBLE);
         productsColumnImgV.setVisibility(View.INVISIBLE);
         productCardCL.setVisibility(View.INVISIBLE);
@@ -348,6 +363,49 @@ public class ProductsFragment extends Fragment implements View.OnClickListener {
         } else {
             addToFavoritesImgBtn.setImageResource(R.drawable.ic_notfavorites);
         }
+    }
+
+    public void openProductFromSearch(Product product) {
+        productsFragmentMainImgV.setVisibility(View.INVISIBLE);
+        productsColumnImgV.setVisibility(View.VISIBLE);
+
+        List<CategoryAndProduct> categories = categoriesDBHelper.getListCategoryAndProductByParentCategory(product.getParentCategory());
+        List<CategoryAndProduct> products = productsDBHelper.getListCategoryAndProductByParentCategory(product.getParentCategory());
+        List<CategoryAndProduct> categoryAndProductList = new ArrayList<>();
+        categoryAndProductList.addAll(categories);
+        categoryAndProductList.addAll(products);
+        Collections.sort(categoryAndProductList, CategoryAndProduct::compareToByPosition);
+        secondRVAdapter.updateListData(categoryAndProductList);
+
+        CategoryAndProduct openingProduct = new CategoryAndProduct();
+        openingProduct.setId(product.getId());
+        openingProduct.setType(product.getType());
+        openingProduct.setParentCategory(product.getParentCategory());
+        openingProduct.setPosition(product.getPosition());
+        openingProduct.setIsEnable(product.getIsEnable());
+        openingProduct.setName(product.getName());
+        openingProduct.setFullName(product.getFullName());
+        openingProduct.setArticle(product.getArticle());
+        openingProduct.setBarcode(product.getBarcode());
+        openingProduct.setWeight(product.getWeight());
+        openingProduct.setMinSize(product.getMinSize());
+        openingProduct.setSizeStep(product.getSizeStep());
+        openingProduct.setPricePerSizeStep(product.getPricePerSizeStep());
+        openingProduct.setWeightPerSizeStep(product.getWeightPerSizeStep());
+        openingProduct.setMaxSize(product.getMaxSize());
+        openingProduct.setSizeType(product.getSizeType());
+        openingProduct.setStockQuantity(product.getStockQuantity());
+        openingProduct.setManufacturer(product.getManufacturer());
+        openingProduct.setDescription(product.getDescription());
+        openingProduct.setComposition(product.getComposition());
+        openingProduct.setPrevComposition(product.getPrevComposition());
+        openingProduct.setPrevCompositionDate(product.getPrevCompositionDate());
+        openingProduct.setPrevPrevComposition(product.getPrevPrevComposition());
+        openingProduct.setPrevPrevCompositionDate(product.getPrevPrevCompositionDate());
+        openingProduct.setInformation(product.getInformation());
+        openingProduct.setImagesNamesAndPositions(product.getImagesNamesAndPositions());
+        openingProduct.setImagesInfo(product.getImagesInfo());
+        setProductCard(openingProduct);
     }
 
 }

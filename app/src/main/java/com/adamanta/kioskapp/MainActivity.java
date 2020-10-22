@@ -5,22 +5,28 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.adamanta.kioskapp.favorites.FavoritesFragment;
 import com.adamanta.kioskapp.favorites.IFavoritesFragment;
-import com.adamanta.kioskapp.product.ProductsFragment;
-import com.adamanta.kioskapp.product.fragments.productImagesFragment.ProductImagesFragment;
-import com.adamanta.kioskapp.product.model.CategoryAndProduct;
-import com.adamanta.kioskapp.product.model.Product;
+import com.adamanta.kioskapp.products.ProductsFragment;
+import com.adamanta.kioskapp.products.fragments.productImagesFragment.ProductImagesFragment;
+import com.adamanta.kioskapp.products.model.CategoryAndProduct;
+import com.adamanta.kioskapp.products.model.Product;
+import com.adamanta.kioskapp.search.SearchFragment;
 import com.adamanta.kioskapp.settings.SettingsActivity;
 import com.adamanta.kioskapp.shopcart.ShopCartFragment;
 import com.adamanta.kioskapp.threads.UIBarControllerThread;
@@ -34,11 +40,29 @@ import java.util.Set;
 
 public class MainActivity extends AppCompatActivity implements IFavoritesFragment, IMainActivity {
 
+    private ProductsFragment productsFragment;
+    private SearchFragment searchFragment;
+    private boolean isSearchFragmentOpened = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        EditText searchET = findViewById(R.id.activity_main_search_et);
+        searchET.setOnClickListener(this::onClick);
+        searchET.addTextChangedListener(new TextWatcher() {
+            public void afterTextChanged(Editable s) {
+            }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+            // при изменении текста выполняем фильтрацию
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (searchFragment != null)
+                    searchFragment.searchInDb(s.toString());
+            }
+        });
 
         FoldersCreator.createFolders(this);
 
@@ -72,30 +96,54 @@ public class MainActivity extends AppCompatActivity implements IFavoritesFragmen
 
     public void onClick(@NonNull View v) {
         if (v.getId() == R.id.activity_main_products_btn) {
-            Fragment productsFragment = ProductsFragment.newInstance(123);
-            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-            fragmentTransaction.replace(R.id.activity_main_fragment_layout, productsFragment, "ProductsFragment");
-            fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-            fragmentTransaction.addToBackStack(null);
-            fragmentTransaction.commit();
+            productsFragment = ProductsFragment.newInstance(0L, 0L);
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.activity_main_fragment_layout, productsFragment, "ProductsFragment");
+            ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+            ft.addToBackStack(null);
+            ft.commit();
+
         } else if (v.getId() == R.id.activity_main_favorites_btn) {
             Fragment favoritesFragment = FavoritesFragment.newInstance(123);
-            FragmentTransaction ftFavoritesFragment = getSupportFragmentManager().beginTransaction();
-            ftFavoritesFragment.replace(R.id.activity_main_fragment_layout, favoritesFragment, "FavoritesFragment");
-            ftFavoritesFragment.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-            ftFavoritesFragment.addToBackStack(null);
-            ftFavoritesFragment.commit();
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.activity_main_fragment_layout, favoritesFragment, "FavoritesFragment");
+            ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+            ft.addToBackStack(null);
+            ft.commit();
+
         } else if (v.getId() == R.id.activity_main_shopcart_btn) {
             Fragment cartFragment = ShopCartFragment.newInstance(123);
-            FragmentTransaction ftCartFragment = getSupportFragmentManager().beginTransaction();
-            ftCartFragment.replace(R.id.activity_main_fragment_layout, cartFragment, "ShopCartFragment");
-            ftCartFragment.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-            ftCartFragment.addToBackStack(null);
-            ftCartFragment.commit();
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.activity_main_fragment_layout, cartFragment, "ShopCartFragment");
+            ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+            ft.addToBackStack(null);
+            ft.commit();
+
         } else if (v.getId() == R.id.activity_main_settings_btn) {
             Context context = v.getContext();
             Intent intent = new Intent(context, SettingsActivity.class);
             context.startActivity(intent);
+
+        } else if (v.getId() == R.id.activity_main_search_et) {
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            searchFragment = SearchFragment.newInstance(123);
+            ft.replace(R.id.activity_main_fragment_layout, searchFragment, "SearchFragment");
+            ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+            ft.addToBackStack(null);
+            ft.commit();
+            ImageView searchIcon = findViewById(R.id.activity_main_searchicon_imgv);
+            searchIcon.setImageResource(R.drawable.ic_close);
+            searchIcon.setOnClickListener(this::onClick);
+            EditText searchET = findViewById(R.id.activity_main_search_et);
+            searchET.setCursorVisible(true);
+
+        } else if (v.getId() == R.id.activity_main_searchicon_imgv) {
+            getSupportFragmentManager().popBackStack();
+            ImageView searchIcon = findViewById(R.id.activity_main_searchicon_imgv);
+            searchIcon.setImageResource(R.drawable.ic_baseline_search_24);
+            searchIcon.setOnClickListener(null);
+            EditText searchET = findViewById(R.id.activity_main_search_et);
+            searchET.setCursorVisible(false);
         }
     }
 
@@ -107,20 +155,12 @@ public class MainActivity extends AppCompatActivity implements IFavoritesFragmen
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
-        if(!hasFocus) {
-            Intent closeDialog = new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
-            sendBroadcast(closeDialog);
-        }
+//        if(!hasFocus) {
+//            Intent closeDialog = new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
+//            sendBroadcast(closeDialog);
+//        }
     }
 
-//    @Override
-//    public void calculation() {
-//        ProductsCartFragment fragment = (ProductsCartFragment)getSupportFragmentManager()
-//                .findFragmentByTag("CartFragment");
-//        if (fragment != null) {
-//            fragment.calculation();
-//        }
-//    }
 
     @Override
     public void favoritesFragmentSetProductCard(Product product) {
@@ -168,6 +208,32 @@ public class MainActivity extends AppCompatActivity implements IFavoritesFragmen
         if (fragment != null)
             fragment.setProductCard(product);
     }
+    @Override
+    public void productsFragmentOpenProductFromSearch(Product product) {
+//        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        ImageView searchIcon = findViewById(R.id.activity_main_searchicon_imgv);
+        searchIcon.setImageResource(R.drawable.ic_baseline_search_24);
+        searchIcon.setOnClickListener(null);
+        EditText searchET = findViewById(R.id.activity_main_search_et);
+        searchET.setText(null);
+        searchET.setCursorVisible(false);
+        FragmentManager manager = getSupportFragmentManager();
+        if (manager.getBackStackEntryCount() > 0) {
+            FragmentManager.BackStackEntry first = manager.getBackStackEntryAt(0);
+            manager.popBackStack(first.getId(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        }
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        if (searchFragment != null) {
+            ft.remove(searchFragment);
+            searchFragment = null;
+        }
+        productsFragment = ProductsFragment.newInstance(product.getArticle(), product.getParentCategory());
+        ft.replace(R.id.activity_main_fragment_layout, productsFragment, "ProductsFragment");
+        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+        ft.addToBackStack(null);
+        ft.commit();
+    }
+
 
     @Override
     public void productImagesFragmentChangeMainImage (String imageAbsolutePath) {
